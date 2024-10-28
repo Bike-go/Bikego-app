@@ -1,0 +1,30 @@
+# Python-related files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environment variables
+.env
+
+# Database files
+*.sqlite3
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Pytest cache
+.pytest_cache/
+
+# Logs
+*.log
+
+# Virtual environment
+venv/
+ENV/
+env/
+env.bak/
+*.egg-info/
+dist/
+build/
+
+.vscode/

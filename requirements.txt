@@ -1,0 +1,13 @@
+Flask
+Flask-RESTful
+Flask-SQLAlchemy
+psycopg2-binary
+Flask-Bcrypt
+Flask-JWT-Extended
+Flask-Migrate
+fastapi
+sqlalchemy
+psycopg2-binary
+pydantic
+PyJWT
+passlib
