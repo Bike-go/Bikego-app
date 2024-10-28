@@ -17,10 +17,6 @@ else:
 db.init_app(app)
 jwt = JWTManager(app)
 
-@app.before_request
-def check_db():
-    upload_schema(False)
-
 @app.route('/ping', methods=['GET'])
 def ping():
     return jsonify({'message': 'pong'}), 200
@@ -41,4 +37,9 @@ app.register_blueprint(statistics_bp, url_prefix='/api/statistics')
 app.register_blueprint(user_bp, url_prefix='/api/users')
 
 if __name__ == "__main__":
-    app.run()
+    try:
+        upload_schema(False)
+    except Exception as e:
+        print("Schema is set up")
+    finally:
+        app.run(host='0.0.0.0', port=5000)

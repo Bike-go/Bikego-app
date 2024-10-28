@@ -2,16 +2,6 @@
 CREATE SCHEMA IF NOT EXISTS {{db_schema_name}};
 SET search_path TO {{db_schema_name}};
 
--- News Table
-CREATE TABLE IF NOT EXISTS "News" (
-  "id" SERIAL PRIMARY KEY,
-  "title" VARCHAR(45) NOT NULL,
-  "content" TEXT NOT NULL,
-  "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "published_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "author_id" UUID REFERENCES "User"("id") ON DELETE SET NULL
-);
-
 -- Role Enum
 DROP TYPE IF EXISTS role_enum;
 CREATE TYPE role_enum AS ENUM ('Admin', 'Employee', 'Customer');
@@ -30,6 +20,16 @@ CREATE TABLE IF NOT EXISTS "User" (
   "email_verified" BOOLEAN NOT NULL,
   "darkmode" BOOLEAN NOT NULL,
   "role" role_enum NOT NULL
+);
+
+-- News Table
+CREATE TABLE IF NOT EXISTS "News" (
+  "id" SERIAL PRIMARY KEY,
+  "title" VARCHAR(45) NOT NULL,
+  "content" TEXT NOT NULL,
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "published_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "author_id" UUID REFERENCES "User"("id") ON DELETE SET NULL
 );
 
 -- Category Table

@@ -1,20 +1,15 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Use the official Python image
+FROM python:3.9
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
-
-# Install any dependencies specified in requirements.txt
+# Copy the requirements file and install dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+# Copy the rest of the application code
+COPY . .
 
-# Define environment variable to avoid running Python in buffer mode
-ENV PYTHONUNBUFFERED=1
-
-# Run the schema upload script followed by the Flask app
-CMD ["sh", "-c", "python upload_schema.py && python app.py"]
+# Command to run the application using Gunicorn
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
