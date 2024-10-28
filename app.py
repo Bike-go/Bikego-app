@@ -1,6 +1,5 @@
 import os
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from config import DevelopmentConfig, ProductionConfig
 from upload_schema import upload_schema
