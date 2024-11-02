@@ -10,7 +10,7 @@ class Maintenance(db.Model):
     description = Column(String(255))
     maintenance_date = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
     User_id = Column(UUID, ForeignKey('User.id'), nullable=False)
-    Bike_id = Column(UUID, ForeignKey('Bike.id'), nullable=False)
+    Instance_Bike_id = Column(UUID, ForeignKey('Instance_Bike.id'), nullable=False)
 
     user = relationship("User", back_populates="maintenances")
-    bike = relationship("Bike", back_populates="maintenances")
+    instance_bike = relationship("InstanceBike", back_populates="maintenances")
