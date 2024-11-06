@@ -16,20 +16,31 @@ body{
 }
 
 
+.fa-solid, .fa-regular, .fa-brands {
+    font-size: 24px;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.down_container .fa-solid, .fa-regular, .fa-brands{
+    font-size: 40px;
+    margin-right: 20px;
+}
+
 
 header{
     position: sticky;
+    z-index: 5;
     top: 0;
     background-color: var(--main_color);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 60px 0 60px;
-    height: 180px;
+    padding: 10px 60px 10px 60px;
 
 }
 
-header a {
+a {
     text-decoration: none;
     color: var(--white);
     font-size: 24px;
@@ -88,7 +99,111 @@ section {
 }
 
 footer {
-    background-color: --main_color;
+    background-color: var(--main_color);
     color: var(--white);
-    padding: 20px;
+    padding: 20px 10% 20px 10%;
+    margin-top: 40px;
 }
+
+footer .title {
+    text-transform: none;
+    color: var(--white);
+    margin: 0 0 5px 0;
+}
+
+footer p{
+    text-transform: none;
+    color: var(--white);
+    font-size: 20px;
+}
+
+footer a{
+    text-decoration: underline;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+footer nav {
+    width: 500px;
+}
+
+.up_container{
+    display: flex;
+    column-gap: 100px;
+    padding: 0 30px 10px 30px;
+    border-bottom-style: solid;
+    border-color: var(--white);
+    border-width: 2px;
+}
+
+.container_2 {
+    display: flex;
+    flex-direction: column;
+}
+
+.container_2 .Kontakt {
+    display: flex;
+    align-items: center;
+    width: 220px;
+    margin: 5px;
+    font-size: 16px;
+
+}
+.up_container .acc_btn{
+    position: absolute;
+    right: 220px;
+    text-transform: uppercase;
+    font-size: 24px;
+}
+
+.down_container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px 10px 30px;
+}
+
+.image_roll{
+    position: relative;
+    height: 70vh;
+    overflow: hidden;
+    padding: 0;
+}
+
+.slide {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.indicator-container {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.indicator {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 10px var(--white);
+    cursor: pointer;
+}
+
+.indicator.active {
+    background-color: var(--white);
+}
+
+

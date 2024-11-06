@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="HomePage.css">
     <link rel="icon" href="icons/logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>BikeGo</title>
 </head>
 <body>
@@ -20,7 +21,16 @@
         <a href="" class="acc_btn">My Account</a>
     </header>
 
-    <section>
+    <section class="image_roll">
+        <img src="images/bike1.jpg" class="slide active">
+        <img src="images/bike2.jpg" class="slide">
+        <img src="images/bike3.jpg" class="slide">
+
+        <div class="indicator-container">
+            <div class="indicator active" onclick="goToSlide(0)"></div>
+            <div class="indicator" onclick="goToSlide(1)"></div>
+            <div class="indicator" onclick="goToSlide(2)"></div>
+        </div>
 
     </section>
     
@@ -36,8 +46,79 @@
     </section>
 
     <footer>
+        <div class="up_container">
+            <div class="container_1">
+                <div class="title">BikeGO</div>
+                <div class="address">
+                    <p>Czech Republic, Brno</p> 
+                    <p>Ulice 180/12</p>
+                </div>
+            </div>
+    
+            <div class="container_2">
+                <div class="Kontakt">
+                    <i class="fa-solid fa-phone"></i>
+                    +420 123 456 789
+                </div>
+                <div class="Kontakt">
+                    <i class="fa-solid fa-phone"></i>
+                    +280 123 000 258 
+                </div>
+                <div class="Kontakt">
+                    <i class="fa-solid fa-fax"></i>
+                    +420 64211 5485 -200
+                </div>
+                <div class="Kontakt">
+                    <i class="fa-solid fa-envelope"></i>
+                    bikego@email.cz
+                </div>
+            </div>
+            
+            <div class="acc_btn">Kontakt</div>
+        </div>
+
+
+        <div class="down_container">
+            <div class="Kontakt">
+                <a href="" class="fa-regular fa-envelope"></a>
+                <a href="" class="fa-brands fa-facebook"></a>
+                <a href="" class="fa-brands fa-instagram"></a>
+                <a href="" class="fa-brands fa-youtube"></a>
+            </div>
+
+            <nav>
+                <a href="">Domů</a>
+                <a href="">Novinky</a>
+                <a href="">Půjčovná</a>
+                <a href="">Foto</a>
+                <a href="">Kontakt</a>
+            </nav>
+
+            <img src="images/logo.svg" alt="BikeGo" class="logo_image">
+        </div>
+               
         
     </footer>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const indicators = document.querySelectorAll('.indicator');
+
+        function goToSlide(slideIndex) {
+            slides[currentSlide].classList.remove('active');
+            indicators[currentSlide].classList.remove('active');
+
+            currentSlide = slideIndex;
+            slides[currentSlide].classList.add('active');
+            indicators[currentSlide].classList.add('active');
+        }
+
+        setInterval(() => {
+            let nextSlide = (currentSlide + 1) % slides.length;
+            goToSlide(nextSlide);
+        }, 8000);
+    </script>
     
 </body>
 </html>
