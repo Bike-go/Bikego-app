@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect, render_template, url_for
 from flask_jwt_extended import JWTManager
 from config import DevelopmentConfig, ProductionConfig
 from upload_schema import upload_schema
@@ -15,6 +15,14 @@ else:
 
 db.init_app(app)
 jwt = JWTManager(app)
+
+@app.route('/', methods=['GET'])
+def home():
+    return render_template('HomePage.html'), 200
+
+@app.errorhandler(404)
+def not_found():
+    return redirect(url_for('home')), 302
 
 @app.route('/ping', methods=['GET'])
 def ping():
