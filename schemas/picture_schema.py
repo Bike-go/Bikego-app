@@ -13,4 +13,4 @@ class PictureSchema(SQLAlchemyAutoSchema):
     picture_delete_hash = fields.Str(required=True, validate=validate.Length(min=1, max=255))
     description = fields.Str(required=False, validate=validate.Length(max=45))
     created_at = fields.DateTime(dump_only=True)
-    Bike_id = fields.UUID(required=True)
+    Instance_Bike_id = fields.UUID(required=True)

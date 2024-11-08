@@ -1,10 +1,9 @@
 import os
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from config import DevelopmentConfig, ProductionConfig
 from upload_schema import upload_schema
-from routes import (bike_bp, category_bp, inspection_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, statistics_bp, user_bp)
+from routes import (bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, statistics_bp, user_bp)
 from db import db
 
 app = Flask(__name__)
@@ -24,6 +23,7 @@ def ping():
 app.register_blueprint(bike_bp, url_prefix='/api/bikes')
 app.register_blueprint(category_bp, url_prefix='/api/categories')
 app.register_blueprint(inspection_bp, url_prefix='/api/inspections')
+app.register_blueprint(instance_bike_bp, url_prefix='/api/instance_bike')
 app.register_blueprint(maintenance_bp, url_prefix='/api/maintenance')
 app.register_blueprint(news_bp, url_prefix='/api/news')
 app.register_blueprint(payment_bp, url_prefix='/api/payments')
