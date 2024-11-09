@@ -52,11 +52,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Image
+      - name: Get the short SHA hash of the commit
         run: |
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
-          docker build -t bikego/${{ env.IMAGE }}:${{ github.ref_name }}-$SHORT_SHA .
+          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: |
+          docker build -t bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }} .
 
       - name: Push Docker Image
         run: |
