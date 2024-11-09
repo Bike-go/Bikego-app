@@ -67,7 +67,7 @@ jobs:
           # Update and install OpenVPN
           sudo apt-get update -y
           sudo apt-get install openvpn -y
-
+          
       - name: Configure OpenVPN
         run: |
           echo "Writing OpenVPN config..."
@@ -75,15 +75,17 @@ jobs:
           echo "Writing OpenVPN password..."
           echo "${{ secrets.OPENVPN_PASSWORD }}" > /tmp/openvpn.txt
           echo "OpenVPN config files created successfully"
-
+          
       - name: Connect to OpenVPN
         run: |
-          sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass ~/openvpn.txt > /dev/null 2>&1 &
-
+          sudo nohup openvpn --config /tmp/openvpn-config.ovpn --auth-nocache --askpass /tmp/openvpn.txt > /dev/null 2>&1 &
+          echo "OpenVPN started with config file /tmp/openvpn-config.ovpn"
+      
       - name: Wait for VPN Connection
         run: |
           while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
-
+          echo "OpenVPN connection established"
+          
   # Job 4: Deploy Application to Server
   deploy:
     name: Deploy Application
