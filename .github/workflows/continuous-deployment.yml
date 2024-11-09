@@ -22,19 +22,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           echo "IMAGE=bikego-main" >> $GITHUB_ENV
-          echo "HOST=${{ secrets.HOST }}" >> $GITHUB_ENV
-          echo "PORT=${{ secrets.PORT }}" >> $GITHUB_ENV
-          echo "FLASK_ENV=${{ secrets.FLASK_ENV }}" >> $GITHUB_ENV
-          echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
-          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
-          echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
-          echo "DB_SCHEMA_NAME=${{ secrets.DB_SCHEMA_NAME }}" >> $GITHUB_ENV
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
-          echo "IMGUR_CLIENT_ID=${{ secrets.IMGUR_CLIENT_ID }}" >> $GITHUB_ENV
-          echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" >> $GITHUB_ENV
-          echo "SENDER_PASSWORD=${{ secrets.SENDER_PASSWORD }}" >> $GITHUB_ENV
 
   # Job 2: Build and Push Docker Image
   build:
@@ -52,17 +39,19 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Get the short SHA hash of the commit
+      - name: Get Short SHA for Docker Tag
         run: |
-          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
 
-      - name: Build Docker image
+      - name: Build Docker Image
         run: |
-          docker build -t bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }} .
+          echo "Building Docker image with tag bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}"
+          docker build -t bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }} .
 
       - name: Push Docker Image
         run: |
-          docker push bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
+          docker push bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
 
   # Job 3: Setup VPN Connection
   vpn_setup:
@@ -103,26 +92,26 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             docker login || true
-            docker pull bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
-            docker stop ${{ env.IMAGE }} || true
-            docker rm ${{ env.IMAGE }} || true
-            docker run -d --name ${{ env.IMAGE }} \
-              -e HOST="${{ env.HOST }}" \
-              -e PORT="${{ env.PORT }}" \
-              -e FLASK_ENV="${{ env.FLASK_ENV }}" \
-              -e DB_USER="${{ env.DB_USER }}" \
-              -e DB_PASSWORD="${{ env.DB_PASSWORD }}" \
-              -e DB_HOST="${{ env.DB_HOST }}" \
-              -e DB_PORT="${{ env.DB_PORT }}" \
-              -e DB_NAME="${{ env.DB_NAME }}" \
-              -e DB_SCHEMA_NAME="${{ env.DB_SCHEMA_NAME }}" \
-              -e JWT_SECRET_KEY="${{ env.JWT_SECRET_KEY }}" \
-              -e IMGUR_CLIENT_ID="${{ env.IMGUR_CLIENT_ID }}" \
-              -e SENDER_EMAIL="${{ env.SENDER_EMAIL }}" \
-              -e SENDER_PASSWORD="${{ env.SENDER_PASSWORD }}" \
+            docker pull bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
+            docker stop bikego-main || true
+            docker rm bikego-main || true
+            docker run -d --name bikego-main \
+              -e HOST="${{ secrets.HOST }}" \
+              -e PORT="${{ secrets.PORT }}" \
+              -e FLASK_ENV="${{ secrets.FLASK_ENV }}" \
+              -e DB_USER="${{ secrets.DB_USER }}" \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              -e DB_HOST="${{ secrets.DB_HOST }}" \
+              -e DB_PORT="${{ secrets.DB_PORT }}" \
+              -e DB_NAME="${{ secrets.DB_NAME }}" \
+              -e DB_SCHEMA_NAME="${{ secrets.DB_SCHEMA_NAME }}" \
+              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
+              -e IMGUR_CLIENT_ID="${{ secrets.IMGUR_CLIENT_ID }}" \
+              -e SENDER_EMAIL="${{ secrets.SENDER_EMAIL }}" \
+              -e SENDER_PASSWORD="${{ secrets.SENDER_PASSWORD }}" \
               -p ${{ secrets.DEFAULT_PORT }}:${{ secrets.DEFAULT_PORT }} \
-              bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
-            docker update --restart unless-stopped ${{ env.IMAGE }}
+              bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
+            docker update --restart unless-stopped bikego-main
 
   # Job 5: Cleanup Resources
   cleanup:
