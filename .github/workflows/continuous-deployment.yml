@@ -61,7 +61,12 @@ jobs:
 
     steps:
       - name: Install OpenVPN
-        run: sudo apt-get update && sudo apt-get install openvpn -y
+        run: |
+          # Remove any possible apt-get lock files
+          sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock* /var/lib/dpkg/lock-frontend
+          # Update and install OpenVPN
+          sudo apt-get update -y
+          sudo apt-get install openvpn -y
 
       - name: Configure OpenVPN
         run: |
