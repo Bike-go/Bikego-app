@@ -3,7 +3,7 @@ from flask import Flask, jsonify, redirect, render_template, url_for
 from flask_jwt_extended import JWTManager
 from config import DevelopmentConfig, ProductionConfig
 from upload_schema import upload_schema
-from routes import (bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, statistics_bp, user_bp)
+from routes import (bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp)
 from db import db
 
 app = Flask(__name__)
@@ -44,7 +44,6 @@ app.register_blueprint(rental_bp, url_prefix='/api/rentals')
 app.register_blueprint(repair_bp, url_prefix='/api/repairs')
 app.register_blueprint(reservation_bp, url_prefix='/api/reservation')
 app.register_blueprint(review_bp, url_prefix='/api/reviews')
-app.register_blueprint(statistics_bp, url_prefix='/api/statistics')
 app.register_blueprint(user_bp, url_prefix='/api/users')
 
 if __name__ == "__main__":

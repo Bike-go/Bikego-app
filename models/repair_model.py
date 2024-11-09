@@ -10,7 +10,7 @@ class Repair(db.Model):
     description = Column(Text)
     created_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
     User_id = Column(UUID, ForeignKey('User.id'), nullable=False)
-    Instance_Bike_id = Column(UUID, ForeignKey('Instance_Bike.id'), nullable=False)
+    Inspection_id = Column(UUID, ForeignKey('Inspection.id'), nullable=False)
 
     user = relationship("User", back_populates="repairs")
-    instance_bike = relationship("InstanceBike", back_populates="repairs")
+    inspection = relationship("Inspection", back_populates="repairs")
