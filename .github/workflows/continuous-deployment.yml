@@ -46,12 +46,12 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          echo "Building Docker image with tag bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}"
-          docker build -t bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }} .
+          echo "Building Docker image with tag selecro/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}"
+          docker build -t selecro/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }} .
 
       - name: Push Docker Image
         run: |
-          docker push bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
+          docker push selecro/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
 
   # Job 3: Setup VPN Connection
   vpn_setup:
@@ -92,7 +92,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             docker login || true
-            docker pull bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
+            docker pull selecro/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
             docker stop bikego-main || true
             docker rm bikego-main || true
             docker run -d --name bikego-main \
@@ -110,7 +110,7 @@ jobs:
               -e SENDER_EMAIL="${{ secrets.SENDER_EMAIL }}" \
               -e SENDER_PASSWORD="${{ secrets.SENDER_PASSWORD }}" \
               -p ${{ secrets.DEFAULT_PORT }}:${{ secrets.DEFAULT_PORT }} \
-              bikego/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
+              selecro/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
             docker update --restart unless-stopped bikego-main
 
   # Job 5: Cleanup Resources
