@@ -70,8 +70,11 @@ jobs:
 
       - name: Configure OpenVPN
         run: |
-          echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
-          echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/openvpn.txt
+          echo "Writing OpenVPN config..."
+          echo "${{ secrets.OPENVPN_CONFIG }}" > /tmp/openvpn-config.ovpn
+          echo "Writing OpenVPN password..."
+          echo "${{ secrets.OPENVPN_PASSWORD }}" > /tmp/openvpn.txt
+          echo "OpenVPN config files created successfully"
 
       - name: Connect to OpenVPN
         run: |
