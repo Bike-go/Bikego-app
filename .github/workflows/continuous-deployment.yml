@@ -63,18 +63,18 @@ jobs:
       - name: Install OpenVPN
         run: sudo apt-get update && sudo apt-get install openvpn -y
 
-      - name: Configure and Connect to OpenVPN
+      - name: Configure OpenVPN
         run: |
           echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
-          echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/vpn-auth.txt
-          sudo openvpn --config ~/openvpn-config.ovpn --auth-user-pass ~/vpn-auth.txt --daemon
+          echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/openvpn.txt
 
-      - name: Ensure VPN Connection
+      - name: Connect to OpenVPN
         run: |
-          for i in {1..10}; do
-            if pgrep -x "openvpn" > /dev/null; then break; fi
-            echo "Waiting for VPN connection..." && sleep 3
-          done
+          sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass ~/openvpn.txt > /dev/null 2>&1 &
+
+      - name: Wait for VPN Connection
+        run: |
+          while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
 
   # Job 4: Deploy Application to Server
   deploy:
@@ -125,3 +125,6 @@ jobs:
 
       - name: Remove Temporary Files
         run: rm -rf ~/openvpn-config.ovpn ~/vpn-auth.txt ~/.ssh
+
+      - name: Delete OpenVPN Password
+        run: rm -rf ~/openvpn.txt|| true
