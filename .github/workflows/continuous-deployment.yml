@@ -72,9 +72,20 @@ jobs:
         run: |
           sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass ~/openvpn.txt > /dev/null 2>&1 &
 
-      - name: Wait for VPN Connection
+      - name: Wait for VPN Connection with Timeout
         run: |
-          while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
+          # Timeout after 60 seconds if VPN is not connected
+          timeout=60
+          elapsed=0
+          while ! ip addr show tun0 > /dev/null 2>&1 && [ $elapsed -lt $timeout ]; do
+            sleep 1
+            elapsed=$((elapsed + 1))
+          done
+          if [ $elapsed -ge $timeout ]; then
+            echo "VPN connection timed out!"
+            exit 1
+          fi
+          echo "VPN connected and tun0 is up!"
 
   # Job 4: Deploy Application to Server
   deploy:
