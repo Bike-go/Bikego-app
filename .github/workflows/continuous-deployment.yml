@@ -7,68 +7,79 @@ on:
   workflow_dispatch:
 
 jobs:
-  run_pull:
-    name: Run Pull and Deploy
+  # Job 1: Setup Environment
+  setup:
+    name: Setup Environment Variables
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checking out code
+      - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set deployment variables
+      - name: Set Deployment Variables
+        if: github.ref == 'refs/heads/main'
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            echo "IMAGE=bikego-main" >> $GITHUB_ENV
-            echo "FLASK_ENV=${{ secrets.FLASK_ENV }}" >> $GITHUB_ENV
-            echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
-            echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
-            echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
-            echo "DB_SCHEMA_NAME=${{ secrets.DB_SCHEMA_NAME }}" >> $GITHUB_ENV
-            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
-            echo "IMGUR_CLIENT_ID=${{ secrets.IMGUR_CLIENT_ID }}" >> $GITHUB_ENV
-            echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" >> $GITHUB_ENV
-            echo "SENDER_PASSWORD=${{ secrets.SENDER_PASSWORD }}" >> $GITHUB_ENV
-          else
-            echo "Invalid branch for deployment" && exit 1
-          fi
+          echo "IMAGE=bikego-main" >> $GITHUB_ENV
+          for var in HOST PORT FLASK_ENV DB_USER DB_PASSWORD DB_HOST DB_PORT DB_NAME DB_SCHEMA_NAME JWT_SECRET_KEY IMGUR_CLIENT_ID SENDER_EMAIL SENDER_PASSWORD; do
+            echo "$var=${{ secrets[$var] }}" >> $GITHUB_ENV
+          done
 
+  # Job 2: Build and Push Docker Image
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Get the short SHA hash of the commit
+      - name: Build Docker Image
         run: |
-          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      - name: Build and push Docker image
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+          docker build -t bikego/${{ env.IMAGE }}:${{ github.ref_name }}-$SHORT_SHA .
+      
+      - name: Push Docker Image
         run: |
-          docker build -t bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }} .
           docker push bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
 
-      - name: Install OpenVPN
-        run: |
-          sudo apt-get update && sudo apt-get install openvpn -y
+  # Job 3: Setup VPN Connection
+  vpn_setup:
+    name: Establish VPN Connection
+    runs-on: ubuntu-latest
+    needs: build
 
-      - name: Configure OpenVPN
+    steps:
+      - name: Install OpenVPN
+        run: sudo apt-get update && sudo apt-get install openvpn -y
+
+      - name: Configure and Connect to OpenVPN
         run: |
           echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
-          echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/openvpn.txt
+          echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/vpn-auth.txt
+          sudo openvpn --config ~/openvpn-config.ovpn --auth-user-pass ~/vpn-auth.txt --daemon
 
-      - name: Connect to OpenVPN
+      - name: Ensure VPN Connection
         run: |
-          sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass ~/openvpn.txt > /dev/null 2>&1 &
+          for i in {1..10}; do
+            if pgrep -x "openvpn" > /dev/null; then break; fi
+            echo "Waiting for VPN connection..." && sleep 3
+          done
 
-      - name: Wait for VPN Connection
-        run: |
-          while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
+  # Job 4: Deploy Application to Server
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    needs: vpn_setup
 
-      - name: SSH into Your Server and Deploy
+    steps:
+      - name: SSH Deploy and Run Docker Container
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -76,30 +87,37 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            docker login || true && \
-            docker pull bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }} && \
-            docker ps -a | grep ${{ env.IMAGE }} && docker stop ${{ env.IMAGE }} || true && \
-            docker ps -a | grep ${{ env.IMAGE }} && docker rm ${{ env.IMAGE }} || true && \
-            docker run \
-            -e FLASK_ENV="${{ secrets.FLASK_ENV }}" \
-            -e DB_USER="${{ secrets.DB_USER }}" \
-            -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            -e DB_HOST="${{ secrets.DB_HOST }}" \
-            -e DB_PORT="${{ secrets.DB_PORT }}" \
-            -e DB_NAME="${{ secrets.DB_NAME }}" \
-            -e DB_SCHEMA_NAME="${{ env.DB_SCHEMA_NAME }}" \
-            -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
-            -e IMGUR_CLIENT_ID="${{ secrets.IMGUR_CLIENT_ID }}" \
-            -e SENDER_EMAIL="${{ secrets.SENDER_EMAIL }}" \
-            -e SENDER_PASSWORD="${{ secrets.SENDER_PASSWORD }}" \
-            --name ${{ env.IMAGE }} -d -p ${{ env.DEFAULT_PORT }}:${{ env.DEFAULT_PORT }} \
-            bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }} && \
-            docker update --restart unless-stopped ${{ env.IMAGE }} && exit
+            docker login || true
+            docker pull bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
+            docker stop ${{ env.IMAGE }} || true
+            docker rm ${{ env.IMAGE }} || true
+            docker run -d --name ${{ env.IMAGE }} \
+              -e HOST="${{ env.HOST }}" \
+              -e PORT="${{ env.PORT }}" \
+              -e FLASK_ENV="${{ env.FLASK_ENV }}" \
+              -e DB_USER="${{ env.DB_USER }}" \
+              -e DB_PASSWORD="${{ env.DB_PASSWORD }}" \
+              -e DB_HOST="${{ env.DB_HOST }}" \
+              -e DB_PORT="${{ env.DB_PORT }}" \
+              -e DB_NAME="${{ env.DB_NAME }}" \
+              -e DB_SCHEMA_NAME="${{ env.DB_SCHEMA_NAME }}" \
+              -e JWT_SECRET_KEY="${{ env.JWT_SECRET_KEY }}" \
+              -e IMGUR_CLIENT_ID="${{ env.IMGUR_CLIENT_ID }}" \
+              -e SENDER_EMAIL="${{ env.SENDER_EMAIL }}" \
+              -e SENDER_PASSWORD="${{ env.SENDER_PASSWORD }}" \
+              -p ${{ secrets.DEFAULT_PORT }}:${{ secrets.DEFAULT_PORT }} \
+              bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
+            docker update --restart unless-stopped ${{ env.IMAGE }}
 
-      - name: Close OpenVPN Connection
-        run: |
-          sudo pkill openvpn
+  # Job 5: Cleanup Resources
+  cleanup:
+    name: Cleanup VPN and Temporary Files
+    runs-on: ubuntu-latest
+    needs: deploy
 
-      - name: Clean up SSH Configuration
-        run: |
-          rm -rf ~/.ssh
+    steps:
+      - name: Terminate OpenVPN Connection
+        run: sudo pkill -f openvpn || true
+
+      - name: Remove Temporary Files
+        run: rm -rf ~/openvpn-config.ovpn ~/vpn-auth.txt ~/.ssh

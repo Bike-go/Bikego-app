@@ -13,6 +13,9 @@ if os.getenv('FLASK_ENV') == 'production':
 else:
     app.config.from_object(DevelopmentConfig)
 
+HOST = os.getenv("HOST")
+PORT = os.getenv("PORT")
+
 db.init_app(app)
 jwt = JWTManager(app)
 
@@ -50,4 +53,4 @@ if __name__ == "__main__":
     except Exception as e:
         print("Schema is set up")
     finally:
-        app.run(host='0.0.0.0', port=5000)
+        app.run(host=HOST, port=PORT)
