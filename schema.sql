@@ -3,8 +3,8 @@ CREATE SCHEMA IF NOT EXISTS {{db_schema_name}};
 SET search_path TO {{db_schema_name}};
 
 -- Role Enum
-DROP TYPE IF EXISTS role_enum;
-CREATE TYPE role_enum AS ENUM ('Admin', 'Employee', 'Customer');
+DROP TYPE IF EXISTS role_enum CASCADE;
+CREATE TYPE role_enum AS ENUM ('Admin', 'Employee', 'Customer', 'Service');
 
 -- User Table
 CREATE TABLE IF NOT EXISTS "User" (
@@ -47,31 +47,42 @@ CREATE TABLE IF NOT EXISTS "Price" (
 );
 
 -- Frame Material Enum
-DROP TYPE IF EXISTS frame_material_enum;
+DROP TYPE IF EXISTS frame_material_enum CASCADE;
 CREATE TYPE frame_material_enum AS ENUM ('Aluminum', 'Carbon', 'Steel', 'Titanium');
 
 -- Brake Type Enum
-DROP TYPE IF EXISTS brake_type_enum;
+DROP TYPE IF EXISTS brake_type_enum CASCADE;
 CREATE TYPE brake_type_enum AS ENUM ('Disc', 'Rim', 'Hydraulic');
 
 -- Bike Category Enum
-DROP TYPE IF EXISTS bike_category_enum;
+DROP TYPE IF EXISTS bike_category_enum CASCADE;
 CREATE TYPE bike_category_enum AS ENUM ('Mountain', 'Road', 'Hybrid', 'Electric');
 
--- Bike Table
+-- Bike Model Table
 CREATE TABLE IF NOT EXISTS "Bike" (
   "id" UUID PRIMARY KEY,
   "model" VARCHAR(45) NOT NULL,
-  "size" INTEGER NOT NULL CHECK (size > 0),
   "frame_material" frame_material_enum NOT NULL,
   "brake_type" brake_type_enum NOT NULL,
   "brand" VARCHAR(45) NOT NULL,
-  "color" VARCHAR(45) NOT NULL,
-  "purchase_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "last_service_at" TIMESTAMPTZ DEFAULT NOW(),
   "description" TEXT,
   "Category_id" INTEGER NOT NULL REFERENCES "Category"("id") ON DELETE SET NULL,
   "Price_id" INTEGER NOT NULL REFERENCES "Price"("id") ON DELETE SET NULL
+);
+
+-- Status Enum
+DROP TYPE IF EXISTS status_enum CASCADE;
+CREATE TYPE status_enum AS ENUM ('Available', 'Rented', 'Under_Repair', 'Out_of_Service');
+
+-- Instance of Bike Table
+CREATE TABLE IF NOT EXISTS "Instance_Bike" (
+  "id" UUID PRIMARY KEY,
+  "size" INTEGER NOT NULL CHECK (size > 0),
+  "color" VARCHAR(45) NOT NULL,
+  "purchase_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "last_service_at" TIMESTAMPTZ DEFAULT NOW(),
+  "status" status_enum NOT NULL DEFAULT 'Available',
+  "Bike_id" UUID NOT NULL REFERENCES "Bike"("id") ON DELETE SET NULL
 );
 
 -- Reservation Table
@@ -81,7 +92,7 @@ CREATE TABLE IF NOT EXISTS "Reservation" (
   "reservation_end" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "ready_to_pickup" BOOLEAN NOT NULL,
   "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Bike_id" UUID NOT NULL REFERENCES "Bike"("id") ON DELETE SET NULL
+  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
 );
 
 -- Repair Table
@@ -90,7 +101,7 @@ CREATE TABLE IF NOT EXISTS "Repair" (
   "description" TEXT,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Bike_id" UUID NOT NULL REFERENCES "Bike"("id") ON DELETE SET NULL
+  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
 );
 
 -- Maintenance Table
@@ -99,7 +110,7 @@ CREATE TABLE IF NOT EXISTS "Maintenance" (
   "description" VARCHAR(255),
   "maintenance_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Bike_id" UUID NOT NULL REFERENCES "Bike"("id") ON DELETE SET NULL
+  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
 );
 
 -- Review Table
@@ -113,15 +124,15 @@ CREATE TABLE IF NOT EXISTS "Review" (
 );
 
 -- Currency Enum
-DROP TYPE IF EXISTS currency_enum;
+DROP TYPE IF EXISTS currency_enum CASCADE;
 CREATE TYPE currency_enum AS ENUM ('EUR', 'CZK');
 
 -- Payment Method Enum
-DROP TYPE IF EXISTS payment_method_enum;
+DROP TYPE IF EXISTS payment_method_enum CASCADE;
 CREATE TYPE payment_method_enum AS ENUM ('Online', 'On_Spot', 'Credit_Card', 'Debit_Card', 'Gift_Card', 'PayPal', 'Cash');
 
 -- Payment Status Enum
-DROP TYPE IF EXISTS payment_status_enum;
+DROP TYPE IF EXISTS payment_status_enum CASCADE;
 CREATE TYPE payment_status_enum AS ENUM ('Pending', 'Completed', 'Failed', 'Refunded');
 
 -- Payment Table
@@ -155,7 +166,7 @@ CREATE TABLE IF NOT EXISTS "Rental" (
   "total_price" INTEGER NOT NULL,
   "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
   "Payment_id" INTEGER NOT NULL REFERENCES "Payment"("id") ON DELETE SET NULL,
-  "Bike_id" UUID NOT NULL REFERENCES "Bike"("id") ON DELETE SET NULL
+  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
 );
 
 -- Inspection Table
@@ -179,5 +190,5 @@ CREATE TABLE IF NOT EXISTS "Picture" (
   "picture_delete_hash" VARCHAR(255) NOT NULL,
   "description" VARCHAR(45),
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "Bike_id" UUID NOT NULL REFERENCES "Bike"("id") ON DELETE SET NULL
+  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
 );

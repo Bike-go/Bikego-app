@@ -10,8 +10,8 @@ class Reservation(db.Model):
     reservation_start = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
     reservation_end = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
     ready_to_pickup = Column(Boolean, nullable=False)
-    User_id = Column(UUID, ForeignKey('User.id'), nullable=False)
-    Bike_id = Column(UUID, ForeignKey('Bike.id'), nullable=False)
+    User_id = Column(UUID(as_uuid=True), ForeignKey('User.id'), nullable=False)
+    Instance_Bike_id = Column(UUID(as_uuid=True), ForeignKey('Instance_Bike.id'), nullable=False)
 
     user = relationship("User", back_populates="reservations")
-    bike = relationship("Bike", back_populates="reservations")
+    instance_bike = relationship("InstanceBike", back_populates="reservations")

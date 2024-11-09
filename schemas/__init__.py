@@ -1,6 +1,7 @@
 from .bike_schema import BikeSchema
 from .category_schema import CategorySchema
 from .inspection_schema import InspectionSchema
+from .instance_bike_schema import InstanceBikeSchema
 from .maintenance_schema import MaintenanceSchema
 from .news_schema import NewsSchema
 from .payment_schema import PaymentSchema
@@ -14,5 +15,5 @@ from .statistics_schema import StatisticsSchema
 from .user_schema import UserSchema
 
 __all__ = [
-    'BikeSchema', 'CategorySchema', 'InspectionSchema', 'MaintenanceSchema', 'NewsSchema', 'PaymentSchema', 'PictureSchema', 'PriceSchema', 'RentalSchema', 'RepairSchema', 'ReservationSchema', 'ReviewSchema', 'StatisticsSchema', 'UserSchema'
+    'BikeSchema', 'CategorySchema', 'InspectionSchema', 'InstanceBikeSchema', 'MaintenanceSchema', 'NewsSchema', 'PaymentSchema', 'PictureSchema', 'PriceSchema', 'RentalSchema', 'RepairSchema', 'ReservationSchema', 'ReviewSchema', 'StatisticsSchema', 'UserSchema'
 ]

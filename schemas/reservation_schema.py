@@ -13,4 +13,4 @@ class ReservationSchema(SQLAlchemyAutoSchema):
     reservation_end = fields.DateTime(dump_only=True)
     ready_to_pickup = fields.Bool(required=True)
     User_id = fields.UUID(required=True)
-    Bike_id = fields.UUID(required=True)
+    Instance_Bike_id = fields.UUID(required=True)

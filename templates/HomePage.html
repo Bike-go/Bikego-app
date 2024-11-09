@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/css/HomePage.css">
+    <link rel="icon" href="static/icons/logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>BikeGo</title>
+</head>
+<body>
+    <header>
+        <img src="static/images/logo.svg" alt="BikeGo" class="logo_image">
+        <nav>
+            <a href="">Domů</a>
+            <a href="">Novinky</a>
+            <a href="">Půjčovná</a>
+            <a href="">Foto</a>
+            <a href="">Kontakt</a>
+        </nav>
+        <a href="" class="acc_btn">My Account</a>
+    </header>
+
+    <section class="image_roll">
+        <img src="static/images/bike1.jpg" class="slide active">
+        <img src="static/images/bike2.jpg" class="slide">
+        <img src="static/images/bike3.jpg" class="slide">
+
+        <div class="indicator-container">
+            <div class="indicator active" onclick="goToSlide(0)"></div>
+            <div class="indicator" onclick="goToSlide(1)"></div>
+            <div class="indicator" onclick="goToSlide(2)"></div>
+        </div>
+
+    </section>
+    
+    <section>
+        <div class="title">O nás</div>
+        <div class="text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna in magna gravida vehicula. Maecenas aliquet accumsan leo. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Morbi leo mi, nonummy eget tristique non, rhoncus non leo. Duis pulvinar. Nullam dapibus fermentum ipsum. Phasellus et lorem id felis nonummy placerat. Sed ac dolor sit amet purus malesuada congue. Fusce consectetuer risus a nunc. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Duis condimentum augue id magna semper rutrum. In dapibus augue non sapien.</div>
+    
+    </section>
+
+    <section>
+        <div class="title">Mapa areálu</div>
+        <img src="static/images/mapa.jpg" alt="BikeGo mapa" class="map_image">
+    </section>
+
+    <footer>
+        <div class="up_container">
+            <div class="container_1">
+                <div class="title">BikeGO</div>
+                <div class="address">
+                    <p>Czech Republic, Brno</p> 
+                    <p>Ulice 180/12</p>
+                </div>
+            </div>
+    
+            <div class="container_2">
+                <div class="Kontakt">
+                    <i class="fa-solid fa-phone"></i>
+                    +420 123 456 789
+                </div>
+                <div class="Kontakt">
+                    <i class="fa-solid fa-phone"></i>
+                    +280 123 000 258 
+                </div>
+                <div class="Kontakt">
+                    <i class="fa-solid fa-fax"></i>
+                    +420 64211 5485 -200
+                </div>
+                <div class="Kontakt">
+                    <i class="fa-solid fa-envelope"></i>
+                    bikego@email.cz
+                </div>
+            </div>
+            
+            <div class="acc_btn">Kontakt</div>
+        </div>
+
+
+        <div class="down_container">
+            <div class="Kontakt">
+                <a href="" class="fa-regular fa-envelope"></a>
+                <a href="" class="fa-brands fa-facebook"></a>
+                <a href="" class="fa-brands fa-instagram"></a>
+                <a href="" class="fa-brands fa-youtube"></a>
+            </div>
+
+            <nav>
+                <a href="">Domů</a>
+                <a href="">Novinky</a>
+                <a href="">Půjčovná</a>
+                <a href="">Foto</a>
+                <a href="">Kontakt</a>
+            </nav>
+
+            <img src="static/images/logo.svg" alt="BikeGo" class="logo_image">
+        </div>
+               
+        
+    </footer>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const indicators = document.querySelectorAll('.indicator');
+
+        function goToSlide(slideIndex) {
+            slides[currentSlide].classList.remove('active');
+            indicators[currentSlide].classList.remove('active');
+
+            currentSlide = slideIndex;
+            slides[currentSlide].classList.add('active');
+            indicators[currentSlide].classList.add('active');
+        }
+
+        setInterval(() => {
+            let nextSlide = (currentSlide + 1) % slides.length;
+            goToSlide(nextSlide);
+        }, 8000);
+    </script>
+    
+</body>
+</html>
