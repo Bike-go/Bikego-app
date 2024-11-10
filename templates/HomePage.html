@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" href="/static/icons/logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>BikeGo</title>
 </head>
+
 <body>
-    <header>
-        <img src="/static/images/logo.png" alt="BikeGo" class="logo_image">
+    <header class="pc">
+        <img src="../static/images/logo.png" alt="BikeGo" class="logo_image">
         <nav>
-            <a href="">Doomů</a>
+            <a href="">Domů</a>
             <a href="">Novinky</a>
             <a href="">Půjčovná</a>
             <a href="">Foto</a>
@@ -21,28 +21,54 @@
         <a href="" class="acc_btn">My Account</a>
     </header>
 
+    <header class="mobile">
+        <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+        <div class="side_menu" id="sideMenu">
+            <a href="">Domů</a>
+            <a href="">Novinky</a>
+            <a href="">Půjčovná</a>
+            <a href="">Foto</a>
+            <a href="">Kontakt</a>
+        </div>
+
+        <div class="Kontakt">
+            <i class="fa-solid fa-bars" id="btn_menu"></i>
+            <p class="title">BikeGO</p>
+        </div>
+        
+        <a href="" class="acc_btn">
+            <i class="fa-regular fa-user"></i>
+        </a>
+    </header>
+
+    <div class="search_bar">
+        <input type="search" id="search" name="search">
+        <i class="fa-solid fa-magnifying-glass" id="btn_search"></i>
+    </div>
+    
     <section class="image_roll">
-        <img src="/static/images/bike1.jpg" class="slide active">
-        <img src="/static/images/bike2.jpg" class="slide">
-        <img src="/static/images/bike3.jpg" class="slide">
+        <img src="../static/images/bike1.jpg" class="slide active">
+        <img src="../static/images/bike2.jpg" class="slide">
+        <img src="../static/images/bike3.jpg" class="slide">
 
         <div class="indicator-container">
             <div class="indicator active" onclick="goToSlide(0)"></div>
             <div class="indicator" onclick="goToSlide(1)"></div>
             <div class="indicator" onclick="goToSlide(2)"></div>
         </div>
-
     </section>
     
     <section>
         <div class="title">O nás</div>
-        <div class="text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna in magna gravida vehicula. Maecenas aliquet accumsan leo. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Morbi leo mi, nonummy eget tristique non, rhoncus non leo. Duis pulvinar. Nullam dapibus fermentum ipsum. Phasellus et lorem id felis nonummy placerat. Sed ac dolor sit amet purus malesuada congue. Fusce consectetuer risus a nunc. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Duis condimentum augue id magna semper rutrum. In dapibus augue non sapien.</div>
-    
+        <div class="text">Naše firma se specializuje na provoz moderního online systému pro půjčování kol a správu bikeparku. Od svého vzniku jsme se soustředili na vývoj řešení, která přinášejí uživatelům jednoduchost, komfort a efektivní správu. Naše aplikace umožňuje zákazníkům snadno rezervovat kola, spravovat své rezervace a hodnotit služby, zatímco zaměstnanci bikeparku mohou snadno sledovat stav kol a organizovat jejich údržbu.
+            Systém je navržen tak, aby uspokojil potřeby nejen rekreačních cyklistů, ale i pravidelných návštěvníků a nadšenců do cyklistiky. Každý uživatel má přístup k přehlednému rozhraní, které zajišťuje snadnou orientaci a přístup k informacím o výpůjčkách, dostupnosti kol a zákaznických recenzích. Díky rozsáhlým funkcím pro evidenci a správu kol se zaměstnanci mohou soustředit na poskytování kvalitního servisu.
+            Naše platforma využívá nejnovější technologie pro zajištění bezpečnosti a spolehlivosti, což umožňuje dlouhodobý rozvoj bikeparku. Neustále investujeme do inovací a zpětné vazby od uživatelů, abychom udrželi vysoký standard služeb, které poskytujeme, a podpořili příjemný zážitek z jízdy na kole pro všechny návštěvníky.
+        </div>
     </section>
 
     <section>
         <div class="title">Mapa areálu</div>
-        <img src="/static/images/mapa.jpg" alt="BikeGo mapa" class="map_image">
+        <img src="../static/images/mapa.jpg" alt="BikeGo mapa" class="map_image">
     </section>
 
     <footer>
@@ -57,26 +83,20 @@
     
             <div class="container_2">
                 <div class="Kontakt">
-                    <i class="fa-solid fa-phone"></i>
-                    +420 123 456 789
+                    <i class="fa-solid fa-phone"></i> +420 123 456 789
                 </div>
                 <div class="Kontakt">
-                    <i class="fa-solid fa-phone"></i>
-                    +280 123 000 258 
+                    <i class="fa-solid fa-phone"></i> +280 123 000 258 
                 </div>
                 <div class="Kontakt">
-                    <i class="fa-solid fa-fax"></i>
-                    +420 64211 5485 -200
+                    <i class="fa-solid fa-fax"></i> +420 64211 5485 -200
                 </div>
                 <div class="Kontakt">
-                    <i class="fa-solid fa-envelope"></i>
-                    bikego@email.cz
+                    <i class="fa-solid fa-envelope"></i> bikego@email.cz
                 </div>
             </div>
-            
-            <div class="acc_btn">Kontakt</div>
+            <a href="" class="kontakt_btn">Kontakt</a>
         </div>
-
 
         <div class="down_container">
             <div class="Kontakt">
@@ -94,31 +114,10 @@
                 <a href="">Kontakt</a>
             </nav>
 
-            <img src="/static/images/logo.png" alt="BikeGo" class="logo_image">
+            <img src="../static/images/logo.png" alt="BikeGo" class="logo_image">
         </div>
-               
-        
     </footer>
 
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const indicators = document.querySelectorAll('.indicator');
-
-        function goToSlide(slideIndex) {
-            slides[currentSlide].classList.remove('active');
-            indicators[currentSlide].classList.remove('active');
-
-            currentSlide = slideIndex;
-            slides[currentSlide].classList.add('active');
-            indicators[currentSlide].classList.add('active');
-        }
-
-        setInterval(() => {
-            let nextSlide = (currentSlide + 1) % slides.length;
-            goToSlide(nextSlide);
-        }, 8000);
-    </script>
-    
+    <script src="../static/js/script.js"></script>
 </body>
 </html>
