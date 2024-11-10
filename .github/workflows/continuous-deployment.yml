@@ -62,20 +62,20 @@ jobs:
             docker ps -a | grep bikego-main && docker stop bikego-main || true && \
             docker ps -a | grep bikego-main && docker rm bikego-main || true && \
             docker run \
-              -e HOST="${{ secrets.HOST }}" \
-              -e PORT="${{ secrets.PORT }}" \
-              -e FLASK_ENV="${{ secrets.FLASK_ENV }}" \
-              -e DB_USER="${{ secrets.DB_USER }}" \
-              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-              -e DB_HOST="${{ secrets.DB_HOST }}" \
-              -e DB_PORT="${{ secrets.DB_PORT }}" \
-              -e DB_NAME="${{ secrets.DB_NAME }}" \
-              -e DB_SCHEMA_NAME="${{ secrets.DB_SCHEMA_NAME }}" \
-              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
-              -e IMGUR_CLIENT_ID="${{ secrets.IMGUR_CLIENT_ID }}" \
-              -e SENDER_EMAIL="${{ secrets.SENDER_EMAIL }}" \
-              -e SENDER_PASSWORD="${{ secrets.SENDER_PASSWORD }}" \
-              --name bikego-main -d -p ${{ env.PORT }}:${{ env.PORT }} \
+            -e HOST="${{ secrets.HOST }}" \
+            -e PORT="${{ secrets.PORT }}" \
+            -e FLASK_ENV="${{ secrets.FLASK_ENV }}" \
+            -e DB_USER="${{ secrets.DB_USER }}" \
+            -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            -e DB_HOST="${{ secrets.DB_HOST }}" \
+            -e DB_PORT="${{ secrets.DB_PORT }}" \
+            -e DB_NAME="${{ secrets.DB_NAME }}" \
+            -e DB_SCHEMA_NAME="${{ secrets.DB_SCHEMA_NAME }}" \
+            -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
+            -e IMGUR_CLIENT_ID="${{ secrets.IMGUR_CLIENT_ID }}" \
+            -e SENDER_EMAIL="${{ secrets.SENDER_EMAIL }}" \
+            -e SENDER_PASSWORD="${{ secrets.SENDER_PASSWORD }}" \
+            --name bikego-main -d -p ${{ env.PORT }}:${{ env.PORT }} \
             selecro/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }} && \
             docker update --restart unless-stopped bikego-main && exit
 
