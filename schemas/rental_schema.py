@@ -14,4 +14,4 @@ class RentalSchema(SQLAlchemyAutoSchema):
     total_price = fields.Int(required=True)
     User_id = fields.UUID(required=True)
     Payment_id = fields.Int(required=True)
-    Bike_id = fields.UUID(required=True)
+    Instance_Bike_id = fields.UUID(required=True)

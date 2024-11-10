@@ -12,9 +12,9 @@ class Rental(db.Model):
     total_price = Column(Integer, nullable=False)
     User_id = Column(UUID, ForeignKey('User.id'), nullable=False)
     Payment_id = Column(Integer, ForeignKey('Payment.id'), nullable=False)
-    Bike_id = Column(UUID, ForeignKey('Bike.id'), nullable=False)
+    Instance_Bike_id = Column(UUID, ForeignKey('Instance_Bike.id'), nullable=False)
 
     user = relationship("User", back_populates="rentals")
     payment = relationship("Payment", back_populates="rentals")
-    bike = relationship("Bike", back_populates="rentals")
+    instance_bike = relationship("InstanceBike", back_populates="rentals")
     inspections = relationship("Inspection", back_populates="rental")

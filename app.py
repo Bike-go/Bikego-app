@@ -1,10 +1,9 @@
 import os
-from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, jsonify, redirect, render_template, url_for
 from flask_jwt_extended import JWTManager
 from config import DevelopmentConfig, ProductionConfig
 from upload_schema import upload_schema
-from routes import (bike_bp, category_bp, inspection_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, statistics_bp, user_bp)
+from routes import (bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, statistics_bp, user_bp)
 from db import db
 
 app = Flask(__name__)
@@ -14,8 +13,19 @@ if os.getenv('FLASK_ENV') == 'production':
 else:
     app.config.from_object(DevelopmentConfig)
 
+HOST = os.getenv("HOST")
+PORT = os.getenv("PORT")
+
 db.init_app(app)
 jwt = JWTManager(app)
+
+@app.route('/', methods=['GET'])
+def home():
+    return render_template('HomePage.html'), 200
+
+@app.errorhandler(404)
+def not_found():
+    return redirect(url_for('home')), 302
 
 @app.route('/ping', methods=['GET'])
 def ping():
@@ -24,6 +34,7 @@ def ping():
 app.register_blueprint(bike_bp, url_prefix='/api/bikes')
 app.register_blueprint(category_bp, url_prefix='/api/categories')
 app.register_blueprint(inspection_bp, url_prefix='/api/inspections')
+app.register_blueprint(instance_bike_bp, url_prefix='/api/instance_bike')
 app.register_blueprint(maintenance_bp, url_prefix='/api/maintenance')
 app.register_blueprint(news_bp, url_prefix='/api/news')
 app.register_blueprint(payment_bp, url_prefix='/api/payments')
@@ -42,4 +53,4 @@ if __name__ == "__main__":
     except Exception as e:
         print("Schema is set up")
     finally:
-        app.run(host='0.0.0.0', port=5000)
+        app.run(host=HOST, port=PORT)
