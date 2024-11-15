@@ -10,9 +10,14 @@
 
 
 body{
+    /*
     background-image: url("../images/login_background.png") ;
     background-repeat: no-repeat;
+    background-position: center;
     background-size: cover;
+     */
+    background-color: #738681;
+    min-height: 500px;
 }
 
 
@@ -22,6 +27,7 @@ h1 {
     font-style: normal;
     text-transform: uppercase;
 }
+
 
 
 .login {
@@ -39,8 +45,8 @@ h1 {
 }
 
 .user_icon{
-    position: sticky;
-    top: 8vh;
+    position: relative;
+    top: 70px;
     margin: auto;
     z-index: 1;
     display: flex;
@@ -143,7 +149,7 @@ input[type=button] {
     }
 
     .user_icon {
-        top: 15vh;
+        top: 125px;
         font-size: 40px;
         width: 100px;
         height: 100px;
