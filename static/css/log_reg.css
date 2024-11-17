@@ -68,7 +68,7 @@ h1 {
 }
 
 
-input[type=text], [type=password],[type=button],[type=submit],[type=email],::placeholder{
+input[type=text], [type=password],[type=email],::placeholder{
     color: var(--scnd_btn_color);
     font-size: 28px;
     border-radius: 10px;
@@ -76,17 +76,7 @@ input[type=text], [type=password],[type=button],[type=submit],[type=email],::pla
     width: 100%;
     height: 55px;
     padding: 5px 10px 5px 10px;
-    margin: 15px 0 15px 0;
-}
-
-
-input[type=button] {
-    cursor: pointer;
-    width: 100%;
-    background: none;
-    border-style: none;
-    color:var(--white);
-    font-size: 18px;
+    margin: 15px 0 30px 0;
 }
 
 
@@ -103,7 +93,7 @@ input[type=button] {
     height: 60px;
 }
 
-.create {
+.create, .submit {
     cursor: pointer;
     background-color: var(--scnd_btn_color);
     color: var(--white);
@@ -114,6 +104,22 @@ input[type=button] {
     padding: 8px;
     width: 400px;
     height: 60px;
+    text-transform: uppercase;
+    margin-bottom:20px;
+}
+
+.submit {
+    width: 150px;
+    margin: 0;
+    padding: 0;
+}
+
+.white_btn {
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 16px;
 }
 
 .row_reg {
@@ -127,7 +133,7 @@ input[type=button] {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 5px 10px 5px 10px;
+    padding-top:20px;
 }
 
 .row input[type=button] {
@@ -136,7 +142,7 @@ input[type=button] {
 
 
 
-@media screen and (max-width: 1275px){
+@media screen and (max-width: 1000px){
     body{
         background-image: none;
         background-color: #738681;
@@ -159,36 +165,27 @@ input[type=button] {
         font-size: 40px;
     }
 
-    input[type=text], [type=password],[type=button],[type=submit], [type=email], ::placeholder{
+    input[type=text], [type=password],[type=email],::placeholder{
         font-size: 18px;
         border-radius: 8px;
         height: 35px;
         padding: 5px 10px 5px 10px;
-        margin: 8px 0 8px 0;
+        margin: 8px 0 16px 0;
     }
 
-    input[type=button] {
-        width: 100%;
-        font-size: 14px;
+    .white_btn{
+        font-size: 12px;
     }
 
-
-    .create {
+    .create, .submit {
         font-size: 15px;
         padding: 4px;
         width: 150px;
         height: 40px;
     }
-
-    .row input[type=button] {
-        width: 140px;
-        text-align: left;
-        padding: 0;
-    }
-
-    .row{
-        padding: 5px 0 5px 0;
-    }
     
+    .submit{
+        width: 80px;
+    }
     
 }

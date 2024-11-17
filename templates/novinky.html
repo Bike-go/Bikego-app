@@ -6,8 +6,9 @@
     <link rel="icon" href="../static/icons/logo.ico" type="image/x-icon">
     <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>BikeGo</title>
+    <title>Novinky</title>
 </head>
+
 <body>
     <header class="pc">
         <img src="../static/images/logo.png" alt="BikeGo" class="logo_image">
@@ -18,57 +19,52 @@
             <a href="foto.html">Foto</a>
             <a href="kontakt.html">Kontakt</a>
         </nav>
-        <a href="../templates/login.html" class="acc_btn">My Account</a>
+        <a href="" class="acc_btn">My Account</a>
     </header>
 
     <header class="mobile">
         <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
         <div class="side_menu" id="sideMenu">
             <a href="HomePage.html">Domů</a>
-                <a href="novinky.html">Novinky</a>
-                <a href="pujcovna.html">Půjčovná</a>
-                <a href="foto.html">Foto</a>
-                <a href="kontakt.html">Kontakt</a>
+            <a href="novinky.html">Novinky</a>
+            <a href="pujcovna.html">Půjčovná</a>
+            <a href="foto.html">Foto</a>
+            <a href="kontakt.html">Kontakt</a>
         </div>
-
         <div class="Kontakt">
             <i class="fa-solid fa-bars" id="btn_menu"></i>
             <p class="title">BikeGO</p>
         </div>
-        
         <a href="" class="acc_btn">
             <i class="fa-regular fa-user"></i>
         </a>
     </header>
 
-    <div class="search_bar">
-        <input type="search" id="search" name="search">
-        <i class="fa-solid fa-magnifying-glass" id="btn_search"></i>
-    </div>
-    
-    <section class="image_roll">
-        <img src="../static/images/bike1.jpg" class="slide active">
-        <img src="../static/images/bike2.jpg" class="slide">
-        <img src="../static/images/bike3.jpg" class="slide">
-
-        <div class="indicator-container">
-            <div class="indicator active" onclick="goToSlide(0)"></div>
-            <div class="indicator" onclick="goToSlide(1)"></div>
-            <div class="indicator" onclick="goToSlide(2)"></div>
+    <section class="news_page">
+        <div class="title">Novinky</div>
+        <div class="text">
+            <p>Objevte nejnovější informace, aktuality a zajímavosti ze světa BikeGo a našeho bikeparku.</p>
         </div>
-    </section>
-    
-    <section>
-        <div class="title">O nás</div>
-        <div class="text">Naše firma se specializuje na provoz moderního online systému pro půjčování kol a správu bikeparku. Od svého vzniku jsme se soustředili na vývoj řešení, která přinášejí uživatelům jednoduchost, komfort a efektivní správu. Naše aplikace umožňuje zákazníkům snadno rezervovat kola, spravovat své rezervace a hodnotit služby, zatímco zaměstnanci bikeparku mohou snadno sledovat stav kol a organizovat jejich údržbu.
-            Systém je navržen tak, aby uspokojil potřeby nejen rekreačních cyklistů, ale i pravidelných návštěvníků a nadšenců do cyklistiky. Každý uživatel má přístup k přehlednému rozhraní, které zajišťuje snadnou orientaci a přístup k informacím o výpůjčkách, dostupnosti kol a zákaznických recenzích. Díky rozsáhlým funkcím pro evidenci a správu kol se zaměstnanci mohou soustředit na poskytování kvalitního servisu.
-            Naše platforma využívá nejnovější technologie pro zajištění bezpečnosti a spolehlivosti, což umožňuje dlouhodobý rozvoj bikeparku. Neustále investujeme do inovací a zpětné vazby od uživatelů, abychom udrželi vysoký standard služeb, které poskytujeme, a podpořili příjemný zážitek z jízdy na kole pro všechny návštěvníky.
-        </div>
-    </section>
 
-    <section>
-        <div class="title">Mapa areálu</div>
-        <img src="../static/images/mapa.jpg" alt="BikeGo mapa" class="map_image">
+        <div class="news_list">
+            <article class="news_item">
+                <a href="" class="news_title">Otevíráme nové traily!</a>
+                <p class="news_date">1. listopadu 2024</p>
+                <p class="news_excerpt">Připravili jsme pro vás nové trasy plné adrenalinu a úchvatných výhledů.</p>
+            </article>
+
+            <article class="news_item">
+                <a href="" class="news_title">Soutěž o permanentky</a>
+                <p class="news_date">15. října 2024</p>
+                <p class="news_excerpt">Zapojte se do naší soutěže a vyhrajte celoroční přístup do bikeparku!</p>
+            </article>
+
+            <article class="news_item">
+                <a href="" class="news_title">Nová kolekce kol k zapůjčení</a>
+                <p class="news_date">25. září 2024</p>
+                <p class="news_excerpt">Představujeme nejnovější modely horských kol pro sezónu 2025.</p>
+            </article>
+        </div>
     </section>
 
     <footer>
@@ -117,7 +113,6 @@
             <img src="../static/images/logo.png" alt="BikeGo" class="logo_image">
         </div>
     </footer>
-
-    <script src="../static/js/script.js"></script>
+    <script src="../static/js/script.js"></script> 
 </body>
 </html>

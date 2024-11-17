@@ -6,6 +6,8 @@ body{
     display: flex;
     flex-direction: column;
     min-width: 370px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 :root {
@@ -40,12 +42,11 @@ header{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 60px 10px 60px;
+    padding: 10px 60px;
 
 }
 
-a {
-    
+header a, footer a {
     text-decoration: none;
     color: var(--white);
     font-size: 24px;
@@ -53,15 +54,11 @@ a {
     text-transform: uppercase;
 }
 
-header a:hover {
-    font-weight: 700;
-}
-
 nav {
     display: flex;
     justify-content: space-between;
     width: 900px;
-    padding: 0 20px 0 20px;
+    padding: 0 20px;
 }
 
 .logo_image {
@@ -84,11 +81,12 @@ nav {
     text-decoration: none;
 }
 
+
 section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 5px 20% 5px 20%;
+    padding: 5px 20%;
 }
 
 .title {
@@ -107,7 +105,7 @@ section {
 footer {
     background-color: var(--main_color);
     color: var(--white);
-    padding: 20px 10% 20px 10%;
+    padding: 20px 10%;
     margin-top: 40px;
 }
 
@@ -212,6 +210,238 @@ footer nav {
 .indicator.active {
     background-color: var(--white);
 }
+
+/*Kontakt page*/
+
+.contact_page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10%;
+}
+
+.contact_page .title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--black);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.contact_page .text {
+    font-size: 18px;
+    color: var(--black);
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.contact_info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.contact_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.contact_item i {
+    font-size: 40px;
+    color: var(--main_color);
+    margin-bottom: 10px;
+}
+
+.contact_item span {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.contact_item p {
+    font-size: 18px;
+    color: var(--black);
+}
+
+.contact_form {
+    width: 100%;
+    max-width: 600px;
+}
+
+.contact_form .title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.contact_form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact_form label {
+    font-size: 18px;
+    color: var(--black);
+    margin-bottom: 5px;
+}
+
+.contact_form input, .contact_form textarea {
+    border: 1px solid var(--gray_btn);
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    max-width: 578px;
+    max-height: 100px;
+}
+
+.contact_form .send_btn {
+    background-color: var(--scnd_btn_color);
+    color: var(--white);
+    font-size: 18px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.contact_form .send_btn:hover {
+    background-color: var(--main_color);
+}
+
+/*Kontakt page end*/
+
+/*Novinky page*/
+.news_page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10%;
+}
+
+.news_page .title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--black);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.news_page .text {
+    font-size: 18px;
+    color: var(--black);
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+/* Seznam novinek */
+.news_list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+.news_item {
+    border: 1px solid var(--gray_btn);
+    border-radius: 10px;
+    padding: 15px 20px;
+    background-color: var(--white);
+    transition: transform 0.2s;
+}
+
+.news_item:hover {
+    transform: scale(1.02);
+}
+
+.news_title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--main_color);
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+.news_title:hover {
+    text-decoration: underline;
+}
+
+.news_date {
+    font-size: 16px;
+    color: var(--gray_btn);
+    margin-bottom: 10px;
+}
+
+.news_excerpt {
+    font-size: 18px;
+    color: var(--black);
+}
+
+/*Novinky page end*/
+
+/*Foto page*/
+
+.gallery_page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10%;
+}
+
+.gallery_page .title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--black);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.gallery_page .text {
+    font-size: 18px;
+    color: var(--black);
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+.gallery_item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.gallery_item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.gallery_item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery_item:hover {
+    transform: translateY(-5px);
+}
+
+/*Foto page end*/
 
 
 @media screen and (max-width: 1250px) {
