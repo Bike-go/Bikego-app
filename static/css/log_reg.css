@@ -10,12 +10,6 @@
 
 
 body{
-    /*
-    background-image: url("../images/login_background.png") ;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-     */
     background-color: #738681;
     min-height: 500px;
 }
@@ -26,6 +20,7 @@ h1 {
     font-size: 50px;
     font-style: normal;
     text-transform: uppercase;
+    text-align: center;
 }
 
 
@@ -114,12 +109,18 @@ input[type=text], [type=password],[type=email],::placeholder{
     padding: 0;
 }
 
+.reset_pass .submit{
+    width: auto;
+    padding: 10px;
+}
+
 .white_btn {
     cursor: pointer;
     background: none;
     border: none;
     color: var(--white);
     font-size: 16px;
+    text-decoration: none;
 }
 
 .row_reg {
@@ -144,8 +145,6 @@ input[type=text], [type=password],[type=email],::placeholder{
 
 @media screen and (max-width: 1000px){
     body{
-        background-image: none;
-        background-color: #738681;
         min-width: 360px;
     }
 
@@ -181,7 +180,7 @@ input[type=text], [type=password],[type=email],::placeholder{
         font-size: 15px;
         padding: 4px;
         width: 150px;
-        height: 40px;
+        
     }
     
     .submit{
