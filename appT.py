@@ -38,6 +38,10 @@ def view_new_pass():
 def view_reset_pass():
     return render_template("reset_pass.jinja", title="Obnovení hesla", page="reset_password")
 
+@app.route('/profile')
+def view_profile():
+    return render_template("profile.jinja", title="Profil")
+
 
 @app.route('/ping', methods=['GET'])
 def ping():
