@@ -34,6 +34,10 @@ body{
     display: none;
 }
 
+.search_row .search_bar {
+    display: block;
+}
+
 header{
     position: sticky;
     z-index: 5;

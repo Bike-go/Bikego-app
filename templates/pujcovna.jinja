@@ -1,5 +1,101 @@
 {% extends '__main.jinja' %}
 
 {% block content%}
-    <h1>Pujcovna</h1>
+    <ul class="pujcovna_filters">
+    <button class="scnd_btn">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        Ulozit vyhledavani
+    </button>
+    <li class="filters_item">
+        <a href="#">Kategorie</a>
+        <ul class="subfilters">
+            <li><a href="#">Silnicni</a> </li>
+            <li><a href="#">Gravel</a></li>
+            <li><a href="#">Triation</a></li>
+            <li><a href="#">Downhill</a></li>
+            <li><a href="#">Trailove</a></li>
+            <li><a href="#">Enduro</a></li>
+            <li><a href="#">Cross country</a></li>
+        </ul>
+    </li>
+    <li class="filters_item">
+        <a href="#">Velikost</a>
+        <ul class="subfilters">
+            <li><a href="#">XS</a></li>
+            <li><a href="#">S</a></li>
+            <li><a href="#">M</a></li>
+            <li><a href="#">L</a></li>
+            <li><a href="#">XL</a></li>
+        </ul>
+    </li>
+
+    <li class="filters_item">
+        <a href="#">Material ramu</a>
+        <ul class="subfilters">
+            <li><a href="#">Aluminum</a></li>
+            <li><a href="#">Carbon</a></li>
+            <li><a href="#">Steel</a></li>
+            <li><a href="#">Titanium</a></li>
+        </ul>
+
+    </li>
+
+    <li class="filters_item">
+        <a href="#">Typ brzdy</a>
+        <ul class="subfilters">
+            <li><a href="#">Disc</a></li>
+            <li><a href="#">Rim</a></li>
+            <li><a href="#">Hydraulic</a></li>
+        </ul>
+
+    </li>
+
+    <li class="filters_item">
+        <a href="#">Znacka</a>
+        <ul class="subfilters">
+            <li><a href="#">Treck</a></li>
+            <li><a href="#">Santa Cruz</a></li>
+            <li><a href="#">Salsa</a></li>
+            <li><a href="#">Surly</a></li>
+            <li><a href="#">Ibis</a></li>
+            <li><a href="#">Juliana</a></li>
+        </ul>
+
+    </li>
+
+    <li class="filters_item">
+        <a href="#">Barva</a>
+        <ul class="subfilters">
+            <li><a href="#">Cerna</a></li>
+            <li><a href="#">Bila</a></li>
+            <li><a href="#">Zluta</a></li>
+            <li><a href="#">Zelena</a></li>
+            <li><a href="#">Mix</a></li>
+        </ul>
+
+    </li>
+</ul>
+
+
+
+<main>
+    <div class="search_row">
+        <div class="search_bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input class="text" id="search-input" placeholder="Vyhledavani"> </div>
+        <button id="sorting_btn" class="scnd_btn">
+            Seradit podle
+            <i class="fa-solid fa-caret-down"></i>
+        </button>
+    </div>
+
+    <div class="pujcovna_main">
+
+    </div>
+
+    <div class="pages">
+
+    </div>
+
+</main>
 {% endblock %}
