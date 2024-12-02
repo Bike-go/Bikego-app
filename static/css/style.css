@@ -604,6 +604,222 @@ footer nav {
 
 /*Profile page end */
 
+/*Pujcovna page start*/
+.pujcovna_full_page {
+    display: flex;
+    justify-content: center;
+    padding:0 80px;
+    margin-top: 20px;
+}
+
+.pujcovna_filters{
+    width: 400px;
+    padding: 0 20px;
+    margin-top: 70px;
+}
+
+.filter-save, .scnd_btn {
+    display: block;
+    margin: auto;
+    width: 90%;
+    padding: 10px;
+    background-color: var(--main_color);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.scnd_btn {
+    width: 250px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.pujcovna_filters span{
+    font-size: 20px;
+}
+
+.filter_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.subfilters {
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+}
+
+.subfilters label {
+    margin-top: 5px;
+}
+
+.subfilters input[type="checkbox"] {
+    transform: scale(1.5);
+    margin-right: 10px;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    font-size: 36px;
+    font-weight: 200;
+    cursor: pointer;
+}
+
+.pujcovna_main {
+    width: 100%;
+    padding: 0;
+}
+
+.pujcovna_search_row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--black);
+}
+
+.pujcovna_search_row .search_bar{
+    color: var(--gray_btn);
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    padding: 5px 10px 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pujcovna_search_row .search_bar input {
+    text-decoration: none;
+    border-style: none;
+}
+
+.bike_collection {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+}
+
+.bike{
+    cursor: pointer;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.bike .bike_img {
+    width: 300px;
+
+}
+
+.bike_labels{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.bike_labels .fa-circle-check, .fa-circle-xmark{
+    color: #15b800;
+    margin: 0;
+    font-size: 32px;
+}
+
+.bike_labels .fa-circle-xmark{
+    color: #e00000;
+}
+
+.bike_labels .b_label {
+    background-color: #e9e9e9;
+    color: var(--black);
+    font-size: 18px;
+    padding: 5px 7px;
+    border-radius: 5px;
+}
+
+.bike h4 {
+    font-weight: 400;
+}
+
+.bike p{
+    color: #ec0000;
+    font-size: 24px;
+}
+
+.pages {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+.pages a {
+    padding: 8px 12px;
+    text-decoration: none;
+    color: var(--black);
+    border: 1px solid var(--gray_btn);
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: var(--white);
+    transition: all 0.3s ease;
+}
+
+.pages a.active {
+    background-color: var(--main_color);
+    color: var(--white);
+}
+
+.pages a:hover {
+    background-color: var(--main_color);
+    color: var(--white);
+}
+
+#sorting_btn {
+    position: relative;
+}
+
+.sorting-options {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: var(--main_color);
+    border: 1px solid #ccc;
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    width: 200px;
+    z-index: 10;
+    display: none; /* Skryté ve výchozím stavu */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sorting-options li {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.sorting-options li:hover {
+    opacity: 0.5;
+}
+
+
+/*Pujcovna page end*/
+
 
 @media screen and (max-width: 1250px) {
     .pc {
@@ -907,6 +1123,36 @@ footer nav {
 
     .show_all {
         font-size: 14px;
+    }
+    .pujcovna_full_page {
+        width: 100%;
+        margin: 0;
+        padding:0 ;
+    }
+
+    .pujcovna_filters {
+        display: none; /* Skrytí filtrů pro mobilní zařízení */
+    }
+
+    #sorting_btn {
+        width: 250px;
+        font-size: 18px;
+    }
+
+    .pujcovna_search_row {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .sorting-options {
+        display: none; /* Skrytí možností třídění na mobilu */
+    }
+
+    .bike_collection {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
 
