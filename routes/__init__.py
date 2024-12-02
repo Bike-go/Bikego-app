@@ -11,9 +11,8 @@ from .rental_routes import rental_bp
 from .repair_routes import repair_bp
 from .reservation_routes import reservation_bp
 from .review_routes import review_bp
-from .statistics_routes import statistics_bp
 from .user_routes import user_bp
 
 __all__ = [
-    'bike_bp', 'category_bp', 'inspection_bp', 'instance_bike_bp', 'maintenance_bp', 'news_bp', 'payment_bp', 'picture_bp', 'price_bp', 'rental_bp', 'repair_bp', 'reservation_bp', 'review_bp', 'statistics_bp', 'user_bp'
+    'bike_bp', 'category_bp', 'inspection_bp', 'instance_bike_bp', 'maintenance_bp', 'news_bp', 'payment_bp', 'picture_bp', 'price_bp', 'rental_bp', 'repair_bp', 'reservation_bp', 'review_bp', 'user_bp'
 ]

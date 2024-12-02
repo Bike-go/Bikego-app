@@ -70,6 +70,10 @@ CREATE TABLE IF NOT EXISTS "Bike" (
   "Price_id" INTEGER NOT NULL REFERENCES "Price"("id") ON DELETE SET NULL
 );
 
+-- Size Enum
+DROP TYPE IF EXISTS size_enum CASCADE;
+CREATE TYPE size_enum AS ENUM ('XS', 'S', 'M', 'L', 'XL');
+
 -- Status Enum
 DROP TYPE IF EXISTS status_enum CASCADE;
 CREATE TYPE status_enum AS ENUM ('Available', 'Rented', 'Under_Repair', 'Out_of_Service');
@@ -77,7 +81,7 @@ CREATE TYPE status_enum AS ENUM ('Available', 'Rented', 'Under_Repair', 'Out_of_
 -- Instance of Bike Table
 CREATE TABLE IF NOT EXISTS "Instance_Bike" (
   "id" UUID PRIMARY KEY,
-  "size" INTEGER NOT NULL CHECK (size > 0),
+  "size" size_enum NOT NULL,
   "color" VARCHAR(45) NOT NULL,
   "purchase_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "last_service_at" TIMESTAMPTZ DEFAULT NOW(),

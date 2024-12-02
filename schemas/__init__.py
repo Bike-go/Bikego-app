@@ -11,9 +11,8 @@ from .rental_schema import RentalSchema
 from .repair_schema import RepairSchema
 from .reservation_schema import ReservationSchema
 from .review_schema import ReviewSchema
-from .statistics_schema import StatisticsSchema
 from .user_schema import UserSchema
 
 __all__ = [
-    'BikeSchema', 'CategorySchema', 'InspectionSchema', 'InstanceBikeSchema', 'MaintenanceSchema', 'NewsSchema', 'PaymentSchema', 'PictureSchema', 'PriceSchema', 'RentalSchema', 'RepairSchema', 'ReservationSchema', 'ReviewSchema', 'StatisticsSchema', 'UserSchema'
+    'BikeSchema', 'CategorySchema', 'InspectionSchema', 'InstanceBikeSchema', 'MaintenanceSchema', 'NewsSchema', 'PaymentSchema', 'PictureSchema', 'PriceSchema', 'RentalSchema', 'RepairSchema', 'ReservationSchema', 'ReviewSchema', 'UserSchema'
 ]
