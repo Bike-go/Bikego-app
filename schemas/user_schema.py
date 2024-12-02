@@ -22,7 +22,7 @@ class UserSignupSchema(Schema):
 
     email = fields.Email(required=True, validate=validate.Length(max=100))
     username = fields.Str(required=True, validate=validate.Length(min=1, max=45))
-    password0 = fields.Str(required=True, validate=validate.Length(min=8))  # Minimum password length
+    password0 = fields.Str(required=True, validate=validate.Length(min=8))
     password1 = fields.Str(required=True, validate=validate.Length(min=8))
 
 class UserLoginSchema(Schema):
@@ -31,6 +31,12 @@ class UserLoginSchema(Schema):
 
     email_or_username = fields.Str(required=True, validate=validate.Length(min=1))
     password = fields.Str(required=True, validate=validate.Length(min=8))
+
+class SendResetPasswordEmailSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
+    email = fields.Email(required=True, validate=validate.Length(max=100))
 
 class ChangePasswordSchema(Schema):
     password0 = fields.Str(required=True, validate=validate.Length(min=8))
@@ -53,4 +59,4 @@ class UserSchema(SQLAlchemyAutoSchema):
     picture_delete_hash = fields.Str(required=False, validate=validate.Length(max=255))
     email_verified = fields.Bool(required=True)
     darkmode = fields.Bool(required=True)
-    role = fields.Str(required=True, validate=validate.OneOf(['Admin', 'Employee', 'Customer']))
+    role = fields.Str(required=True, validate=validate.OneOf(['Admin', 'Employee', 'Customer', 'Service']))

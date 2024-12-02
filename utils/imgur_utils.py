@@ -1,10 +1,10 @@
-import os
 import requests
 from dotenv import load_dotenv
+from ..app import app
 
 load_dotenv()
 
-IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
+IMGUR_CLIENT_ID = app.config["IMGUR_CLIENT_ID"]
 
 def upload_image_to_imgur(image_file):
     imgur_url = "https://api.imgur.com/3/image"

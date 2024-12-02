@@ -4,18 +4,21 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-db_user = os.getenv("DB_USER")
-db_password = os.getenv("DB_PASSWORD")
-db_host = os.getenv("DB_HOST")
-db_name = os.getenv("DB_NAME")
-db_port = os.getenv("DB_PORT")
-db_schema_name = os.getenv("DB_SCHEMA_NAME")
+postgres_user = os.getenv("POSTGRES_USER")
+postgres_password = os.getenv("POSTGRES_PASSWORD")
+postgres_db = os.getenv("POSTGRES_DB")
+postgres_host = os.getenv("POSTGRES_HOST")
+postgres_port = os.getenv("POSTGRES_PORT")
+postgres_schema = os.getenv("POSTGRES_SCHEMA")
 
-encoded_password = quote(db_password) if db_password else ""
+encoded_password = quote(postgres_password) if postgres_password else ""
 
-SQLALCHEMY_DATABASE_URI = f"postgresql://{db_user}:{encoded_password}@{db_host}:{db_port}/{db_name}"
+SQLALCHEMY_DATABASE_URI = f"postgresql://{postgres_user}:{encoded_password}@{postgres_host}:{postgres_port}/{postgres_db}"
 
 class DevelopmentConfig:
+    FLASK_HOST = os.getenv("FLASK_HOST", "0.0.0.0")
+    FLASK_PORT = os.getenv("FLASK_PORT", 5000)
+    POSTGRES_SCHEMA = postgres_schema
     SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
@@ -24,8 +27,12 @@ class DevelopmentConfig:
     IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
     SENDER_EMAIL = os.getenv("SENDER_EMAIL")
     SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
+    URL_IN_EMAIL = os.getenv("URL_IN_EMAIL")
 
 class ProductionConfig:
+    FLASK_HOST = os.getenv("FLASK_HOST", "0.0.0.0")
+    FLASK_PORT = os.getenv("FLASK_PORT", 5000)
+    POSTGRES_SCHEMA = postgres_schema
     SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
@@ -34,3 +41,4 @@ class ProductionConfig:
     IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
     SENDER_EMAIL = os.getenv("SENDER_EMAIL")
     SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
+    URL_IN_EMAIL = os.getenv("URL_IN_EMAIL")
