@@ -1,11 +1,11 @@
 from datetime import datetime
-import os
 import uuid
 from sqlalchemy import Column, Enum, String, Boolean, TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from db import db
 from enum import Enum as PyEnum
+from config import Config
 
 class UserRoleEnum(PyEnum):
     Admin = 'Admin'
@@ -15,7 +15,7 @@ class UserRoleEnum(PyEnum):
 
 class User(db.Model):
     __tablename__ = "user"
-    __table_args__ = {'schema': os.getenv('POSTGRES_SCHEMA', 'public')}
+    __table_args__ = {'schema': Config.POSTGRES_SCHEMA}
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = Column(String(45), nullable=False)
     password_hash = Column(String(255), nullable=False)

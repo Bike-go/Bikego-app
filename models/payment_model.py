@@ -1,9 +1,9 @@
 from datetime import datetime
-import os
 from sqlalchemy import Column, Integer, String, Enum, TIMESTAMP
 from sqlalchemy.orm import relationship
 from db import db
 from enum import Enum as PyEnum
+from config import Config
 
 class PaymentMethodEnum(PyEnum):
     Online = 'Online'
@@ -26,7 +26,7 @@ class CurrencyEnum(PyEnum):
 
 class Payment(db.Model):
     __tablename__ = "payment"
-    __table_args__ = {'schema': os.getenv('POSTGRES_SCHEMA', 'public')}
+    __table_args__ = {'schema': Config.POSTGRES_SCHEMA}
     id = Column(Integer, primary_key=True, autoincrement=True)
     amount = Column(Integer, nullable=False)
     payment_method = Column(Enum(PaymentMethodEnum), nullable=False)

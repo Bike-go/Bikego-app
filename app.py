@@ -1,25 +1,20 @@
-import os
-from flask import Flask, render_template
-from flask_jwt_extended import JWTManager
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
+from flask_jwt_extended import JWTManager, get_jwt_identity, unset_jwt_cookies
 from sqlalchemy import create_engine, inspect, text
-from config import DevelopmentConfig, ProductionConfig
+from config import Config
 from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
-from models import __init__
 from db import db
-from routes import (bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp)
+from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
 
 app = Flask(__name__)
 
-if os.getenv('FLASK_ENV') == 'production':
-    app.config.from_object(ProductionConfig)
-else:
-    app.config.from_object(DevelopmentConfig)
+app.config.from_object(Config)
 
 db.init_app(app)
 migrate = Migrate(app, db)
+app.secret_key = app.config["JWT_SECRET_KEY"]
 jwt = JWTManager(app)
-app.secret_key = app.config['JWT_SECRET_KEY']
 
 def check_and_upload_schema(schema_name: str):
     """
@@ -117,6 +112,47 @@ app.register_blueprint(repair_bp, url_prefix='/repairs')
 app.register_blueprint(reservation_bp, url_prefix='/reservation')
 app.register_blueprint(review_bp, url_prefix='/reviews')
 app.register_blueprint(user_bp, url_prefix='/users')
+
+# Handle 401 Unauthorized errors globally
+@app.errorhandler(401)
+def unauthorized(error):
+    return redirect(url_for("user_bp.login"))
+
+# Handle invalid JWT tokens (e.g., malformed, incorrect)
+@jwt.invalid_token_loader
+def invalid_token_callback(jwt_header, jwt_payload):
+    # Redirect to login with a flash message
+    flash("Invalid token. Please log in again.", "error")
+    return redirect(url_for("user_bp.login"))
+
+# Handle cases where the Authorization header is missing
+@jwt.unauthorized_loader
+def unauthorized_callback(error):
+    # Redirect to login with a flash message
+    flash("Missing Authorization Header. Please log in.", "error")
+    return redirect(url_for("user_bp.login"))
+
+# Handle expired tokens
+@jwt.expired_token_loader
+def expired_token_callback(jwt_header, jwt_payload):
+    if jwt_payload['type'] == 'access':
+        try:
+            # Try to get the user's identity from the refresh token
+            current_user = get_jwt_identity()  # Raises an error if refresh token is invalid
+            # If valid, redirect to refresh token endpoint
+            return redirect(url_for("user_bp.refresh", next=request.path))
+        except:
+            # Handle invalid or expired refresh token
+            flash("Your session has expired. Please log in again.", "error")
+            response = jsonify({"msg": "Refresh token has expired or is invalid. Please log in again."})
+            unset_jwt_cookies(response)
+            return redirect(url_for("user_bp.login"))
+    else:
+        # Handle refresh token expiration
+        flash("Refresh token expired. Please log in again.", "error")
+        response = jsonify({"msg": "Refresh token has expired. Please log in again."})
+        unset_jwt_cookies(response)
+        return redirect(url_for("user_bp.login"))
 
 if __name__ == "__main__":
     try:

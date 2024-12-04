@@ -1,10 +1,10 @@
-import os
 import uuid
 from sqlalchemy import Column, ForeignKey, String, Integer, Enum, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from db import db
 from enum import Enum as PyEnum
+from config import Config
 
 class FrameMaterialEnum(PyEnum):
     Aluminum = 'Aluminum'
@@ -19,15 +19,15 @@ class BrakeTypeEnum(PyEnum):
 
 class Bike(db.Model):
     __tablename__ = "bike"
-    __table_args__ = {'schema': os.getenv('POSTGRES_SCHEMA', 'public')}
+    __table_args__ = {'schema': Config.POSTGRES_SCHEMA}
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     model = Column(String(45), nullable=False)
     frame_material = Column(Enum(FrameMaterialEnum), nullable=False)
     brake_type = Column(Enum(BrakeTypeEnum), nullable=False)
     brand = Column(String(45), nullable=False)
     description = Column(Text)
-    Category_id = Column(Integer, ForeignKey(f'{os.getenv("POSTGRES_SCHEMA", "public")}.category.id'), nullable=False)
-    Price_id = Column(Integer, ForeignKey(f'{os.getenv("POSTGRES_SCHEMA", "public")}.price.id'), nullable=False)
+    Category_id = Column(Integer, ForeignKey(f'{Config.POSTGRES_SCHEMA}.category.id'), nullable=False)
+    Price_id = Column(Integer, ForeignKey(f'{Config.POSTGRES_SCHEMA}.price.id'), nullable=False)
 
     instances = relationship("InstanceBike", back_populates="bike")
     category = relationship("Category", back_populates="bikes")
