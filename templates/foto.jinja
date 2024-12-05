@@ -1,0 +1,39 @@
+{% extends '__main.jinja' %}
+
+{% block content %}
+    <section class="gallery_page">
+            <div class="title">Foto Galerie</div>
+            <div class="text">
+                <p>Prohlédněte si naše nejnovější fotky z bikeparku a zachycené zážitky na našich trailech.</p>
+            </div>
+    
+            <div class="gallery">
+                <div class="gallery_item">
+                    <a href="{{url_for('static', filename='images/bike1.jpg')}}" target="_blank">
+                        <img src="{{url_for('static', filename='images/bike1.jpg')}}" alt="bike">
+                    </a>
+                </div>
+                <div class="gallery_item">
+                    <a href="{{url_for('static', filename='images/bike2.jpg')}}" target="_blank">
+                        <img src="{{url_for('static', filename='images/bike2.jpg')}}" alt="bike">
+                    </a>
+                </div>
+                <div class="gallery_item">
+                    <a href="{{url_for('static', filename='images/bike3.jpg')}}" target="_blank">
+                        <img src="{{url_for('static', filename='images/bike3.jpg')}}" alt="bike">
+                    </a>
+                </div>
+                <div class="gallery_item">
+                    <a href="{{url_for('static', filename='images/bike4.jpg')}}" target="_blank">
+                        <img src="{{url_for('static', filename='images/bike4.jpg')}}" alt="bike">
+                    </a>
+                </div>
+                <div class="gallery_item">
+                    <a href="{{url_for('static', filename='images/bike5.jpg')}}" target="_blank">
+                        <img src="{{url_for('static', filename='images/bike5.jpg')}}" alt="bike">
+                    </a>
+                </div>
+            </div>
+        </section>
+
+{% endblock%}

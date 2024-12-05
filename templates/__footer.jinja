@@ -1,0 +1,48 @@
+{% block footer %}
+    <footer>
+    <div class="up_container">
+                <div class="container_1">
+                    <div class="title">BikeGO</div>
+                    <div class="address">
+                        <p>Czech Republic, Brno</p> 
+                        <p>Ulice 180/12</p>
+                    </div>
+                </div>
+        
+                <div class="container_2">
+                    <div class="Kontakt">
+                        <i class="fa-solid fa-phone"></i> +420 123 456 789
+                    </div>
+                    <div class="Kontakt">
+                        <i class="fa-solid fa-phone"></i> +280 123 000 258 
+                    </div>
+                    <div class="Kontakt">
+                        <i class="fa-solid fa-fax"></i> +420 64211 5485 -200
+                    </div>
+                    <div class="Kontakt">
+                        <i class="fa-solid fa-envelope"></i> bikego@email.cz
+                    </div>
+                </div>
+                <a href="{{ url_for('view_Kontakt') }}" class="kontakt_btn">Kontakt</a>
+            </div>
+
+            <div class="down_container">
+                <div class="Kontakt">
+                    <a href="" class="fa-regular fa-envelope"></a>
+                    <a href="" class="fa-brands fa-facebook"></a>
+                    <a href="" class="fa-brands fa-instagram"></a>
+                    <a href="" class="fa-brands fa-youtube"></a>
+                </div>
+
+                <nav>
+                    <a href="{{ url_for('view_Home') }}">Domů</a>
+                    <a href="{{ url_for('view_Novinky') }}">Novinky</a>
+                    <a href="{{ url_for('view_Pujcovna') }}">Půjčovná</a>
+                    <a href="{{ url_for('view_Foto') }}">Foto</a>
+                    <a href="{{ url_for('view_Kontakt') }}">Kontakt</a>
+                </nav>
+
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BikeGo" class="logo_image">
+            </div>
+    </footer>
+{% endblock %}

@@ -1,3 +1,4 @@
+import re
 from flask_jwt_extended import get_jwt_identity
 from models.user_model import User
 
@@ -12,6 +13,11 @@ def is_valid_password(password):
 def is_non_empty_string(value):
     """Check if the provided value is a non-empty string."""
     return isinstance(value, str) and len(value) > 0
+
+def is_valid_phone_number(phone_number):
+    """Check if the provided phone number is valid (minimum length 10)."""
+    phone_regex = re.compile(r"^\+?[1-9]\d{1,14}$")
+    return phone_regex.match(phone_number)
 
 def is_admin_or_employee():
     current_user_id = get_jwt_identity()

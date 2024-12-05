@@ -1,0 +1,104 @@
+{% extends '__main.jinja' %}
+{% block content %}
+    <div class="profile">
+        <div class="left_container">
+            <div class="user_icon"> 
+                <img src="{{ url_for('static', filename=user.profile_picture_url if user.profile_picture_url else 'images/user.png') }}" alt="User Picture">
+            </div>
+            <div class="user_row">
+                {# Show additional user info based on the role #}
+                {% if user.role in ['Employee', 'Admin', 'Service'] %}
+                    <section class="user_details">
+                        <p style="display:none"><strong>Id:</strong> {{ user.id }}</p>
+                        <p><strong>Role:</strong> {{ user.role }}</p>
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Phone Number:</strong> {{ user.phone_number if user.phone_number else 'Not set' }}</p>
+                        <p style="display:none"><strong>Account Created:</strong> {{ user.created_at }}</p>
+                        <p style="display:none"><strong>Last Login:</strong> {{ user.last_login }}</p>
+                        <p><strong>Dark Mode:</strong> {{ 'Enabled' if user.darkmode else 'Disabled' }}</p>
+                        <p><a href="{{ url_for('user_bp.login') }}"><strong>Admin panel</strong></a></p>
+                        <p><a href="{{ url_for('user_bp.logout') }}">logout</a></p>
+                    </section>
+                {% elif user.role == 'Customer' %}
+                    <section class="user_details">
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Phone Number:</strong> {{ user.phone_number if user.phone_number else 'Not set' }}</p>
+                        <p><strong>Dark Mode:</strong> {{ 'Enabled' if user.darkmode else 'Disabled' }}</p>
+                        <p><a href="{{ url_for('user_bp.logout') }}">logout</a></p>
+                    </section>
+                {% endif %}
+            </div>
+            <div class="user_row">             
+                <div class="scnd_btn"> 
+                    <button id="edit_profile"> Upravit profil <i class="fa-solid fa-pen"></i> </button>
+                </div>
+                <div class="scnd_btn">
+                    <button id="settings"> Nastavení <i class="fa-solid fa-gear"></i> </button>
+                </div>
+            </div>
+            <div class="employer_btn">
+                <button id="back_bike">Zaznamenat vrácení <i class="fa-solid fa-bicycle"></i></button>
+            </div>
+        </div>
+
+        <div class="right_container">
+            <section class="stats">
+                <h2>My stats</h2>
+                <div class="stats_row">
+                    <span>Total time of reservation:</span>
+                    <span>{{ total_time }} 00:00:00</span>
+                </div>
+                <div class="stats_row">
+                    <span>Favourite bike:</span>
+                    <span>{{ favourite_bike }} title</span>
+                </div>
+                <div class="stats_row">
+                    <span>Lorem ipsum:</span>
+                    <span>{{ lorem_text }} lorem</span>
+                </div>
+            </section>
+
+            <section class="sessions">
+                <h2>Active session</h2>
+                <div class="session_row">
+                    <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Bike">
+                    <div class="session_details">
+                        <span> title</span>
+                        <span> 00:00:00</span>
+                        <span> date</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reviews">
+                <h2>My reviews</h2>
+                <div class="review_row">
+                    <span class="review_title">Review title</span>
+                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                    <p>Lorem ipsum bla bla blasSed ac dolor sit amet purus malesuada...  </p>
+                </div>
+                <div class="review_row">
+                    <span class="review_title">Review title</span>
+                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                    <p>Lorem ipsum bla bla blasSed ac dolor sit amet purus malesuada...  </p>
+                </div>
+            </section>
+
+            <section class="history">
+                <h2>Purchase history</h2>
+                <div class="history_row">
+                    <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Bike">
+                    <div class="history_details">
+                        <span>Title</span>
+                        <span>00:00:00</span>
+                        <span>date</span>
+                    </div>
+                </div>
+                <a href="#" class="show_all">Show all</a>
+            </section>
+        </div>
+    </div>
+
+{% endblock %}

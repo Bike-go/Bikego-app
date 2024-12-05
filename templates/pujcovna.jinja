@@ -1,0 +1,429 @@
+{% extends '__main.jinja' %}
+
+{% block content%}
+    <main class="pujcovna_full_page">
+        <div class="pujcovna_filters">
+
+            
+            <div class="filter-save">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Přidej filtry
+            </div>
+            
+            <div class="filters_item">
+                <div class="filter_header">
+                    <span>Kategorie</span>
+                    <button class="toggle-btn">−</button>
+                </div>
+                
+                <div class="subfilters">
+                    <label>
+                        <input type="checkbox">Silniční
+                    </label>
+                    <label>
+                        <input type="checkbox">Gravel
+                    </label>
+                    
+                    <label>
+                        <input type="checkbox">Triation
+                    </label>
+
+                    <label>
+                        <input type="checkbox">Downhill
+                    </label>
+
+                    <label>
+                        <input type="checkbox">Trailové
+                    </label>
+
+                    <label>
+                        <input type="checkbox">Enduro
+                    </label>
+
+                    <label>
+                        <input type="checkbox">Cross country
+                    </label>
+                    
+                </div>
+            </div>
+
+            <div class="filters_item">
+                <div class="filter_header">
+                    <span>Velikost</span>
+                    <button class="toggle-btn">+</button>
+                </div>
+                <div class="subfilters" style="display: none;">
+                    <label>
+                        <input type="checkbox">XS
+                    </label>
+                    <label>
+                        <input type="checkbox">S
+                    </label>
+                    <label>
+                        <input type="checkbox">M
+                    </label>
+                    <label>
+                        <input type="checkbox">L
+                    </label>
+                    <label>
+                        <input type="checkbox">XL
+                    </label>
+                    
+                </div>
+            </div>
+
+            <div class="filters_item">
+                <div class="filter_header">
+                    <span>Materiál rámu</span>
+                    <button class="toggle-btn">+</button>
+                </div>
+                <div class="subfilters" style="display: none;">
+                    <label>
+                        <input type="checkbox">Aluminum
+                    </label>
+                    <label>
+                        <input type="checkbox">Carbon
+                    </label>
+                    <label>
+                        <input type="checkbox">Steel
+                    </label>
+                    <label>
+                        <input type="checkbox">Titanium
+                    </label>
+                </div>
+            </div>
+
+            <div class="filters_item">
+                <div class="filter_header">
+                    <span>Typ brzdy</span>
+                    <button class="toggle-btn">+</button>
+                </div>
+                <div class="subfilters" style="display: none;">
+                    <label>
+                        <input type="checkbox">Disc
+                    </label>
+                    <label>
+                        <input type="checkbox">Rim
+                    </label>
+                    <label>
+                        <input type="checkbox">Hydraulic
+                    </label>
+                </div>
+            </div>
+
+            <div class="filters_item">
+                <div class="filter_header">
+                    <span>Značka</span>
+                    <button class="toggle-btn">+</button>
+                </div>
+                <div class="subfilters" style="display: none;">
+                    <label>
+                        <input type="checkbox">Treck
+                    </label>
+                    <label>
+                        <input type="checkbox">Santa Cruz
+                    </label>
+                    <label>
+                        <input type="checkbox">Salsa
+                    </label>
+                    <label>
+                        <input type="checkbox">Surly
+                    </label>
+                    <label>
+                        <input type="checkbox">Ibis
+                    </label>
+                    <label>
+                        <input type="checkbox">Juliana
+                    </label>
+                </div>
+            </div>
+
+            <div class="filters_item">
+                <div class="filter_header">
+                    <span>Barva</span>
+                    <button class="toggle-btn">+</button>
+                </div>
+                <div class="subfilters" style="display: none;">
+                    <label>
+                        <input type="checkbox">Černá
+                    </label>
+                    <label>
+                        <input type="checkbox">Bílá
+                    </label>
+                    <label>
+                        <input type="checkbox">Žlutá
+                    </label>
+                    <label>
+                        <input type="checkbox">Zelená
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <section class="pujcovna_main">
+            <div class="pujcovna_search_row">
+                <div class="search_bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input class="text" id="search-input" placeholder="Vyhledavani"> </div>
+                <button id="sorting_btn" class="scnd_btn">
+                    Seřadit podle
+                    <i class="fa-solid fa-caret-down"></i>
+                    <ul class="sorting-options" style="display: none;">
+                        <li data-sort="name">Název</li>
+                        <li data-sort="type">Typ</li>
+                        <li data-sort="price">Cena</li>
+                        <li data-sort="availability">Dostupnost</li>
+                    </ul>
+                </button>
+
+
+            </div>
+
+            <div class="bike_collection">
+                <div class="bike" data-kategorie="silniční" data-velikost="L" data-material="aluminum" data-typ-brzdy="disc" data-znacka="trek" data-barva="černá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">L</div>
+                        <div class="b_label">Silniční</div>
+                    </div>
+                    <h2>Silniční kolo 1</h2>
+                    <h4>Silniční</h4>
+                    <p>400Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="gravel" data-velikost="M" data-material="carbon" data-typ-brzdy="rim" data-znacka="santa cruz" data-barva="bílá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        <div class="b_label">M</div>
+                        <div class="b_label">Gravel</div>
+                    </div>
+                    <h2>Gravel kolo 2</h2>
+                    <h4>Gravel</h4>
+                    <p>350Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="downhill" data-velikost="S" data-material="steel" data-typ-brzdy="hydraulic" data-znacka="salsa" data-barva="zelená">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">S</div>
+                        <div class="b_label">Downhill</div>
+                    </div>
+                    <h2>Downhill kolo 3</h2>
+                    <h4>Downhill</h4>
+                    <p>500Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="trailové" data-velikost="L" data-material="titanium" data-typ-brzdy="disc" data-znacka="surly" data-barva="žlutá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">L</div>
+                        <div class="b_label">Trailové</div>
+                    </div>
+                    <h2>Trailové kolo 4</h2>
+                    <h4>Trailové</h4>
+                    <p>450Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="enduro" data-velikost="M" data-material="carbon" data-typ-brzdy="disc" data-znacka="ibis" data-barva="modrá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">M</div>
+                        <div class="b_label">Enduro</div>
+                    </div>
+                    <h2>Enduro kolo 5</h2>
+                    <h4>Enduro</h4>
+                    <p>550Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="cross country" data-velikost="L" data-material="aluminum" data-typ-brzdy="rim" data-znacka="surly" data-barva="bílá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">L</div>
+                        <div class="b_label">Cross Country</div>
+                    </div>
+                    <h2>Cross Country kolo 6</h2>
+                    <h4>Cross Country</h4>
+                    <p>400Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="silniční" data-velikost="S" data-material="steel" data-typ-brzdy="hydraulic" data-znacka="trek" data-barva="černá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        <div class="b_label">S</div>
+                        <div class="b_label">Silniční</div>
+                    </div>
+                    <h2>Silniční kolo 7</h2>
+                    <h4>Silniční</h4>
+                    <p>380Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="gravel" data-velikost="L" data-material="titanium" data-typ-brzdy="disc" data-znacka="santa cruz" data-barva="modrá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">L</div>
+                        <div class="b_label">Gravel</div>
+                    </div>
+                    <h2>Gravel kolo 8</h2>
+                    <h4>Gravel</h4>
+                    <p>360Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="downhill" data-velikost="M" data-material="carbon" data-typ-brzdy="rim" data-znacka="salsa" data-barva="zelená">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">M</div>
+                        <div class="b_label">Downhill</div>
+                    </div>
+                    <h2>Downhill kolo 9</h2>
+                    <h4>Downhill</h4>
+                    <p>530Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="trailové" data-velikost="S" data-material="steel" data-typ-brzdy="hydraulic" data-znacka="surly" data-barva="žlutá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">S</div>
+                        <div class="b_label">Trailové</div>
+                    </div>
+                    <h2>Trailové kolo 10</h2>
+                    <h4>Trailové</h4>
+                    <p>470Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="enduro" data-velikost="L" data-material="carbon" data-typ-brzdy="rim" data-znacka="ibis" data-barva="modrá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">L</div>
+                        <div class="b_label">Enduro</div>
+                    </div>
+                    <h2>Enduro kolo 11</h2>
+                    <h4>Enduro</h4>
+                    <p>550Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="cross country" data-velikost="M" data-material="aluminum" data-typ-brzdy="disc" data-znacka="surly" data-barva="bílá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">M</div>
+                        <div class="b_label">Cross Country</div>
+                    </div>
+                    <h2>Cross Country kolo 12</h2>
+                    <h4>Cross Country</h4>
+                    <p>420Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="silniční" data-velikost="L" data-material="carbon" data-typ-brzdy="hydraulic" data-znacka="trek" data-barva="modrá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">L</div>
+                        <div class="b_label">Silniční</div>
+                    </div>
+                    <h2>Silniční kolo 13</h2>
+                    <h4>Silniční</h4>
+                    <p>490Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="gravel" data-velikost="M" data-material="steel" data-typ-brzdy="rim" data-znacka="santa cruz" data-barva="žlutá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">M</div>
+                        <div class="b_label">Gravel</div>
+                    </div>
+                    <h2>Gravel kolo 14</h2>
+                    <h4>Gravel</h4>
+                    <p>460Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="downhill" data-velikost="L" data-material="carbon" data-typ-brzdy="disc" data-znacka="salsa" data-barva="zelená">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        <div class="b_label">L</div>
+                        <div class="b_label">Downhill</div>
+                    </div>
+                    <h2>Downhill kolo 15</h2>
+                    <h4>Downhill</h4>
+                    <p>520Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="trailové" data-velikost="M" data-material="titanium" data-typ-brzdy="hydraulic" data-znacka="surly" data-barva="modrá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">M</div>
+                        <div class="b_label">Trailové</div>
+                    </div>
+                    <h2>Trailové kolo 16</h2>
+                    <h4>Trailové</h4>
+                    <p>480Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="enduro" data-velikost="S" data-material="aluminum" data-typ-brzdy="rim" data-znacka="ibis" data-barva="černá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">S</div>
+                        <div class="b_label">Enduro</div>
+                    </div>
+                    <h2>Enduro kolo 17</h2>
+                    <h4>Enduro</h4>
+                    <p>540Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="cross country" data-velikost="L" data-material="titanium" data-typ-brzdy="hydraulic" data-znacka="surly" data-barva="bílá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">L</div>
+                        <div class="b_label">Cross Country</div>
+                    </div>
+                    <h2>Cross Country kolo 18</h2>
+                    <h4>Cross Country</h4>
+                    <p>530Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="silniční" data-velikost="M" data-material="carbon" data-typ-brzdy="disc" data-znacka="trek" data-barva="modrá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">M</div>
+                        <div class="b_label">Silniční</div>
+                    </div>
+                    <h2>Silniční kolo 19</h2>
+                    <h4>Silniční</h4>
+                    <p>510Kč/den</p>
+                </div>
+
+                <div class="bike" data-kategorie="gravel" data-velikost="S" data-material="steel" data-typ-brzdy="rim" data-znacka="santa cruz" data-barva="bílá">
+                    <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                    <div class="bike_labels">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="b_label">S</div>
+                        <div class="b_label">Gravel</div>
+                    </div>
+                    <h2>Gravel kolo 20</h2>
+                    <h4>Gravel</h4>
+                    <p>450Kč/den</p>
+                </div>
+
+            </div>
+
+            <div class="pages" id="pagination"></div>
+
+        </section>
+    </main>
+{% endblock %}
