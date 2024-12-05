@@ -46,10 +46,11 @@ jobs:
     
       - name: Connect to OpenVPN
         run: |
-          for i in {1..10}; do
-            if pgrep -x "openvpn" > /dev/null; then break; fi
-            echo "Waiting for VPN connection..." && sleep 3
-          done
+          sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass ~/openvpn.txt > /dev/null 2>&1 &
+    
+      - name: Wait for VPN Connection
+        run: |
+          while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
@@ -82,7 +83,7 @@ jobs:
   
       - name: SSH into server and deploy
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}}:{{ secrets.SSH_PORT }} << 'EOF'
             set -e
             cd ~/bikego
             docker-compose down
