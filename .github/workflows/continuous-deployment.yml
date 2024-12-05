@@ -9,12 +9,9 @@ on:
 jobs:
   run_pull:
     name: Run Pull and Deploy
-  run_pull:
-    name: Run Pull and Deploy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checking out code
       - name: Checking out code
         uses: actions/checkout@v4
         with:
