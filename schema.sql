@@ -99,24 +99,6 @@ CREATE TABLE IF NOT EXISTS "Reservation" (
   "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
 );
 
--- Repair Table
-CREATE TABLE IF NOT EXISTS "Repair" (
-  "id" SERIAL PRIMARY KEY,
-  "description" TEXT,
-  "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
-);
-
--- Maintenance Table
-CREATE TABLE IF NOT EXISTS "Maintenance" (
-  "id" SERIAL PRIMARY KEY,
-  "description" VARCHAR(255),
-  "maintenance_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
-);
-
 -- Review Table
 CREATE TABLE IF NOT EXISTS "Review" (
   "id" SERIAL PRIMARY KEY,
@@ -151,17 +133,6 @@ CREATE TABLE IF NOT EXISTS "Payment" (
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Statistics Table
-CREATE TABLE IF NOT EXISTS "Statistics" (
-  "id" SERIAL PRIMARY KEY,
-  "report_period" TIMESTAMPTZ DEFAULT NOW(),
-  "total_rentals" INTEGER,
-  "total_income" INTEGER,
-  "most_popular_bike" VARCHAR(45),
-  "average_rental_duration" INTERVAL,
-  "total_repairs" INTEGER
-);
-
 -- Rental Table
 CREATE TABLE IF NOT EXISTS "Rental" (
   "id" SERIAL PRIMARY KEY,
@@ -177,14 +148,27 @@ CREATE TABLE IF NOT EXISTS "Rental" (
 CREATE TABLE IF NOT EXISTS "Inspection" (
   "id" SERIAL PRIMARY KEY,
   "inspection_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "inspectioncol" VARCHAR(45) NOT NULL,
-  "brakes_status" VARCHAR(45) NOT NULL,
-  "tires_status" VARCHAR(45) NOT NULL,
-  "frame_status" VARCHAR(45) NOT NULL,
-  "overall_condition" VARCHAR(45) NOT NULL,
   "comments" VARCHAR(45),
   "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
   "Rental_id" INTEGER NOT NULL REFERENCES "Rental"("id") ON DELETE SET NULL
+);
+
+-- Repair Table
+CREATE TABLE IF NOT EXISTS "Repair" (
+  "id" SERIAL PRIMARY KEY,
+  "description" TEXT,
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
+  "Inspection_id" INTEGER NOT NULL REFERENCES "Inspection"("id") ON DELETE SET NULL
+);
+
+-- Maintenance Table
+CREATE TABLE IF NOT EXISTS "Maintenance" (
+  "id" SERIAL PRIMARY KEY,
+  "description" VARCHAR(255),
+  "maintenance_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
+  "Inspection_id" INTEGER NOT NULL REFERENCES "Inspection"("id") ON DELETE SET NULL
 );
 
 -- Picture Table

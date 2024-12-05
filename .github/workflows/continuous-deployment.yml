@@ -9,9 +9,12 @@ on:
 jobs:
   run_pull:
     name: Run Pull and Deploy
+  run_pull:
+    name: Run Pull and Deploy
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checking out code
       - name: Checking out code
         uses: actions/checkout@v4
         with:
@@ -26,7 +29,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Image
+      - name: Get the short SHA hash of the commit
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
           echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
@@ -37,15 +40,15 @@ jobs:
           docker push bikego/bikego-${{ github.ref_name }}:$SHORT_SHA 
 
       - name: Install OpenVPN
-        run: sudo apt-get update && sudo apt-get install openvpn -y
+        run: |
+          sudo apt-get update && sudo apt-get install openvpn -y
 
-      - name: Configure and Connect to OpenVPN
+      - name: Configure OpenVPN
         run: |
           echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
-          echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/vpn-auth.txt
-          sudo openvpn --config ~/openvpn-config.ovpn --auth-user-pass ~/vpn-auth.txt --daemon
-
-      - name: Ensure VPN Connection
+          echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/openvpn.txt
+    
+      - name: Connect to OpenVPN
         run: |
           for i in {1..10}; do
             if pgrep -x "openvpn" > /dev/null; then break; fi

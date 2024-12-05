@@ -12,4 +12,4 @@ class RepairSchema(SQLAlchemyAutoSchema):
     description = fields.Str(required=False)
     created_at = fields.DateTime(dump_only=True)
     User_id = fields.UUID(required=True)
-    Instance_Bike_id = fields.UUID(required=True)
+    Inspection_id = fields.UUID(required=True)

@@ -15,4 +15,4 @@ class Maintenance(db.Model):
     Instance_Bike_id = Column(UUID, ForeignKey(f'{Config.POSTGRES_SCHEMA}.instance_Bike.id'), nullable=False)
 
     user = relationship("User", back_populates="maintenances")
-    instance_bike = relationship("InstanceBike", back_populates="maintenances")
+    inspection = relationship("Inspection", back_populates="maintenances")
