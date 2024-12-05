@@ -30,11 +30,12 @@ jobs:
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
           echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
-          docker build -t bikego/${{ env.IMAGE }}:${{ github.ref_name }}-$SHORT_SHA .
+          TAG_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
+          docker build -t bikego/${{ env.IMAGE }}:${TAG_NAME}-$SHORT_SHA .
       
       - name: Push Docker Image
         run: |
-          docker push bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
+          docker push bikego/${{ env.IMAGE }}:${TAG_NAME}-$SHORT_SHA
 
       - name: Install OpenVPN
         run: |
