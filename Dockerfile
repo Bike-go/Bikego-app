@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Command to run the application using Gunicorn
-CMD ["gunicorn", "-w", "4", "-b", "${FLASK_HOST}:${FLASK_PORT}", "app:app"]
+CMD gunicorn -w 4 -b ${FLASK_HOST}:${FLASK_PORT} app:app

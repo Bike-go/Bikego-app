@@ -1,6 +1,5 @@
-from sqlite3 import IntegrityError
 from flask import Blueprint, jsonify, render_template, request, redirect, session, url_for, flash
-from flask_jwt_extended import create_access_token, create_refresh_token, decode_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies, verify_jwt_in_request
+from flask_jwt_extended import create_access_token, create_refresh_token, decode_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from marshmallow import ValidationError
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
@@ -8,7 +7,7 @@ from models.user_model import User
 from schemas import user_schema
 from utils.email_utils import send_refresh_password_email, send_verification_email, send_welcome_email
 from utils.imgur_utils import delete_image_from_imgur, upload_image_to_imgur
-from utils.validator_utils import is_non_empty_string, is_valid_email, is_valid_password, is_valid_phone_number
+from utils.validator_utils import is_valid_email, is_valid_password, is_valid_phone_number
 from db import db
 
 user_bp = Blueprint("user_bp", __name__)
@@ -342,10 +341,6 @@ def profile():
             # Save changes to the database
             db.session.commit()
             flash("Profile updated successfully.", "success")
-
-        except IntegrityError:
-            db.session.rollback()
-            flash("There was an issue updating your profile. Please try again.", "error")
         except Exception as e:
             db.session.rollback()
             flash(f"Error updating profile: {e}", "error")
