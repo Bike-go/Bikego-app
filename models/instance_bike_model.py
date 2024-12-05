@@ -34,7 +34,5 @@ class InstanceBike(db.Model):
 
     bike = relationship("Bike", back_populates="instances")
     reservations = relationship("Reservation", back_populates="instance_bike")
-    repairs = relationship("Repair", back_populates="instance_bike")
-    maintenances = relationship("Maintenance", back_populates="instance_bike")
     rentals = relationship("Rental", back_populates="instance_bike")
     pictures = relationship("Picture", back_populates="instance_bike")

@@ -46,11 +46,6 @@ def update_inspection(inspection_id):
     json_data = request.get_json()
     inspection = Inspection.query.get_or_404(inspection_id)
 
-    inspection.inspectioncol = json_data.get("inspectioncol", inspection.inspectioncol)
-    inspection.braker_status = json_data.get("braker_status", inspection.braker_status)
-    inspection.tires_status = json_data.get("tires_status", inspection.tires_status)
-    inspection.frame_status = json_data.get("frame_status", inspection.frame_status)
-    inspection.overall_condition = json_data.get("overall_condition", inspection.overall_condition)
     inspection.comments = json_data.get("comments", inspection.comments)
 
     db.session.commit()
