@@ -77,10 +77,10 @@ def send_refresh_password_email(email, token):
 
     try:
         # Connect to SMTP server
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        with smtplib.SMTP_SSL("smtp.seznam.cz", 465) as server:
             server.login(sender_email, sender_password)
             server.sendmail(sender_email, email, message.as_string())
-            print("Password reset email sent successfully.")
+            print("Verification email sent successfully.")
     except Exception as e:
         print(f"Error sending email: {e}")
 
@@ -112,9 +112,9 @@ def send_welcome_email(email):
 
     try:
         # Connect to SMTP server
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        with smtplib.SMTP_SSL("smtp.seznam.cz", 465) as server:
             server.login(sender_email, sender_password)
             server.sendmail(sender_email, email, message.as_string())
-            print("Welcome email sent successfully.")
+            print("Verification email sent successfully.")
     except Exception as e:
         print(f"Error sending email: {e}")
