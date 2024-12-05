@@ -58,11 +58,11 @@ jobs:
   
       - name: Copy files to server
         run: |
-          scp -r ./* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:~/bikego
+          scp -P ${{ secrets.SSH_PORT }} -r ./* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:~/bikego
 
       - name: Create .env file on server
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:{{ secrets.SSH_PORT }} << 'EOF'
             set -e
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ~/bikego/.env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ~/bikego/.env
