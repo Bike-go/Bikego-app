@@ -137,8 +137,8 @@ def login():
         db.session.commit()
 
         # Generate tokens with role as a string (serializable)
-        access_token = create_access_token(identity={"id": user.id})
-        refresh_token = create_refresh_token(identity={"id": user.id})
+        access_token = create_access_token(identity=user.id)
+        refresh_token = create_refresh_token(identity=user.id)
 
         # Manually set the cookies for access_token and refresh_token
         response = redirect(url_for("user_bp.profile"))
@@ -271,19 +271,17 @@ def delete_user():
 @jwt_required()
 def profile():
     # Get the current user's ID and role from the JWT token
-    current_user_identity = get_jwt_identity()
-    user_id = current_user_identity["id"]
+    current_user_id = get_jwt_identity()
 
     # Query the database to find the user by the extracted ID
-    user = User.query.get(user_id)
-    user_role = user.role.value
+    user = User.query.get(current_user_id)
 
     if not user:
         flash("User not found.", "error")
         return redirect(url_for("user_bp.login"))
 
     # Dynamically select the schema based on the user's role
-    if user_role == "Admin":
+    if user.role.value == "Admin":
         user_schema_instance = user_schema.AdminUserSchema()
     else:
         user_schema_instance = user_schema.RegularUserSchema()

@@ -12,7 +12,7 @@ class Repair(db.Model):
     description = Column(Text)
     created_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
     User_id = Column(UUID, ForeignKey(f'{Config.POSTGRES_SCHEMA}.user.id'), nullable=False)
-    Instance_Bike_id = Column(UUID, ForeignKey(f'{Config.POSTGRES_SCHEMA}.instance_Bike.id'), nullable=False)
+    Inspection_id = Column(Integer, ForeignKey(f'{Config.POSTGRES_SCHEMA}.inspection.id'), nullable=True)
 
     user = relationship("User", back_populates="repairs")
     inspection = relationship("Inspection", back_populates="repairs")
