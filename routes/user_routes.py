@@ -12,10 +12,10 @@ from db import db
 
 user_bp = Blueprint("user_bp", __name__)
 
-@user_bp.route("/signup", methods=["GET", "POST"])
+@user_bp.route("/register", methods=["GET", "POST"])
 def signup():
     if request.method == "GET":
-        return render_template("register.jinja")
+        return render_template("register.jinja", title="Registrace", page="register")
 
     data = request.form
     try:
@@ -107,7 +107,7 @@ def verify_email(token):
 @user_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.jinja")
+        return render_template("login.jinja", title="Přihlášení", page="login")
 
     # Get form data
     data = user_schema.UserLoginSchema().load(request.form)
@@ -155,7 +155,7 @@ def login():
 @user_bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "GET":
-        return render_template("reset_pass.jinja")
+        return render_template("reset_pass.jinja", title="Obnovení hesla", page="reset_password")
     
     email = user_schema.SendResetPasswordEmailSchema().load(request.form).get("email")
 
@@ -185,7 +185,7 @@ def forgot_password():
 @user_bp.route("/change-password/<token>", methods=["GET", "POST"])
 def change_password(token):
     if request.method == "GET":
-        return render_template("new_pass.jinja")
+        return render_template("new_pass.jinja", title="Obnovení hesla", page="confirm_password")
 
     data = user_schema.ChangePasswordSchema().load(request.form)
     password0 = data.get("password0")
@@ -303,13 +303,13 @@ def profile():
             if "username" in updated_data and updated_data["username"] != user.username:
                 if User.query.filter_by(username=updated_data["username"]).first():
                     flash("Username is already taken.", "error")
-                    return render_template("profile.jinja", user=user_data)
+                    return render_template("profile.jinja", user=user_data, title="Profil")
 
             # Check for unique email
             if "email" in updated_data and updated_data["email"] != user.email:
                 if User.query.filter_by(email=updated_data["email"]).first():
                     flash("Email is already taken.", "error")
-                    return render_template("profile.jinja", user=user_data)
+                    return render_template("profile.jinja", user=user_data, title="Profil")
 
                 # If email changes, set email_verified to False and send verification email
                 user.email_verified = False
@@ -319,7 +319,7 @@ def profile():
             if "phone_number" in updated_data:
                 if is_valid_phone_number(updated_data["phone_number"]):
                     flash("Invalid phone number format.", "error")
-                    return render_template("profile.jinja", user=user_data)
+                    return render_template("profile.jinja", user=user_data, title="Profil")
 
             # Update the user object with the validated data
             for key, value in updated_data.items():
@@ -347,10 +347,10 @@ def profile():
 
         # Re-render the profile page with updated user data
         user_data = user_schema_instance.dump(user)  # Serialize updated user object
-        return render_template("profile.jinja", user=user_data)
+        return render_template("profile.jinja", user=user_data, title="Profil")
 
     # For GET request, just render the profile page with serialized user data
-    return render_template("profile.jinja", user=user_data)
+    return render_template("profile.jinja", user=user_data, title="Profil")
 
 @user_bp.route("/refresh", methods=["POST", "GET"])  # Allow both POST and GET
 @jwt_required(refresh=True)

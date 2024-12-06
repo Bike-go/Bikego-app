@@ -1,8 +1,7 @@
-from marshmallow import fields, validate, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, validate, EXCLUDE
 from models.inspection_model import Inspection
 
-class InspectionSchema(SQLAlchemyAutoSchema):
+class InspectionSchema(Schema):
     class Meta:
         model = Inspection
         load_instance = True

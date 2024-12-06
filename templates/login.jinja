@@ -9,9 +9,9 @@
             <h1>login</h1>
             <input type="text" id="username" name="username" placeholder="Username">
             <input type="password" id="password" name="password" placeholder="Password">
-            <a class="white_btn" href="{{ url_for('view_reset_pass') }}">Forggot Username/Password?</a>
+            <a class="white_btn" href="{{ url_for('user_bp.forgot_password') }}">Forggot Username/Password?</a>
             <div class="row">
-                <a class="white_btn" href="{{ url_for('view_register') }}">Create an account</a>
+                <a class="white_btn" href="{{ url_for('user_bp.signup') }}">Create an account</a>
                 <button class="submit"> login</button>
             </div>
         </form>

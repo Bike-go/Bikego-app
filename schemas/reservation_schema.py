@@ -1,8 +1,7 @@
-from marshmallow import fields, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, EXCLUDE
 from models.reservation_model import Reservation
 
-class ReservationSchema(SQLAlchemyAutoSchema):
+class ReservationSchema(Schema):
     class Meta:
         model = Reservation
         load_instance = True

@@ -79,26 +79,6 @@ def view_Foto():
 def view_Kontakt():
     return render_template("kontakt.jinja", title="Kontakt")
 
-@app.route('/login')
-def view_login():
-    return render_template("login.jinja", title="Přihlášení", page="login")
-
-@app.route('/register')
-def view_register():
-    return render_template("register.jinja", title="Registrace", page="register")
-
-@app.route('/confirm_password')
-def view_new_pass():
-    return render_template("new_pass.jinja", title="Obnovení hesla", page="confirm_password")
-
-@app.route('/reset_password')
-def view_reset_pass():
-    return render_template("reset_pass.jinja", title="Obnovení hesla", page="reset_password")
-
-@app.route('/profile')
-def view_profile():
-    return render_template("profile.jinja", title="Profil")
-
 app.register_blueprint(bike_bp, url_prefix='/bikes')
 app.register_blueprint(category_bp, url_prefix='/categories')
 app.register_blueprint(inspection_bp, url_prefix='/inspections')
@@ -112,7 +92,7 @@ app.register_blueprint(rental_bp, url_prefix='/rentals')
 app.register_blueprint(repair_bp, url_prefix='/repairs')
 app.register_blueprint(reservation_bp, url_prefix='/reservation')
 app.register_blueprint(review_bp, url_prefix='/reviews')
-app.register_blueprint(user_bp, url_prefix='/users')
+app.register_blueprint(user_bp, url_prefix='/')
 
 # Handle 401 Unauthorized errors globally
 @app.errorhandler(401)
@@ -121,7 +101,7 @@ def unauthorized(error):
 
 # Handle invalid JWT tokens (e.g., malformed, incorrect)
 @jwt.invalid_token_loader
-def invalid_token_callback(jwt_header, jwt_payload):
+def invalid_token_callback(jwt_payload):
     # Redirect to login with a flash message
     flash("Invalid token. Please log in again.", "error")
     return redirect(url_for("user_bp.login"))

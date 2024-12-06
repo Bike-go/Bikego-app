@@ -1,8 +1,7 @@
-from marshmallow import fields, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, EXCLUDE
 from models.maintenance_model import Maintenance
 
-class MaintenanceSchema(SQLAlchemyAutoSchema):
+class MaintenanceSchema(Schema):
     class Meta:
         model = Maintenance
         load_instance = True

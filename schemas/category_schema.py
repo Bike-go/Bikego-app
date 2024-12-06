@@ -1,8 +1,7 @@
-from marshmallow import fields, validate, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, validate, EXCLUDE
 from models.category_model import Category
 
-class CategorySchema(SQLAlchemyAutoSchema):
+class CategorySchema(Schema):
     class Meta:
         model = Category
         load_instance = True

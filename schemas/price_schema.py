@@ -1,8 +1,7 @@
-from marshmallow import fields, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, EXCLUDE
 from models.price_model import Price
 
-class PriceSchema(SQLAlchemyAutoSchema):
+class PriceSchema(Schema):
     class Meta:
         model = Price
         load_instance = True

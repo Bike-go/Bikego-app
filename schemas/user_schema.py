@@ -1,5 +1,4 @@
 from marshmallow import Schema, fields, validate, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from models.user_model import User
 
 class AdminUserSchema(Schema):
@@ -55,7 +54,7 @@ class ChangePasswordSchema(Schema):
     password0 = fields.Str(required=True, validate=validate.Length(min=8))
     password1 = fields.Str(required=True, validate=validate.Length(min=8))
 
-class UserSchema(SQLAlchemyAutoSchema):
+class UserSchema(Schema):
     class Meta:
         model = User
         load_instance = True
