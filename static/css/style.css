@@ -817,8 +817,144 @@ footer nav {
     opacity: 0.5;
 }
 
-
 /*Pujcovna page end*/
+
+/*Admin page start*/
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    font-weight: 600;
+}
+
+.page {
+    border-radius: 8px;
+    padding: 20px;
+    background-color: var(--white);
+    margin: auto;
+}
+
+/* Formuláře a tabulky */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid var(--gray_btn);
+}
+
+.table th {
+    background-color: var(--gray_btn);
+    color: #343a40;
+}
+
+.table td {
+    background-color: var(--white);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    max-width: 570px;
+    padding: 10px;
+    border: 1px solid var(--gray_btn);
+    border-radius: 4px;
+    margin: auto;
+}
+
+.btn {
+    padding: 10px 20px;
+    color: var(--white);
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Sekce pro různé uživatele, novinky a bike */
+.section {
+    margin-bottom: 30px;
+}
+
+.section h2 {
+    margin-bottom: 15px;
+}
+
+.card {
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.card-body {
+    padding-top: 15px;
+}
+
+/* Modal (pro editaci) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 100px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    max-width: 600px;
+    border-radius: 8px;
+}
+
+.modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: var(--black);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+/*Admin page end*/
 
 
 @media screen and (max-width: 1250px) {
@@ -1131,7 +1267,7 @@ footer nav {
     }
 
     .pujcovna_filters {
-        display: none; /* Skrytí filtrů pro mobilní zařízení */
+        display: none;
     }
 
     #sorting_btn {
@@ -1146,7 +1282,7 @@ footer nav {
     }
 
     .sorting-options {
-        display: none; /* Skrytí možností třídění na mobilu */
+        display: none; 
     }
 
     .bike_collection {
@@ -1155,7 +1291,93 @@ footer nav {
         align-items: center;
     }
 
-
+        /* Kontejner pro stránku */
+        .admin_page_body .container {
+            max-width: 100%;
+            padding: 15px;
+        }
+    
+        /* Sekce */
+        .admin_page_body .section {
+            margin-bottom: 20px;
+        }
+    
+        /* Sidebar */
+        .admin_page_body .sidebar {
+            width: 200px;
+            padding-left: 15px;
+            padding-top: 15px;
+        }
+    
+        /* Sekce ve sidebaru (např. seznam položek) */
+        .admin_page_body .list-group {
+            margin-top: 10px;
+        }
+    
+        .admin_page_body .list-group-item {
+            padding: 8px 12px;
+        }
+    
+        /* Hlavní obsah */
+        .admin_page_body .content {
+            margin-left: 220px; /* Adjusted for smaller sidebar */
+            padding: 15px;
+        }
+    
+        /* Tlačítka */
+        .admin_page_body .btn {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+    
+        /* Tabulky */
+        .admin_page_body .table {
+            font-size: 0.9em;
+        }
+    
+        .admin_page_body .table th, .table td {
+            padding: 8px;
+        }
+    
+        /* Modalní okna */
+        .admin_page_body .modal-content {
+            max-width: 500px;
+            padding: 15px;
+        }
+    
+        /* Formuláře */
+        .admin_page_body .form-control {
+            max-width: 100%;
+            padding: 8px;
+        }
+    
+        /* Karty */
+        .admin_page_body .card {
+            padding: 15px;
+        }
+    
+        /* Zmenšení velikosti textů pro nadpisy */
+        .admin_page_body h1, .admin_page_body h2 {
+            font-size: 1.4em;
+        }
+    
+        .admin_page_body .card-header {
+            font-size: 1.1em;
+        }
+    
+        .admin_page_body .section h2 {
+            font-size: 1.2em;
+        }
+        
+        /* Přizpůsobení pro malé obrazovky - Sidebar schovaný */
+        .admin_page_body .sidebar {
+            display: none;
+        }
+    
+        .admin_page_body .content {
+            margin-left: 0;
+            padding: 10px;
+        }
 
 }
 

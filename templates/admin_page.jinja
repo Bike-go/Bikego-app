@@ -1,0 +1,332 @@
+{% extends '__main.jinja' %}
+
+{% block content %}
+<main class="admin_page_body">
+    <div class="content">
+        <div class="container">
+            <div class="admin_page">
+                <h1>Admin Panel - Dashboard</h1>
+
+                <!-- Správa uživatelů -->
+                <div class="section">
+                    <h2>Správa uživatelů</h2>
+                    <div class="card">
+                        <div class="card-header">Seznam uživatelů</div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Akce</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>xnovak</td>
+                                        <td>jan@example.com</td>
+                                        <td>user</td>
+                                        <td>
+                                            <button class="btn" onclick="openEditUserModal(1)">Editovat</button>
+                                            <button class="btn btn-danger" onclick="deleteUser(1)">Odstranit</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>xsvoboda</td>
+                                        <td>petr@example.com</td>
+                                        <td>servis</td>
+                                        <td>
+                                            <button class="btn" onclick="openEditUserModal(2)">Editovat</button>
+                                            <button class="btn btn-danger" onclick="deleteUser(2)">Odstranit</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Správa novinek -->
+                <div class="section">
+                    <h2>Správa novinek</h2>
+                    <button class="btn" onclick="openNewsModal()">Přidat novinku</button>
+                    <div class="card">
+                        <div class="card-header">Novinky na webu</div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Titul</th>
+                                        <th>Datum</th>
+                                        <th>Akce</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Novinka 1</td>
+                                        <td>2024-12-06</td>
+                                        <td>
+                                            <button class="btn" onclick="openEditNewsModal(1)">Editovat</button>
+                                            <button class="btn btn-danger" onclick="deleteNews(1)">Odstranit</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Novinka 2</td>
+                                        <td>2024-12-07</td>
+                                        <td>
+                                            <button class="btn" onclick="openEditNewsModal(2)">Editovat</button>
+                                            <button class="btn btn-danger" onclick="deleteNews(2)">Odstranit</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Správa biků -->
+                <div class="section">
+                    <h2>Správa biků</h2>
+                    <button class="btn" onclick="openBikeModal()">Přidat bike</button>
+                    <div class="card">
+                        <div class="card-header">Seznam biků</div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Kategorie</th>
+                                        <th>Velikost</th>
+                                        <th>Materiál rámu</th>
+                                        <th>Typ brzdy</th>
+                                        <th>Značka</th>
+                                        <th>Barva</th>
+                                        <th>Akce</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Bik 1</td>
+                                        <td>Enduro</td>
+                                        <td>S</td>
+                                        <td>Steel</td>
+                                        <td>Disc</td>
+                                        <td>Salsa</td>
+                                        <td>Černá</td>
+                                        <td>
+                                            <button class="btn" onclick="openEditBikeModal(1)">Editovat</button>
+                                            <button class="btn btn-danger" onclick="deleteBike(1)">Odstranit</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pro editaci uživatele -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeEditModal()">&times;</span>
+            <h2>Editovat uživatele</h2>
+            <div class="form-group">
+                <label for="editUsername">Username</label>
+                <input type="text" id="editUsername" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="editEmail">Email</label>
+                <input type="email" id="editEmail" class="form-control">
+            </div>
+            <button class="btn">Uložit změny</button>
+        </div>
+    </div>
+
+    <!-- Modal pro editaci novinek -->
+    <div id="editNewsModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeEditModal()">&times;</span>
+            <h2>Editovat novinku</h2>
+            <div class="form-group">
+                <label for="editTitle">Titul</label>
+                <input type="text" id="editTitle" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="editContent">Obsah</label>
+                <textarea id="editContent" class="form-control" rows="4"></textarea>
+            </div>
+            <button class="btn">Uložit změny</button>
+        </div>
+    </div>
+
+    <!-- Modal pro editaci biků -->
+    <div id="editBikeModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeEditModal()">&times;</span>
+            <h2>Editovat bike</h2>
+            <div class="form-group">
+                <label for="editBikeTitle">Název</label>
+                <input type="text" id="editBikeTitle" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="editCategory">Kategorie</label>
+                <select id="editCategory" class="form-control">
+                    <option value="silnicni">Silniční</option>
+                    <option value="gravel">Gravel</option>
+                    <option value="triathlon">Triation</option>
+                    <option value="downhill">Downhill</option>
+                    <option value="trailove">Trailové</option>
+                    <option value="enduro">Enduro</option>
+                    <option value="cross_country">Cross country</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editSize">Velikost</label>
+                <select id="editSize" class="form-control">
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editFrameMaterial">Materiál rámu</label>
+                <select id="editFrameMaterial" class="form-control">
+                    <option value="aluminium">Aluminium</option>
+                    <option value="carbon">Carbon</option>
+                    <option value="steel">Steel</option>
+                    <option value="titanium">Titanium</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editBrakeType">Typ brzdy</label>
+                <select id="editBrakeType" class="form-control">
+                    <option value="disc">Disc</option>
+                    <option value="rim">Rim</option>
+                    <option value="hydraulic">Hydraulic</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editBrand">Značka</label>
+                <input type="text" id="editBrand" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="editColor">Barva</label>
+                <select id="editColor" class="form-control">
+                    <option value="cerna">Černá</option>
+                    <option value="bila">Bílá</option>
+                    <option value="zluta">Žlutá</option>
+                    <option value="zelena">Zelená</option>
+                </select>
+            </div>
+            <button class="btn">Uložit změny</button>
+        </div>
+    </div>
+
+    <!-- Modal pro přidání novinky -->
+    <div id="newsModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('newsModal')">&times;</span>
+            <h2>Přidat novinku</h2>
+            <div class="form-group">
+                <label for="newsTitle">Titul</label>
+                <input type="text" id="newsTitle" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="editContent">Obsah</label>
+                <textarea id="editContent" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="newsDate">Datum</label>
+                <input type="date" id="newsDate" class="form-control">
+            </div>
+            <button class="btn">Uložit novinku</button>
+        </div>
+    </div>
+
+
+    <!-- Modal pro přidání biku -->
+    <div id="bikeModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('bikeModal')">&times;</span>
+            <h2>Přidat bike</h2>
+            <div class="form-group">
+                <label for="bikeTitle">Title</label>
+                <input type="text" id="bikeTitle" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="category">Kategorie</label>
+                <select id="category" class="form-control">
+                    <option value="silnicni">Silniční</option>
+                    <option value="gravel">Gravel</option>
+                    <option value="triathlon">Triathlon</option>
+                    <option value="downhill">Downhill</option>
+                    <option value="trail">Trailové</option>
+                    <option value="enduro">Enduro</option>
+                    <option value="crosscountry">Cross country</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="size">Velikost</label>
+                <select id="size" class="form-control">
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="frameMaterial">Materiál rámu</label>
+                <select id="frameMaterial" class="form-control">
+                    <option value="aluminium">Aluminium</option>
+                    <option value="carbon">Carbon</option>
+                    <option value="steel">Steel</option>
+                    <option value="titanium">Titanium</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="brakeType">Typ brzdy</label>
+                <select id="brakeType" class="form-control">
+                    <option value="disc">Disc</option>
+                    <option value="rim">Rim</option>
+                    <option value="hydraulic">Hydraulic</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="brand">Značka</label>
+                <input type="text" id="brand" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="color">Barva</label>
+                <select id="color" class="form-control">
+                    <option value="cerna">Černá</option>
+                    <option value="bila">Bílá</option>
+                    <option value="zluta">Žlutá</option>
+                    <option value="zelena">Zelená</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="bikeImage">Obrázek</label>
+                <input type="file" id="bikeImage" class="form-control">
+            </div>
+            <button class="btn">Uložit bike</button>
+        </div>
+    </div>
+</main>
+
+</main>
+{% endblock %}
