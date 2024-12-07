@@ -2,140 +2,133 @@
 
 {% block content %}
 <main class="admin_page_body">
-    <div class="content">
-        <div class="container">
-            <div class="admin_page">
-                <h1>Admin Panel - Dashboard</h1>
-
-                <!-- Správa uživatelů -->
-                <div class="section">
-                    <h2>Správa uživatelů</h2>
-                    <div class="card">
-                        <div class="card-header">Seznam uživatelů</div>
-                        <div class="card-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Username</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Akce</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>xnovak</td>
-                                        <td>jan@example.com</td>
-                                        <td>user</td>
-                                        <td>
-                                            <button class="btn" onclick="openEditUserModal(1)">Editovat</button>
-                                            <button class="btn btn-danger" onclick="deleteUser(1)">Odstranit</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>xsvoboda</td>
-                                        <td>petr@example.com</td>
-                                        <td>servis</td>
-                                        <td>
-                                            <button class="btn" onclick="openEditUserModal(2)">Editovat</button>
-                                            <button class="btn btn-danger" onclick="deleteUser(2)">Odstranit</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Správa novinek -->
-                <div class="section">
-                    <h2>Správa novinek</h2>
-                    <button class="btn" onclick="openNewsModal()">Přidat novinku</button>
-                    <div class="card">
-                        <div class="card-header">Novinky na webu</div>
-                        <div class="card-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Titul</th>
-                                        <th>Datum</th>
-                                        <th>Akce</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Novinka 1</td>
-                                        <td>2024-12-06</td>
-                                        <td>
-                                            <button class="btn" onclick="openEditNewsModal(1)">Editovat</button>
-                                            <button class="btn btn-danger" onclick="deleteNews(1)">Odstranit</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Novinka 2</td>
-                                        <td>2024-12-07</td>
-                                        <td>
-                                            <button class="btn" onclick="openEditNewsModal(2)">Editovat</button>
-                                            <button class="btn btn-danger" onclick="deleteNews(2)">Odstranit</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Správa biků -->
-                <div class="section">
-                    <h2>Správa biků</h2>
-                    <button class="btn" onclick="openBikeModal()">Přidat bike</button>
-                    <div class="card">
-                        <div class="card-header">Seznam biků</div>
-                        <div class="card-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Title</th>
-                                        <th>Kategorie</th>
-                                        <th>Velikost</th>
-                                        <th>Materiál rámu</th>
-                                        <th>Typ brzdy</th>
-                                        <th>Značka</th>
-                                        <th>Barva</th>
-                                        <th>Akce</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Bik 1</td>
-                                        <td>Enduro</td>
-                                        <td>S</td>
-                                        <td>Steel</td>
-                                        <td>Disc</td>
-                                        <td>Salsa</td>
-                                        <td>Černá</td>
-                                        <td>
-                                            <button class="btn" onclick="openEditBikeModal(1)">Editovat</button>
-                                            <button class="btn btn-danger" onclick="deleteBike(1)">Odstranit</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
+    <h1>Admin Panel</h1>
+    <!-- Správa uživatelů -->
+    <section>
+        <div class="card">
+            <div class="card-header">Seznam uživatelů</div>
+            <div class="card-body table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>xnovak</td>
+                            <td>jan@example.com</td>
+                            <td>user</td>
+                            <td>
+                                <button class="btn" onclick="openEditUserModal(1)">Editovat</button>
+                                <button class="btn btn-danger" onclick="deleteUser(1)">Odstranit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>xsvoboda</td>
+                            <td>petr@example.com</td>
+                            <td>servis</td>
+                            <td>
+                                <button class="btn" onclick="openEditUserModal(2)">Editovat</button>
+                                <button class="btn btn-danger" onclick="deleteUser(2)">Odstranit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Správa novinek -->
+    <section>
+        <div class="card">
+            <div class="card-header">Novinky na webu
+                <button class="btn" onclick="openNewsModal()">Přidat novinku</button>
+            </div>
+            
+            <div class="card-body table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titul</th>
+                            <th>Datum</th>
+                            <th>Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Novinka 1</td>
+                            <td>2024-12-06</td>
+                            <td>
+                                <button class="btn" onclick="openEditNewsModal(1)">Editovat</button>
+                                <button class="btn btn-danger" onclick="deleteNews(1)">Odstranit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Novinka 2</td>
+                            <td>2024-12-07</td>
+                            <td>
+                                <button class="btn" onclick="openEditNewsModal(2)">Editovat</button>
+                                <button class="btn btn-danger" onclick="deleteNews(2)">Odstranit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Správa biků -->
+    <section>        
+        <div class="card">
+            <div class="card-header">Seznam kol
+                <button class="btn" onclick="openBikeModal()">Přidat bike</button>
+            </div>
+            
+            <div class="card-body table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Kategorie</th>
+                            <th>Velikost</th>
+                            <th>Materiál rámu</th>
+                            <th>Typ brzdy</th>
+                            <th>Značka</th>
+                            <th>Barva</th>
+                            <th>Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Bik 1</td>
+                            <td>Enduro</td>
+                            <td>S</td>
+                            <td>Steel</td>
+                            <td>Disc</td>
+                            <td>Salsa</td>
+                            <td>Černá</td>
+                            <td>
+                                <button class="btn" onclick="openEditBikeModal(1)">Editovat</button>
+                                <button class="btn btn-danger" onclick="deleteBike(1)">Odstranit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 
     <!-- Modal pro editaci uživatele -->
     <div id="editUserModal" class="modal">
@@ -328,5 +321,4 @@
     </div>
 </main>
 
-</main>
 {% endblock %}
