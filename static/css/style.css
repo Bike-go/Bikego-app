@@ -820,42 +820,49 @@ footer nav {
 /*Pujcovna page end*/
 
 /*Admin page start*/
-.container {
-    max-width: 1200px;
+
+.admin_page_body{
     margin: auto;
-    padding: 20px;
+    text-align: center;
 }
 
-h1, h2 {
-    font-weight: 600;
+.admin_page_body h1 {
+    margin: 25px;
+    text-transform: uppercase;
+    font-size: 40px;
+    border-bottom: 1px solid var(--scnd_btn_color);
+    color: var(--scnd_btn_color);
 }
 
-.page {
-    border-radius: 8px;
-    padding: 20px;
-    background-color: var(--white);
-    margin: auto;
-}
 
 /* Formuláře a tabulky */
-.table {
+
+.table-responsive {
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+}
+
+
+table {
     width: 100%;
     margin-top: 20px;
     border-collapse: collapse;
+    
 }
 
-.table th, .table td {
+table th, table td {
     padding: 10px;
-    text-align: left;
+    text-align: center;
     border: 1px solid var(--gray_btn);
 }
 
-.table th {
+table th {
     background-color: var(--gray_btn);
-    color: #343a40;
+    color: var(--black);
 }
 
-.table td {
+table td {
     background-color: var(--white);
 }
 
@@ -891,29 +898,35 @@ h1, h2 {
 }
 
 /* Sekce pro různé uživatele, novinky a bike */
-.section {
+.admin_page_body section {
     margin-bottom: 30px;
-}
-
-.section h2 {
-    margin-bottom: 15px;
+    padding: 0;
+    align-items: flex-start;
+    overflow: auto;
 }
 
 .card {
     background-color: var(--white);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 5px 6px 6px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
-    font-size: 1.2em;
-    font-weight: bold;
+    width: 100%;
+    font-weight: 600;
+    font-size: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.card-body {
-    padding-top: 15px;
+.card-body{
+    overflow: auto;
+    flex: 1;
 }
+
 
 /* Modal (pro editaci) */
 .modal {
@@ -1290,94 +1303,48 @@ h1, h2 {
         flex-direction: column;
         align-items: center;
     }
+    
+    /* Tlačítka */
+    .admin_page_body .btn {
+        padding: 6px 10px;
+        font-size: 15px;
+    }
 
-        /* Kontejner pro stránku */
-        .admin_page_body .container {
-            max-width: 100%;
-            padding: 15px;
-        }
-    
-        /* Sekce */
-        .admin_page_body .section {
-            margin-bottom: 20px;
-        }
-    
-        /* Sidebar */
-        .admin_page_body .sidebar {
-            width: 200px;
-            padding-left: 15px;
-            padding-top: 15px;
-        }
-    
-        /* Sekce ve sidebaru (např. seznam položek) */
-        .admin_page_body .list-group {
-            margin-top: 10px;
-        }
-    
-        .admin_page_body .list-group-item {
-            padding: 8px 12px;
-        }
-    
-        /* Hlavní obsah */
-        .admin_page_body .content {
-            margin-left: 220px; /* Adjusted for smaller sidebar */
-            padding: 15px;
-        }
-    
-        /* Tlačítka */
-        .admin_page_body .btn {
-            padding: 8px 15px;
-            font-size: 0.9em;
-        }
-    
-        /* Tabulky */
-        .admin_page_body .table {
-            font-size: 0.9em;
-        }
-    
-        .admin_page_body .table th, .table td {
-            padding: 8px;
-        }
-    
-        /* Modalní okna */
-        .admin_page_body .modal-content {
-            max-width: 500px;
-            padding: 15px;
-        }
-    
-        /* Formuláře */
-        .admin_page_body .form-control {
-            max-width: 100%;
-            padding: 8px;
-        }
-    
-        /* Karty */
-        .admin_page_body .card {
-            padding: 15px;
-        }
-    
-        /* Zmenšení velikosti textů pro nadpisy */
-        .admin_page_body h1, .admin_page_body h2 {
-            font-size: 1.4em;
-        }
-    
-        .admin_page_body .card-header {
-            font-size: 1.1em;
-        }
-    
-        .admin_page_body .section h2 {
-            font-size: 1.2em;
-        }
-        
-        /* Přizpůsobení pro malé obrazovky - Sidebar schovaný */
-        .admin_page_body .sidebar {
-            display: none;
-        }
-    
-        .admin_page_body .content {
-            margin-left: 0;
-            padding: 10px;
-        }
+    .admin_page_body table th, table td {
+        padding: 4px;
+        font-size: 15px;
+    }
 
+    /* Modalní okna */
+    .admin_page_body .modal-content {
+        max-width: 500px;
+        padding: 15px;
+    }
+
+    /* Formuláře */
+    .admin_page_body .form-control {
+        max-width: 100%;
+        padding: 8px;
+        max-width: 340px;
+    }
+
+    .admin_page_body .card {
+        max-width: 370px;
+        padding: 0;
+    }
+
+    .admin_page_body h1 {
+        font-size: 28px;
+    }
+
+    .admin_page_body .card-header {
+        font-size: 18px;
+        margin-bottom: 0px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        width: 100%;
+    }
 }
 
