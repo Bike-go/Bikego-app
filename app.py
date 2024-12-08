@@ -60,24 +60,28 @@ def check_and_upload_schema(schema_name: str):
             engine.dispose()
 
 @app.route('/', methods=['GET'])
-def view_Home():
-    return render_template("homePage.jinja", title="Domů"), 200
+def root():
+    return redirect(url_for("home")), 301
 
-@app.route('/Novinky')
-def view_Novinky():
-    return render_template("novinky.jinja", title="Novinky")
+@app.route('/home', methods=['GET'])
+def home():
+    return render_template("home.jinja", title="Home", page="home"), 200
 
-@app.route('/Půjčovná')
-def view_Pujcovna():
-    return render_template("pujcovna.jinja", title="Půjčovná")
+@app.route('/news', methods=['GET'])
+def news():
+    return render_template("news.jinja", title="News", page="news"), 200
 
-@app.route('/Foto')
-def view_Foto():
-    return render_template("foto.jinja", title="Foto")
+@app.route('/rentals', methods=['GET'])
+def rentals():
+    return render_template("rentals.jinja", title="Rentals", page="rentals"), 200
 
-@app.route('/Kontakt')
-def view_Kontakt():
-    return render_template("kontakt.jinja", title="Kontakt")
+@app.route('/photos', methods=['GET'])
+def photos():
+    return render_template("photos.jinja", title="Photos", page="photos"), 200
+
+@app.route('/contacts', methods=['GET'])
+def contacts():
+    return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
 
 app.register_blueprint(bike_bp, url_prefix='/bikes')
 app.register_blueprint(category_bp, url_prefix='/categories')

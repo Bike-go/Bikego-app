@@ -5,17 +5,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from models.user_model import User
 from schemas import user_schema
-from utils.email_utils import send_refresh_password_email, send_verification_email, send_welcome_email
+from utils.block_authenticated import block_authenticated
+from utils.email_utils import send_password_change, send_registration_email, send_reset_email, send_successfully_password_change
 from utils.imgur_utils import delete_image_from_imgur, upload_image_to_imgur
 from utils.validator_utils import is_valid_email, is_valid_password, is_valid_phone_number
 from db import db
 
 user_bp = Blueprint("user_bp", __name__)
 
-@user_bp.route("/register", methods=["GET", "POST"])
+@user_bp.route("/signup", methods=["GET", "POST"])
+@block_authenticated
 def signup():
     if request.method == "GET":
-        return render_template("register.jinja", title="Registrace", page="register")
+        return render_template("signup.jinja", title="Registrace", page="signup")
 
     data = request.form
     try:
@@ -59,7 +61,7 @@ def signup():
 
     # Send email
     try:
-        send_verification_email(new_user.email, token)
+        send_registration_email(new_user.email, token)
         flash("User created successfully. Please verify your email.", "success")
     except Exception as e:
         flash(f"Error sending verification email: {e}", "error")
@@ -92,7 +94,7 @@ def verify_email(token):
 
         # Send a welcome email
         try:
-            send_welcome_email(user.email)
+            send_successfully_password_change(user.email)
         except Exception as e:
             flash(f"Email verified, but failed to send welcome email: {e}", "warning")
 
@@ -105,6 +107,7 @@ def verify_email(token):
 
 # Login
 @user_bp.route("/login", methods=["GET", "POST"])
+@block_authenticated
 def login():
     if request.method == "GET":
         return render_template("login.jinja", title="Přihlášení", page="login")
@@ -155,7 +158,7 @@ def login():
 @user_bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "GET":
-        return render_template("reset_pass.jinja", title="Obnovení hesla", page="reset_password")
+        return render_template("forgot_password.jinja", title="Obnovení hesla", page="forgot_password")
     
     email = user_schema.SendResetPasswordEmailSchema().load(request.form).get("email")
 
@@ -172,7 +175,7 @@ def forgot_password():
         
         # Send password reset email
         try:
-            send_refresh_password_email(user.email, token)
+            send_password_change(user.email, token)
         except Exception as e:
             flash("An error occurred while sending the reset email. Please try again later.", "error")
             return redirect(url_for("user_bp.forgot_password"))
@@ -185,7 +188,7 @@ def forgot_password():
 @user_bp.route("/change-password/<token>", methods=["GET", "POST"])
 def change_password(token):
     if request.method == "GET":
-        return render_template("new_pass.jinja", title="Obnovení hesla", page="confirm_password")
+        return render_template("change_password.jinja", title="Obnovení hesla", page="change_password")
 
     data = user_schema.ChangePasswordSchema().load(request.form)
     password0 = data.get("password0")
@@ -301,23 +304,24 @@ def profile():
             if "username" in updated_data and updated_data["username"] != user.username:
                 if User.query.filter_by(username=updated_data["username"]).first():
                     flash("Username is already taken.", "error")
-                    return render_template("profile.jinja", user=user_data, title="Profil")
+                    return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
 
             # Check for unique email
             if "email" in updated_data and updated_data["email"] != user.email:
                 if User.query.filter_by(email=updated_data["email"]).first():
                     flash("Email is already taken.", "error")
-                    return render_template("profile.jinja", user=user_data, title="Profil")
+                    return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
 
                 # If email changes, set email_verified to False and send verification email
+                token = create_access_token(identity=user.id, expires_delta=timedelta(minutes=15))
+                send_reset_email(user.email, updated_data["email"], token)  # Implement email sending logic
                 user.email_verified = False
-                send_verification_email(updated_data["email"])  # Implement email sending logic
 
             # Validate phone number using regex
             if "phone_number" in updated_data:
                 if is_valid_phone_number(updated_data["phone_number"]):
                     flash("Invalid phone number format.", "error")
-                    return render_template("profile.jinja", user=user_data, title="Profil")
+                    return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
 
             # Update the user object with the validated data
             for key, value in updated_data.items():
@@ -345,10 +349,10 @@ def profile():
 
         # Re-render the profile page with updated user data
         user_data = user_schema_instance.dump(user)  # Serialize updated user object
-        return render_template("profile.jinja", user=user_data, title="Profil")
+        return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
 
     # For GET request, just render the profile page with serialized user data
-    return render_template("profile.jinja", user=user_data, title="Profil")
+    return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
 
 @user_bp.route("/refresh", methods=["POST", "GET"])  # Allow both POST and GET
 @jwt_required(refresh=True)

@@ -284,5 +284,3 @@ docker-compose logs bikego
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
-This `README.md` provides a comprehensive guide for setting up, running, and troubleshooting the project. Modify any sections as needed to fit the specifics of your application.
