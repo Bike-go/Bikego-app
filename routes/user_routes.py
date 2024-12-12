@@ -1,8 +1,14 @@
-from flask import Blueprint, jsonify, render_template, request, redirect, session, url_for, flash
-from flask_jwt_extended import create_access_token, create_refresh_token, decode_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
+from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
+from flask_jwt_extended import create_access_token, create_refresh_token, decode_token, jwt_required, get_jwt_identity, set_access_cookies, set_refresh_cookies, unset_jwt_cookies
 from marshmallow import ValidationError
+from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
+from models.bike_model import Bike
+from models.instance_bike_model import InstanceBike
+from models.rental_model import Rental
+from models.reservation_model import Reservation
+from models.review_model import Review
 from models.user_model import User
 from schemas import user_schema
 from utils.block_authenticated import block_authenticated
@@ -24,15 +30,15 @@ def signup():
         user_data = user_schema.UserSignupSchema().load(data)
     except ValidationError as e:
         flash(f"Validation error: {e.messages}", "error")
-        return redirect(url_for("user_bp.signup"))
+        return render_template("signup.jinja", title="Registrace", page="signup", form_data=data)
 
     if not is_valid_email(user_data.get('email', '')):
         flash("Invalid email format.", "error")
-        return redirect(url_for("user_bp.signup"))
+        return render_template("signup.jinja", title="Registrace", page="signup", form_data=data)
 
     if user_data['password0'] != user_data['password1']:
         flash("Passwords do not match.", "error")
-        return redirect(url_for("user_bp.signup"))
+        return render_template("signup.jinja", title="Registrace", page="signup", form_data=data)
 
     # Check for existing email or username
     existing_user = User.query.filter(
@@ -40,7 +46,7 @@ def signup():
     ).first()
     if existing_user:
         flash("Email or Username already exists!", "danger")
-        return redirect(url_for("user_bp.signup"))
+        return render_template("signup.jinja", title="Registrace", page="signup", form_data=data)
 
     # Create new user
     new_user = User(
@@ -54,10 +60,15 @@ def signup():
     )
 
     db.session.add(new_user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error saving user: {e}", "error")
+        return render_template("signup.jinja", title="Registrace", page="signup", form_data=data)
 
     # Generate verification token
-    token = create_access_token(identity=new_user.id, expires_delta=timedelta(minutes=15))
+    token = create_access_token(identity=new_user.id, expires_delta=timedelta(minutes=60))
 
     # Send email
     try:
@@ -115,7 +126,7 @@ def login():
     # Get form data
     data = user_schema.UserLoginSchema().load(request.form)
     username_or_email = data.get("username")
-    password = data.get("password")
+    password = data.get("password0")
 
     # Validate inputs
     if not username_or_email or not password:
@@ -139,14 +150,14 @@ def login():
         user.last_login = datetime.utcnow()
         db.session.commit()
 
-        # Generate tokens with role as a string (serializable)
+        # Create the tokens we will be sending back to the user
         access_token = create_access_token(identity=user.id)
         refresh_token = create_refresh_token(identity=user.id)
 
-        # Manually set the cookies for access_token and refresh_token
-        response = redirect(url_for("user_bp.profile"))
-        response.set_cookie('access_token', access_token, httponly=True, secure=True, samesite='Lax')
-        response.set_cookie('refresh_token', refresh_token, httponly=True, secure=True, samesite='Lax')
+        # Set the JWT cookies in the response
+        response = redirect(url_for("home"))
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
 
         flash("Login successful.", "success")
         return response
@@ -171,7 +182,7 @@ def forgot_password():
     user = User.query.filter_by(email=email).first()
     if user:
         # Generate token valid for 15 minutes
-        token = create_access_token(identity=user.id, expires_delta=timedelta(minutes=15))
+        token = create_access_token(identity=user.id, expires_delta=timedelta(minutes=60))
         
         # Send password reset email
         try:
@@ -210,7 +221,6 @@ def change_password(token):
         decoded_token = decode_token(token)
         user_id = decoded_token["sub"]
     except Exception as e:
-        print(f"Token decoding error: {e}")  # Log for debugging
         flash("Invalid or expired token. Please request a new password reset.", "error")
         return redirect(url_for("user_bp.forgot_password"))
 
@@ -228,15 +238,13 @@ def change_password(token):
     return redirect(url_for("user_bp.login"))
 
 # Logout
-@user_bp.route("/logout", methods=["POST", "GET"])
-@jwt_required()  # Require a valid JWT to log out
+@user_bp.route('/logout', methods=['POST'])
 def logout():
-    response = jsonify({"msg": "Logout successful"})
-    unset_jwt_cookies(response)  # Clear tokens from cookies
-    # Optional: Add user logout events to logs or audit trail here
-    return redirect(url_for("user_bp.login"))
+    response = jsonify({'message': 'Logged out successfully'})
+    unset_jwt_cookies(response)
+    return redirect(url_for("home")), 200
 
-@user_bp.route("/delete-user", methods=["POST", "GET"])
+@user_bp.route("/delete-user", methods=["POST"])  # Accept only POST requests
 @jwt_required()  # Ensure the user is authenticated
 def delete_user():
     # Get the current user ID from the JWT identity
@@ -261,14 +269,26 @@ def delete_user():
         flash("Password is incorrect.", "error")
         return redirect(url_for("user_bp.settings"))
 
-    # Soft-delete the user by marking as deleted
-    user.deleted_at = datetime.utcnow()
+    # Clear user data (except for the ID)
+    user.username = ""
+    user.password_hash = ""
+    user.email = ""
+    user.phone_number = ""
+    user.last_login = None
+    user.profile_picture_url = ""
+    user.delete_hash = ""
+    user.email_verified = False
+    user.darkmode = False
+
+    # Commit changes to the database
     db.session.commit()
 
-    # Optionally: Log out the user
-    session.clear()
+    # Clear JWT cookies
+    response = redirect(url_for("user_bp.login"))  # Prepare redirect response
+    unset_jwt_cookies(response)  # Clear JWT cookies from the response
+
     flash("Your account has been deleted successfully.", "success")
-    return redirect(url_for("user_bp.login"))
+    return response
 
 @user_bp.route("/profile", methods=["GET", "POST"])
 @jwt_required()
@@ -289,7 +309,64 @@ def profile():
     else:
         user_schema_instance = user_schema.RegularUserSchema()
 
-    # Serialize the user data for rendering
+    # Query Total Reservation Time
+    total_time = (
+        db.session.query(func.sum(Reservation.reservation_end - Reservation.reservation_start).label('total_time'))
+        .filter(Reservation.User_id == user.id)
+        .scalar()
+    )
+
+    if not total_time:
+        total_time = timedelta(0)
+
+    # Query Favourite Bike
+    favourite_bike = (
+        db.session.query(Bike.model)
+        .join(InstanceBike, InstanceBike.Bike_id == Bike.id)  # Explicit join condition
+        .join(Reservation, Reservation.Instance_Bike_id == InstanceBike.id)  # Explicit join condition
+        .filter(Reservation.User_id == user.id)  # Filter by User ID
+        .group_by(Bike.model)  # Group by Bike model
+        .order_by(func.count(Reservation.id).desc())  # Order by count of reservations
+        .limit(1)  # Limit to 1 result
+        .first()  # Get the first result
+    )
+
+    if not favourite_bike:
+        favourite_bike = "No favourite bike"
+
+    # Query Active Sessions (Reservations that are not finished yet)
+    active_sessions = (
+        db.session.query(Reservation, InstanceBike)
+        .join(InstanceBike, Reservation.Instance_Bike_id == InstanceBike.id)  # Explicit join condition
+        .filter(Reservation.User_id == user.id, Reservation.reservation_end > datetime.utcnow())  # Filter by User ID and active reservations
+        .all()
+    )
+
+    if not active_sessions:
+        active_sessions = []
+
+    # Query User Reviews
+    reviews = (
+        db.session.query(Review)
+        .filter(Review.User_id == user.id)  # Filter by User ID
+        .all()
+    )
+
+    if not reviews:
+        reviews = []
+
+    # Query Purchase History (Rentals)
+    purchase_history = (
+        db.session.query(Rental, InstanceBike)
+        .join(InstanceBike, Rental.Instance_Bike_id == InstanceBike.id)  # Explicit join condition
+        .filter(Rental.User_id == user.id)  # Filter by User ID
+        .all()
+    )
+
+    if not purchase_history:
+        purchase_history = []
+
+    # Prepare data to render in the template
     user_data = user_schema_instance.dump(user)
     user_data["role"] = user.role.value
 
@@ -304,16 +381,16 @@ def profile():
             if "username" in updated_data and updated_data["username"] != user.username:
                 if User.query.filter_by(username=updated_data["username"]).first():
                     flash("Username is already taken.", "error")
-                    return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
+                    pass
 
             # Check for unique email
             if "email" in updated_data and updated_data["email"] != user.email:
                 if User.query.filter_by(email=updated_data["email"]).first():
                     flash("Email is already taken.", "error")
-                    return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
+                    pass
 
                 # If email changes, set email_verified to False and send verification email
-                token = create_access_token(identity=user.id, expires_delta=timedelta(minutes=15))
+                token = create_access_token(identity=user.id, expires_delta=timedelta(minutes=60))
                 send_reset_email(user.email, updated_data["email"], token)  # Implement email sending logic
                 user.email_verified = False
 
@@ -321,7 +398,7 @@ def profile():
             if "phone_number" in updated_data:
                 if is_valid_phone_number(updated_data["phone_number"]):
                     flash("Invalid phone number format.", "error")
-                    return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
+                    pass
 
             # Update the user object with the validated data
             for key, value in updated_data.items():
@@ -349,20 +426,24 @@ def profile():
 
         # Re-render the profile page with updated user data
         user_data = user_schema_instance.dump(user)  # Serialize updated user object
-        return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
+        pass
 
     # For GET request, just render the profile page with serialized user data
-    return render_template("profile.jinja", user=user_data, title="Profil", page="profile")
+    return render_template("profile.jinja", 
+                           user=user_data, 
+                           title="Profil", 
+                           page="profile", 
+                           total_time=total_time, 
+                           favourite_bike=favourite_bike,
+                           active_sessions=active_sessions,
+                           reviews=reviews,
+                           purchase_history=purchase_history)
 
-@user_bp.route("/refresh", methods=["POST", "GET"])  # Allow both POST and GET
+@user_bp.route('/refresh_token', methods=['POST', 'GET'])
 @jwt_required(refresh=True)
-def refresh():
-    current_user = get_jwt_identity()  # Retrieve the user's identity from the refresh token
-    new_access_token = create_access_token(identity=current_user)  # Create a new access token
-
-    response = jsonify({"msg": "Token refreshed"})
-    set_access_cookies(response, new_access_token)  # Set the new access token in cookies
-
-    # Redirect the user to the original URL (or default to homepage if no 'next' parameter)
-    next_url = request.args.get('next') or url_for('user_bp.profile')
-    return redirect(next_url)
+def refresh_token():
+    current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+    response = jsonify({'refresh': True})
+    set_access_cookies(response, access_token)
+    return response, 200

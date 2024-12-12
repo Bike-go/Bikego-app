@@ -42,7 +42,7 @@ class UserLoginSchema(Schema):
         unknown = EXCLUDE
 
     username = fields.Str(required=True, validate=validate.Length(min=1))
-    password = fields.Str(required=True, validate=validate.Length(min=8))
+    password0 = fields.Str(required=True, validate=validate.Length(min=8))
 
 class SendResetPasswordEmailSchema(Schema):
     class Meta:

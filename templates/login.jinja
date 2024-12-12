@@ -1,19 +1,50 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-    <main>
-        <div class="user_icon">
-            <i class="fa-regular fa-user"></i>
+<main class="login-page">
+    <div class="user_icon">
+        <i class="fa-regular fa-user"></i>
+    </div>
+    <form action="{{ url_for('user_bp.login') }}" method="post" class="login">
+        <h1>Přihlášení</h1>
+
+        <!-- CSRF Token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+        <!-- Username Input with Icon -->
+        <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="username" name="username" placeholder="Uživatelské jméno" required>
         </div>
-        <form action="" method="post" class="login">
-            <h1>login</h1>
-            <input type="text" id="username" name="username" placeholder="Username">
-            <input type="password" id="password" name="password" placeholder="Password">
-            <a class="white_btn" href="{{ url_for('user_bp.forgot_password') }}">Forggot Username/Password?</a>
-            <div class="row">
-                <a class="white_btn" href="{{ url_for('user_bp.signup') }}">Create an account</a>
-                <button class="submit"> login</button>
-            </div>
-        </form>
-    </main>
+
+        <!-- Password Input with Icon -->
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="password0" name="password0" placeholder="Heslo" required>
+            <i class="fa-solid fa-eye" id="toggle-password0" style="cursor: pointer;"
+                onclick="togglePassword('password0', 'toggle-password0')"></i>
+        </div>
+
+        <!-- Forgot Password Link -->
+        <div class="forgot-password">
+            <a href="{{ url_for('user_bp.forgot_password') }}">Zapomněli jste uživatelské jméno a heslo?</a>
+        </div>
+
+        <!-- Actions: Create Account & Submit -->
+        <div class="actions">
+            <a class="white_btn" href="{{ url_for('user_bp.signup') }}">Vytvořit účet</a>
+            <button type="submit" class="submit">Přihlásit</button>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </form>
+</main>
 {% endblock %}

@@ -1,21 +1,62 @@
 {% extends '__main.jinja' %}
 
-{% block content%}
-    <main>
-        <div class="user_icon">
-            <i class="fa-regular fa-user"></i>
+{% block content %}
+<main>
+    <div class="user_icon">
+        <i class="fa-regular fa-user"></i>
+    </div>
+    <form action="{{ url_for('user_bp.signup') }}" method="post" class="login">
+        <h1>Registrace</h1>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+        <!-- Username Field with Icon -->
+        <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="username" name="username" placeholder="Uživatelské jméno"
+                value="{{ request.form.username }}" required class="form-field">
         </div>
-        <form action="" method="post" class="login">
-            <h1>sign up</h1>
-            <input type="text" id="username" name="username" placeholder="Username">
-            <input type="email" id="email" name="email" placeholder="E-mail">
-            <input type="password" id="password0" name="password0" placeholder="Password">
-            <input type="password" id="password1" name="password1" placeholder="Confirm Password">
-            <div class="row_reg">
-                <button class="create">CREATE ACCOUNT</button>
-            </div>
-            <a class="white_btn" href="{{ url_for('user_bp.login') }}">Already have an account. Login here</a>
-        </form>
-    </main>
+
+        <!-- Email Field with Icon -->
+        <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="email" name="email" placeholder="Email" value="{{ request.form.email }}" required
+                class="form-field">
+        </div>
+
+        <!-- Password Field 0 with Toggle Eye Icon -->
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="password0" name="password0" placeholder="Heslo" required class="form-field">
+            <i class="fa-solid fa-eye" id="toggle-password0" style="cursor: pointer;"
+                onclick="togglePassword('password0', 'toggle-password0')"></i>
+        </div>
+
+        <!-- Password Field 1 with Toggle Eye Icon -->
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="password1" name="password1" placeholder="Potvrdit heslo" required
+                class="form-field">
+            <i class="fa-solid fa-eye" id="toggle-password1" style="cursor: pointer;"
+                onclick="togglePassword('password1', 'toggle-password1')"></i>
+        </div>
+
+        <div class="row_reg">
+            <button class="create">Vytvořit účet</button>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        <a class="white_btn" href="{{ url_for('user_bp.login') }}">Už máte účet? Přihlaste se zde</a>
+    </form>
+</main>
 
 {% endblock %}

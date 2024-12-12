@@ -1,6 +1,7 @@
 Flask-SQLAlchemy
 python-dotenv
 Flask-Migrate
+flask-wtf
 SQLAlchemy
 Flask-JWT-Extended
 Flask

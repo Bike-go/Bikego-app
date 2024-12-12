@@ -1,33 +1,44 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-    <div class="search_bar">
-        <input type="search" id="search" name="search">
-        <i class="fa-solid fa-magnifying-glass" id="btn_search"></i>
+<!-- Search Bar -->
+<div class="search_bar">
+    <form action="#" method="get">
+        <label for="search" class="sr-only">Search</label>
+        <input type="search" id="search" name="search" placeholder="Search...">
+        <button type="submit" id="btn_search" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
+</div>
+
+<!-- Image Roll / Slider -->
+<section class="image_roll">
+    <img src="{{ url_for('static', filename='images/bike1.jpg') }}" alt="Bike 1" class="slide active">
+    <img src="{{ url_for('static', filename='images/bike2.jpg') }}" alt="Bike 2" class="slide">
+    <img src="{{ url_for('static', filename='images/bike3.jpg') }}" alt="Bike 3" class="slide">
+
+    <div class="indicator-container">
+        <div class="indicator active" onclick="goToSlide(0)"></div>
+        <div class="indicator" onclick="goToSlide(1)"></div>
+        <div class="indicator" onclick="goToSlide(2)"></div>
     </div>
+</section>
 
-    <section class="image_roll">
-        <img src="{{ url_for('static', filename='images/bike1.jpg')}}" class="slide active">
-        <img src="{{ url_for('static', filename='images/bike2.jpg')}}" class="slide">
-        <img src="{{ url_for('static', filename='images/bike3.jpg')}}" class="slide">
+<!-- "O nás" Section -->
+<section>
+    <div class="title">O nás</div>
+    <div class="text">
+        <p>Naše firma se specializuje na provoz moderního online systému pro půjčování kol a správu bikeparku...</p>
+        <p>Systém je navržen tak, aby uspokojil potřeby nejen rekreačních cyklistů, ale i pravidelných návštěvníků a
+            nadšenců do cyklistiky...</p>
+        <p>Naše platforma využívá nejnovější technologie pro zajištění bezpečnosti a spolehlivosti...</p>
+    </div>
+</section>
 
-        <div class="indicator-container">
-            <div class="indicator active" onclick="goToSlide(0)"></div>
-            <div class="indicator" onclick="goToSlide(1)"></div>
-            <div class="indicator" onclick="goToSlide(2)"></div>
-        </div>
-    </section>
-    
-    <section>
-        <div class="title">O nás</div>
-        <div class="text">Naše firma se specializuje na provoz moderního online systému pro půjčování kol a správu bikeparku. Od svého vzniku jsme se soustředili na vývoj řešení, která přinášejí uživatelům jednoduchost, komfort a efektivní správu. Naše aplikace umožňuje zákazníkům snadno rezervovat kola, spravovat své rezervace a hodnotit služby, zatímco zaměstnanci bikeparku mohou snadno sledovat stav kol a organizovat jejich údržbu.
-            Systém je navržen tak, aby uspokojil potřeby nejen rekreačních cyklistů, ale i pravidelných návštěvníků a nadšenců do cyklistiky. Každý uživatel má přístup k přehlednému rozhraní, které zajišťuje snadnou orientaci a přístup k informacím o výpůjčkách, dostupnosti kol a zákaznických recenzích. Díky rozsáhlým funkcím pro evidenci a správu kol se zaměstnanci mohou soustředit na poskytování kvalitního servisu.
-            Naše platforma využívá nejnovější technologie pro zajištění bezpečnosti a spolehlivosti, což umožňuje dlouhodobý rozvoj bikeparku. Neustále investujeme do inovací a zpětné vazby od uživatelů, abychom udrželi vysoký standard služeb, které poskytujeme, a podpořili příjemný zážitek z jízdy na kole pro všechny návštěvníky.
-        </div>
-    </section>
-
-    <section>
-        <div class="title">Mapa areálu</div>
-        <img src="{{ url_for('static', filename='images/mapa.jpg')}}" alt="BikeGo mapa" class="map_image">
-    </section>
+<!-- Map Section -->
+<section>
+    <div class="title">Mapa areálu</div>
+    <img src="{{ url_for('static', filename='images/mapa.jpg') }}" alt="BikeGo mapa" class="map_image">
+</section>
 {% endblock %}

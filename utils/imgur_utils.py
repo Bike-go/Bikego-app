@@ -1,8 +1,5 @@
 import requests
-from dotenv import load_dotenv
 from config import Config
-
-load_dotenv()
 
 IMGUR_CLIENT_ID = Config.IMGUR_CLIENT_ID
 

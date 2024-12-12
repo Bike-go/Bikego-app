@@ -1,104 +1,144 @@
 {% extends '__main.jinja' %}
 {% block content %}
-    <div class="profile">
-        <div class="left_container">
-            <div class="user_icon"> 
-                <img src="{{ url_for('static', filename=user.profile_picture_url if user.profile_picture_url else 'images/user.png') }}" alt="User Picture">
-            </div>
-            <div class="user_row">
-                {# Show additional user info based on the role #}
-                {% if user.role in ['Employee', 'Admin', 'Service'] %}
-                    <section class="user_details">
-                        <p style="display:none"><strong>Id:</strong> {{ user.id }}</p>
-                        <p><strong>Role:</strong> {{ user.role }}</p>
-                        <p><strong>Username:</strong> {{ user.username }}</p>
-                        <p><strong>Email:</strong> {{ user.email }}</p>
-                        <p><strong>Phone Number:</strong> {{ user.phone_number if user.phone_number else 'Not set' }}</p>
-                        <p style="display:none"><strong>Account Created:</strong> {{ user.created_at }}</p>
-                        <p style="display:none"><strong>Last Login:</strong> {{ user.last_login }}</p>
-                        <p><strong>Dark Mode:</strong> {{ 'Enabled' if user.darkmode else 'Disabled' }}</p>
-                        <p><a href="{{ url_for('user_bp.login') }}"><strong>Admin panel</strong></a></p>
-                        <p><a href="{{ url_for('user_bp.logout') }}">logout</a></p>
-                    </section>
-                {% elif user.role == 'Customer' %}
-                    <section class="user_details">
-                    <p><strong>Username:</strong> {{ user.username }}</p>
-                        <p><strong>Email:</strong> {{ user.email }}</p>
-                        <p><strong>Phone Number:</strong> {{ user.phone_number if user.phone_number else 'Not set' }}</p>
-                        <p><strong>Dark Mode:</strong> {{ 'Enabled' if user.darkmode else 'Disabled' }}</p>
-                        <p><a href="{{ url_for('user_bp.logout') }}">logout</a></p>
-                    </section>
-                {% endif %}
-            </div>
-            <div class="user_row">             
-                <div class="scnd_btn"> 
-                    <button id="edit_profile"> Upravit profil <i class="fa-solid fa-pen"></i> </button>
-                </div>
-                <div class="scnd_btn">
-                    <button id="settings"> Nastavení <i class="fa-solid fa-gear"></i> </button>
-                </div>
-            </div>
-            <div class="employer_btn">
-                <button id="back_bike">Zaznamenat vrácení <i class="fa-solid fa-bicycle"></i></button>
-            </div>
+<div class="profile">
+    <div class="left_container">
+        <div class="user_icon">
+            <img src="{{ user.profile_picture_url if user.profile_picture_url else url_for('static', filename='images/user.png') }}"
+                alt="Profilový obrázek uživatele {{ user.username }}" referrerpolicy="no-referrer">
         </div>
 
-        <div class="right_container">
-            <section class="stats">
-                <h2>My stats</h2>
-                <div class="stats_row">
-                    <span>Total time of reservation:</span>
-                    <span>{{ total_time }} 00:00:00</span>
-                </div>
-                <div class="stats_row">
-                    <span>Favourite bike:</span>
-                    <span>{{ favourite_bike }} title</span>
-                </div>
-                <div class="stats_row">
-                    <span>Lorem ipsum:</span>
-                    <span>{{ lorem_text }} lorem</span>
-                </div>
-            </section>
+        <!-- General User Information -->
+        <div class="user_row">
+            <section class="user_details">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
-            <section class="sessions">
-                <h2>Active session</h2>
-                <div class="session_row">
-                    <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Bike">
-                    <div class="session_details">
-                        <span> title</span>
-                        <span> 00:00:00</span>
-                        <span> date</span>
+                    <div class="form-group">
+                        <label for="username"><i class="fa-solid fa-user"></i> Uživatelské jméno:</label>
+                        <input type="text" name="username" id="username" value="{{ user.username }}" required>
                     </div>
-                </div>
-            </section>
 
-            <section class="reviews">
-                <h2>My reviews</h2>
-                <div class="review_row">
-                    <span class="review_title">Review title</span>
-                    <span class="stars">⭐⭐⭐⭐⭐</span>
-                    <p>Lorem ipsum bla bla blasSed ac dolor sit amet purus malesuada...  </p>
-                </div>
-                <div class="review_row">
-                    <span class="review_title">Review title</span>
-                    <span class="stars">⭐⭐⭐⭐⭐</span>
-                    <p>Lorem ipsum bla bla blasSed ac dolor sit amet purus malesuada...  </p>
-                </div>
-            </section>
-
-            <section class="history">
-                <h2>Purchase history</h2>
-                <div class="history_row">
-                    <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Bike">
-                    <div class="history_details">
-                        <span>Title</span>
-                        <span>00:00:00</span>
-                        <span>date</span>
+                    <div class="form-group">
+                        <label for="email"><i class="fa-solid fa-envelope"></i> Email:</label>
+                        <input type="email" name="email" id="email" value="{{ user.email }}" required>
                     </div>
-                </div>
-                <a href="#" class="show_all">Show all</a>
+
+                    <div class="form-group">
+                        <label for="phone_number"><i class="fa-solid fa-phone"></i> Telefonní číslo:</label>
+                        <input type="text" name="phone_number" id="phone_number"
+                            value="{{ user.phone_number if user.phone_number else '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="darkmode"><i class="fa-solid fa-moon"></i> Tmavý režim:</label>
+                        <select name="darkmode" id="darkmode" aria-label="Dark Mode">
+                            <option value="True" {% if user.darkmode %}selected{% endif %}>Zapnuto</option>
+                            <option value="False" {% if not user.darkmode %}selected{% endif %}>Vypnuto</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profile_image"><i class="fa-solid fa-image"></i> Profilový obrázek:</label>
+                        <input type="file" name="profile_image" id="profile_image">
+                    </div>
+
+                    <button type="submit" class="submit_btn">Uložit změny</button>
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+                </form>
             </section>
+        </div>
+
+        <!-- Role-Specific Sections -->
+        {% if user.role == 'Admin' %}
+        <!-- Admin specific panel options -->
+        <div class="admin_panel">
+            <p><strong>Admin Panel</strong></p>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('home') }}">Manage Users</a></li>
+                <li><a href="{{ url_for('home') }}">Manage Content</a></li>
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="user_row">
+            <div class="scnd_btn">
+                <p><a href="{{ url_for('user_bp.login') }}"><strong>Panel pro správu</strong></a></p>
+                <p>
+                <form action="{{ url_for('user_bp.logout') }}" method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button type="submit" class="btn-link">Odhlášení</button>
+                </form>
+                </p>
+            </div>
         </div>
     </div>
 
+    <div class="right_container">
+        <section class="stats">
+            <h2>Moje statistiky</h2>
+            <div class="stats_row">
+                <span>Celkový čas rezervace:</span>
+                <span>{{ total_time }} hours</span>
+            </div>
+            <div class="stats_row">
+                <span>Oblíbený bike:</span>
+                <span>{{ favourite_bike[0] if favourite_bike else 'N/A' }} </span>
+            </div>
+            <div class="stats_row">
+                <span>Lorem ipsum:</span>
+                <span>{{ lorem_text }} lorem</span>
+            </div>
+        </section>
+
+        <section class="sessions">
+            <h2>Aktivní sezení</h2>
+            {% for session, bike in active_sessions %}
+            <div class="session_row">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální sezení - Bike">
+                <div class="session_details">
+                    <span>{{ bike.model }}</span>
+                    <span>{{ session.reservation_start.strftime('%H:%M:%S') }}</span>
+                    <span>{{ session.reservation_start.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+        <section class="reviews">
+            <h2>Moje recenze</h2>
+            {% for review in reviews %}
+            <div class="review_row">
+                <span class="review_title">{{ review.comment[:50] }}</span>
+                <span class="stars">⭐⭐⭐⭐⭐</span>
+                <p>{{ review.comment }}</p>
+            </div>
+            {% endfor %}
+        </section>
+
+        <section class="history">
+            <h2>Historie nákupů</h2>
+            {% for rental, bike in purchase_history %}
+            <div class="history_row">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Historie nákupu - Bike">
+                <div class="history_details">
+                    <span>{{ bike.model }}</span>
+                    <span>{{ rental.start_time.strftime('%H:%M:%S') }}</span>
+                    <span>{{ rental.start_time.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+            {% endfor %}
+            <a href="#" class="show_all">Zobrazit více</a>
+        </section>
+    </div>
+
+</div>
 {% endblock %}
