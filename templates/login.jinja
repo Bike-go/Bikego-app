@@ -5,22 +5,22 @@
     <div class="user_icon">
         <i class="fa-regular fa-user"></i>
     </div>
-    <form action="{{ url_for('user_bp.login') }}" method="post" class="login">
+    <form method="POST" class="login">
         <h1>Přihlášení</h1>
 
-        <!-- CSRF Token -->
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <!-- CSRF Token (Automatically handled by Flask-WTF) -->
+        {{ form.hidden_tag() }}
 
         <!-- Username Input with Icon -->
         <div class="input-group">
             <i class="fa-solid fa-user"></i>
-            <input type="text" id="username" name="username" placeholder="Uživatelské jméno" required>
+            {{ form.username(class="form-field", placeholder="Uživatelské jméno") }}
         </div>
 
         <!-- Password Input with Icon -->
         <div class="input-group">
             <i class="fa-solid fa-lock"></i>
-            <input type="password" id="password0" name="password0" placeholder="Heslo" required>
+            {{ form.password0(class="form-field", placeholder="Heslo") }}
             <i class="fa-solid fa-eye" id="toggle-password0" style="cursor: pointer;"
                 onclick="togglePassword('password0', 'toggle-password0')"></i>
         </div>
@@ -33,12 +33,12 @@
         <!-- Actions: Create Account & Submit -->
         <div class="actions">
             <a class="white_btn" href="{{ url_for('user_bp.signup') }}">Vytvořit účet</a>
-            <button type="submit" class="submit">Přihlásit</button>
+            {{ form.submit(class="submit") }}
         </div>
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <ul class=flashes>
+        <ul class="flashes">
             {% for message in messages %}
             <li>{{ message }}</li>
             {% endfor %}

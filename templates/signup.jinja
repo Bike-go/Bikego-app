@@ -5,29 +5,28 @@
     <div class="user_icon">
         <i class="fa-regular fa-user"></i>
     </div>
-    <form action="{{ url_for('user_bp.signup') }}" method="post" class="login">
+    <form method="POST" class="login">
         <h1>Registrace</h1>
 
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <!-- CSRF Token for Security (Automatically added by Flask-WTF) -->
+        {{ form.hidden_tag() }}
 
         <!-- Username Field with Icon -->
         <div class="input-group">
             <i class="fa-solid fa-user"></i>
-            <input type="text" id="username" name="username" placeholder="Uživatelské jméno"
-                value="{{ request.form.username }}" required class="form-field">
+            {{ form.username(class="form-field", placeholder="Uživatelské jméno") }}
         </div>
 
         <!-- Email Field with Icon -->
         <div class="input-group">
             <i class="fa-solid fa-envelope"></i>
-            <input type="email" id="email" name="email" placeholder="Email" value="{{ request.form.email }}" required
-                class="form-field">
+            {{ form.email(class="form-field", placeholder="Email") }}
         </div>
 
         <!-- Password Field 0 with Toggle Eye Icon -->
         <div class="input-group">
             <i class="fa-solid fa-lock"></i>
-            <input type="password" id="password0" name="password0" placeholder="Heslo" required class="form-field">
+            {{ form.password0(class="form-field", placeholder="Heslo") }}
             <i class="fa-solid fa-eye" id="toggle-password0" style="cursor: pointer;"
                 onclick="togglePassword('password0', 'toggle-password0')"></i>
         </div>
@@ -35,19 +34,18 @@
         <!-- Password Field 1 with Toggle Eye Icon -->
         <div class="input-group">
             <i class="fa-solid fa-lock"></i>
-            <input type="password" id="password1" name="password1" placeholder="Potvrdit heslo" required
-                class="form-field">
+            {{ form.password1(class="form-field", placeholder="Potvrdit heslo") }}
             <i class="fa-solid fa-eye" id="toggle-password1" style="cursor: pointer;"
                 onclick="togglePassword('password1', 'toggle-password1')"></i>
         </div>
 
         <div class="row_reg">
-            <button class="create">Vytvořit účet</button>
+            {{ form.submit(class="create") }}
         </div>
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <ul class=flashes>
+        <ul class="flashes">
             {% for message in messages %}
             <li>{{ message }}</li>
             {% endfor %}
@@ -58,5 +56,4 @@
         <a class="white_btn" href="{{ url_for('user_bp.login') }}">Už máte účet? Přihlaste se zde</a>
     </form>
 </main>
-
 {% endblock %}

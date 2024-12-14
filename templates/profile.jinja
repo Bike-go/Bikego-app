@@ -10,42 +10,56 @@
         <!-- General User Information -->
         <div class="user_row">
             <section class="user_details">
-                <form action="" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <form method="POST" enctype="multipart/form-data" class="profile-form">
+                    <div class="form-group">
+                        <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                    </div>
 
                     <div class="form-group">
                         <label for="username"><i class="fa-solid fa-user"></i> Uživatelské jméno:</label>
-                        <input type="text" name="username" id="username" value="{{ user.username }}" required>
+                        {{ form.username(class="form-control") }}
+                        {% for error in form.username.errors %}
+                        <div class="error">{{ error }}</div>
+                        {% endfor %}
                     </div>
 
                     <div class="form-group">
                         <label for="email"><i class="fa-solid fa-envelope"></i> Email:</label>
-                        <input type="email" name="email" id="email" value="{{ user.email }}" required>
+                        {{ form.email(class="form-control") }}
+                        {% for error in form.email.errors %}
+                        <div class="error">{{ error }}</div>
+                        {% endfor %}
                     </div>
 
                     <div class="form-group">
                         <label for="phone_number"><i class="fa-solid fa-phone"></i> Telefonní číslo:</label>
-                        <input type="text" name="phone_number" id="phone_number"
-                            value="{{ user.phone_number if user.phone_number else '' }}">
+                        {{ form.phone_number(class="form-control") }}
+                        {% for error in form.phone_number.errors %}
+                        <div class="error">{{ error }}</div>
+                        {% endfor %}
                     </div>
 
                     <div class="form-group">
                         <label for="darkmode"><i class="fa-solid fa-moon"></i> Tmavý režim:</label>
-                        <select name="darkmode" id="darkmode" aria-label="Dark Mode">
-                            <option value="True" {% if user.darkmode %}selected{% endif %}>Zapnuto</option>
-                            <option value="False" {% if not user.darkmode %}selected{% endif %}>Vypnuto</option>
-                        </select>
+                        {{ form.darkmode(class="form-control") }}
+                        {% for error in form.darkmode.errors %}
+                        <div class="error">{{ error }}</div>
+                        {% endfor %}
                     </div>
 
                     <div class="form-group">
-                        <label for="profile_image"><i class="fa-solid fa-image"></i> Profilový obrázek:</label>
-                        <input type="file" name="profile_image" id="profile_image">
+                        <label for="profile_picture"><i class="fa-solid fa-image"></i> Profilový obrázek:</label>
+                        {{ form.profile_picture(class="form-control") }}
+                        {% for error in form.profile_picture.errors %}
+                        <div class="error">{{ error }}</div>
+                        {% endfor %}
                     </div>
 
                     <button type="submit" class="submit_btn">Uložit změny</button>
+
                     {% with messages = get_flashed_messages() %}
                     {% if messages %}
-                    <ul class=flashes>
+                    <ul class="flashes">
                         {% for message in messages %}
                         <li>{{ message }}</li>
                         {% endfor %}
@@ -58,7 +72,6 @@
 
         <!-- Role-Specific Sections -->
         {% if user.role == 'Admin' %}
-        <!-- Admin specific panel options -->
         <div class="admin_panel">
             <p><strong>Admin Panel</strong></p>
             <ul>
@@ -71,10 +84,9 @@
 
         <div class="user_row">
             <div class="scnd_btn">
-                <p><a href="{{ url_for('user_bp.login') }}"><strong>Panel pro správu</strong></a></p>
                 <p>
                 <form action="{{ url_for('user_bp.logout') }}" method="POST" style="display: inline;">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
                     <button type="submit" class="btn-link">Odhlášení</button>
                 </form>
                 </p>
@@ -91,11 +103,7 @@
             </div>
             <div class="stats_row">
                 <span>Oblíbený bike:</span>
-                <span>{{ favourite_bike[0] if favourite_bike else 'N/A' }} </span>
-            </div>
-            <div class="stats_row">
-                <span>Lorem ipsum:</span>
-                <span>{{ lorem_text }} lorem</span>
+                <span>{{ favourite_bike[0] if favourite_bike else 'N/A' }}</span>
             </div>
         </section>
 
@@ -118,7 +126,6 @@
             {% for review in reviews %}
             <div class="review_row">
                 <span class="review_title">{{ review.comment[:50] }}</span>
-                <span class="stars">⭐⭐⭐⭐⭐</span>
                 <p>{{ review.comment }}</p>
             </div>
             {% endfor %}
@@ -136,9 +143,7 @@
                 </div>
             </div>
             {% endfor %}
-            <a href="#" class="show_all">Zobrazit více</a>
         </section>
     </div>
-
 </div>
 {% endblock %}

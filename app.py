@@ -1,12 +1,12 @@
-
-from flask import Flask, jsonify, redirect, render_template, url_for
-from flask_jwt_extended import JWTManager
+from flask import Flask, jsonify, make_response, redirect, render_template, request, session, url_for
+from flask_jwt_extended import JWTManager, get_jwt, verify_jwt_in_request
 from flask_wtf import CSRFProtect
 from sqlalchemy import create_engine, inspect, text
 from config import Config
 from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
 from db import db
+from flask_wtf.csrf import generate_csrf
 from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
 
 app = Flask(__name__)
@@ -15,9 +15,8 @@ app.config.from_object(Config)
 
 db.init_app(app)
 migrate = Migrate(app, db)
-app.secret_key = app.config["JWT_SECRET_KEY"]
+app.secret_key = app.config["SECRET_KEY"]
 csrf = CSRFProtect(app)
-csrf.init_app(app)
 jwt = JWTManager(app)
 
 def check_and_upload_schema(schema_name: str):
@@ -99,19 +98,66 @@ app.register_blueprint(rental_bp, url_prefix='/rentals')
 app.register_blueprint(repair_bp, url_prefix='/repairs')
 app.register_blueprint(reservation_bp, url_prefix='/reservation')
 app.register_blueprint(review_bp, url_prefix='/reviews')
-app.register_blueprint(user_bp, url_prefix='/')    
+app.register_blueprint(user_bp, url_prefix='/')
 
 @jwt.expired_token_loader
 def expired_token_callback(jwt_header, jwt_data):
+    print(jwt_data.get('sub'))
+    if jwt_data.get('sub'):
+        # Get the current URL or use `request.referrer`
+        original_url = request.referrer or url_for('home', _external=True)
+        
+        # Redirect to the refresh_token route with `next` parameter
+        return redirect(
+            url_for('user_bp.refresh_token', next=original_url, _external=True),
+            307
+        )
     return jsonify({"message": "Token has expired"}), 401
 
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
-    return redirect(url_for("user_bp.login")), 301
+    return jsonify({"message": "Invalid token" + error}), 401
 
 @jwt.unauthorized_loader
 def missing_token_error(error):
-    return redirect(url_for("user_bp.login")), 301
+    return jsonify({"message": "Missing token" + error}), 401
+
+@app.before_request
+def log_csrf_tokens():
+    print('-')
+    try:
+        verify_jwt_in_request()
+        print("JWT CSRF token: ", get_jwt().get('csrf'))
+    except Exception as e:
+        print(e)
+    print("Form Data:", request.form.get('csrf_token'))
+    print("Cookie Token:", request.cookies.get('csrf_token'))
+    print("Session Token:", session.get('csrf_token'))
+    print('-')
+
+#@app.before_request
+#def set_csrf_cookie():
+    # Generate a new CSRF token for each request
+#    csrf_token = generate_csrf()
+#    session['csrf_token'] = csrf_token  # Store in session
+#    response = make_response(jsonify({"message": "CSRF token set"}))
+#    response.set_cookie('csrf_token', csrf_token)  # Set token in cooki
+
+#@app.after_request
+#def regenerate_csrf_token(response):
+#    csrf_token = generate_csrf()
+#    session['csrf_token'] = csrf_token
+#    response.set_cookie('csrf_token', csrf_token)
+#    return response
+
+#@app.before_request
+#def set_csrf_cookie():
+#    if 'csrf_token' not in session:
+#        csrf_token = generate_csrf()  # Generate CSRF token
+#        session['csrf_token'] = csrf_token
+#        response = make_response()  # Empty response to set cookies
+#        response.set_cookie('csrf_token', csrf_token)  # Store CSRF token in cookie
+#        return response
 
 if __name__ == "__main__":
     try:
