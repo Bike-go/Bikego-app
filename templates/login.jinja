@@ -5,42 +5,50 @@
     <div class="user_icon">
         <i class="fa-regular fa-user"></i>
     </div>
-    <form method="POST" class="login">
+    <form method="POST" class="login" action="{{ url_for('user_bp.login') }}">
         <h1>Přihlášení</h1>
 
-        <!-- CSRF Token (Automatically handled by Flask-WTF) -->
         {{ form.hidden_tag() }}
 
-        <!-- Username Input with Icon -->
         <div class="input-group">
             <i class="fa-solid fa-user"></i>
             {{ form.username(class="form-field", placeholder="Uživatelské jméno") }}
+            {% if form.username.errors %}
+            <ul class="errors">
+                {% for error in form.username.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
 
-        <!-- Password Input with Icon -->
         <div class="input-group">
             <i class="fa-solid fa-lock"></i>
             {{ form.password0(class="form-field", placeholder="Heslo") }}
             <i class="fa-solid fa-eye" id="toggle-password0" style="cursor: pointer;"
                 onclick="togglePassword('password0', 'toggle-password0')"></i>
+            {% if form.password0.errors %}
+            <ul class="errors">
+                {% for error in form.password0.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
 
-        <!-- Forgot Password Link -->
         <div class="forgot-password">
             <a href="{{ url_for('user_bp.forgot_password') }}">Zapomněli jste uživatelské jméno a heslo?</a>
         </div>
 
-        <!-- Actions: Create Account & Submit -->
-        <div class="actions">
-            <a class="white_btn" href="{{ url_for('user_bp.signup') }}">Vytvořit účet</a>
-            {{ form.submit(class="submit") }}
+        <div class="row_reg">
+            {{ form.submit(class="create") }}
         </div>
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul class="flashes">
             {% for message in messages %}
-            <li>{{ message }}</li>
+            <li class="alert alert-{{ 'success' if 'success' in message else 'danger' }}">{{ message }}</li>
             {% endfor %}
         </ul>
         {% endif %}

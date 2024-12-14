@@ -29,7 +29,6 @@ class Config:
     SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
     URL_IN_EMAIL = os.getenv("URL_IN_EMAIL")
 
-    # set time for token expiration
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=1)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 

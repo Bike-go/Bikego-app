@@ -7,55 +7,83 @@
                 alt="Profilový obrázek uživatele {{ user.username }}" referrerpolicy="no-referrer">
         </div>
 
-        <!-- General User Information -->
         <div class="user_row">
             <section class="user_details">
-                <form method="POST" enctype="multipart/form-data" class="profile-form">
+                <form enctype="multipart/form-data" method="POST" class="login"
+                    action="{{ url_for('user_bp.profile') }}">
                     <div class="form-group">
                         <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
                     </div>
 
-                    <div class="form-group">
-                        <label for="username"><i class="fa-solid fa-user"></i> Uživatelské jméno:</label>
-                        {{ form.username(class="form-control") }}
-                        {% for error in form.username.errors %}
-                        <div class="error">{{ error }}</div>
-                        {% endfor %}
+                    <div class="input-group">
+                        <label for="{{ form.username.id }}" class="form-label">{{ form.username.label }}</label>
+                        <i class="fa-solid fa-user"></i>
+                        {{ form.username(class="form-field", placeholder="Uživatelské jméno") }}
+                        {% if form.username.errors %}
+                        <ul class="errors">
+                            {% for error in form.username.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
 
-                    <div class="form-group">
-                        <label for="email"><i class="fa-solid fa-envelope"></i> Email:</label>
-                        {{ form.email(class="form-control") }}
-                        {% for error in form.email.errors %}
-                        <div class="error">{{ error }}</div>
-                        {% endfor %}
+                    <div class="input-group">
+                        <label for="{{ form.email.id }}" class="form-label">{{ form.email.label }}</label>
+                        <i class="fa-solid fa-envelope"></i>
+                        {{ form.email(class="form-field", placeholder="Email") }}
+                        {% if form.email.errors %}
+                        <ul class="errors">
+                            {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
 
-                    <div class="form-group">
-                        <label for="phone_number"><i class="fa-solid fa-phone"></i> Telefonní číslo:</label>
-                        {{ form.phone_number(class="form-control") }}
-                        {% for error in form.phone_number.errors %}
-                        <div class="error">{{ error }}</div>
-                        {% endfor %}
+                    <div class="input-group">
+                        <label for="{{ form.phone_number.id }}" class="form-label">{{ form.phone_number.label }}</label>
+                        <i class="fa-solid fa-phone"></i>
+                        {{ form.phone_number(class="form-field", placeholder="Telefonní číslo") }}
+                        {% if form.phone_number.errors %}
+                        <ul class="errors">
+                            {% for error in form.phone_number.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
 
-                    <div class="form-group">
-                        <label for="darkmode"><i class="fa-solid fa-moon"></i> Tmavý režim:</label>
-                        {{ form.darkmode(class="form-control") }}
-                        {% for error in form.darkmode.errors %}
-                        <div class="error">{{ error }}</div>
-                        {% endfor %}
+                    <div class="input-group">
+                        <label for="{{ form.darkmode.id }}" class="form-label">{{ form.darkmode.label }}</label>
+                        <i class="fa-solid fa-moon"></i>
+                        {{ form.darkmode(class="form-field") }}
+                        {% if form.darkmode.errors %}
+                        <ul class="errors">
+                            {% for error in form.darkmode.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
 
-                    <div class="form-group">
-                        <label for="profile_picture"><i class="fa-solid fa-image"></i> Profilový obrázek:</label>
-                        {{ form.profile_picture(class="form-control") }}
-                        {% for error in form.profile_picture.errors %}
-                        <div class="error">{{ error }}</div>
-                        {% endfor %}
+                    <div class="input-group">
+                        <label for="{{ form.profile_picture.id }}" class="form-label">{{ form.profile_picture.label
+                            }}</label>
+                        <i class="fa-solid fa-image"></i>
+                        {{ form.profile_picture(class="form-field") }}
+                        {% if form.profile_picture.errors %}
+                        <ul class="errors">
+                            {% for error in form.profile_picture.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
 
-                    <button type="submit" class="submit_btn">Uložit změny</button>
+                    <div class="row_reg">
+                        {{ form.submit(class="create") }}
+                    </div>
 
                     {% with messages = get_flashed_messages() %}
                     {% if messages %}
@@ -70,26 +98,36 @@
             </section>
         </div>
 
-        <!-- Role-Specific Sections -->
         {% if user.role == 'Admin' %}
         <div class="admin_panel">
-            <p><strong>Admin Panel</strong></p>
-            <ul>
-                <li><a href="{{ url_for('home') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('home') }}">Manage Users</a></li>
-                <li><a href="{{ url_for('home') }}">Manage Content</a></li>
-            </ul>
+            <a href="{{ url_for('home') }}">Admin panel</a>
         </div>
         {% endif %}
 
         <div class="user_row">
             <div class="scnd_btn">
-                <p>
-                <form action="{{ url_for('user_bp.logout') }}" method="POST" style="display: inline;">
+                <form method="POST" class="login" action="{{ url_for('user_bp.forgot_password') }}">
                     <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
-                    <button type="submit" class="btn-link">Odhlášení</button>
+                    <input type="email" name="email" class="form-field" value="{{ user.email }}" readonly hidden />
+                    <button type="submit" class="btn">Změnit heslo</button>
                 </form>
-                </p>
+            </div>
+
+            <div class="scnd_btn">
+                <form method="POST" class="login" action="{{ url_for('user_bp.logout') }}">
+                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                    <button type="submit" class="btn">Odhlášení</button>
+                </form>
+            </div>
+
+            <div class="scnd_btn">
+                <form method="POST" class="login" action="{{ url_for('user_bp.delete_user') }}">
+                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                    <label for="password" class="form-label">Heslo</label>
+                    <input type="password" name="password" class="form-control" placeholder="Zadejte své heslo"
+                        required />
+                    <button type="submit" class="btn">Smazat profil</button>
+                </form>
             </div>
         </div>
     </div>
