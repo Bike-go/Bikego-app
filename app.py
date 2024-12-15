@@ -92,7 +92,18 @@ def bike_view():
 
 @app.route('/admin', methods=['GET'])
 def admin():
-    return render_template("admin_page.jinja", title="Bike", page="bike"), 200
+    return render_template("admin_page.jinja", title="Admin", page="admin"), 200
+
+@app.route('/rent', methods=['GET'])
+def rent():
+    return render_template("rent_back_bike.jinja", title="rent", page="rent"), 200
+
+@app.route('/servis', methods=['GET'])
+def servis():
+    return render_template("servis.jinja", title="servis", page="servis"), 200
+
+
+
 
 app.register_blueprint(bike_bp, url_prefix='/bikes')
 app.register_blueprint(category_bp, url_prefix='/categories')

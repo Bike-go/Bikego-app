@@ -1,0 +1,75 @@
+{% extends '__main.jinja' %}
+
+{% block content%}
+    <div class="rent_back">
+        <!-- Sekce: Vrácení kol -->
+        <section>
+            <h2 class="title">Vrácení kol</h2>
+            <table id="rentedBikesTable" class="table-responsive">
+                <thead>
+                    <tr>
+                        <th>ID kola</th>
+                        <th>Uživatel</th>
+                        <th>Čas</th>
+                        <th>Cena</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="4">Načítání dat...</td></tr>
+                </tbody>
+            </table>
+
+            <form id="bikeReturnForm" class="form-group">
+                <div class="form-control">
+                    <label for="returnBikeId">ID kola</label>
+                    <select id="returnBikeId" name="returnBikeId" required></select>
+                </div>
+                <div class="form-control">
+                    <label for="bikeCondition">Stav kola</label>
+                    <select id="bikeCondition" name="bikeCondition" required>
+                        <option value="">Vyberte stav</option>
+                        <option value="excellent">Výborný</option>
+                        <option value="good">Dobrý</option>
+                        <option value="damaged">Poškozený</option>
+                        <option value="unusable">Nezpůsobilý</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label for="damageDetails">Podrobnosti o poškození (volitelné)</label>
+                    <textarea id="damageDetails" name="damageDetails" rows="4" placeholder="Popište poškození kola..."></textarea>
+                </div>
+                <button type="submit" class="btn">Uložit záznam vrácení</button>
+            </form>
+        </section>
+
+        <!-- Sekce: Půjčování kol -->
+        <section>
+            <h2 class="title">Půjčování kol</h2>
+            <table id="orderedBikesTable" class="table-responsive">
+                <thead>
+                    <tr>
+                        <th>ID kola</th>
+                        <th>Uživatel</th>
+                        <th>Datum</th>
+                        <th>Čas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="4">Načítání dat...</td></tr>
+                </tbody>
+            </table>
+
+            <form id="bikeRentalForm" class="form-group">
+                <div class="form-control">
+                    <label for="rentalBikeId">ID kola</label>
+                    <select id="rentalBikeId" name="rentalBikeId" required></select>
+                </div>
+                <div class="form-control">
+                    <label for="customerName">Jméno zákazníka</label>
+                    <input type="text" id="customerName" name="customerName" placeholder="Zadejte jméno zákazníka" required>
+                </div>
+                <button type="submit" class="btn">Uložit záznam půjčení</button>
+            </form>
+        </section>
+    </div>
+{% endblock %}

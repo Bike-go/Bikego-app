@@ -1159,9 +1159,228 @@ table td {
 
 }
 
-
-
 /*Bike detail end*/
+
+/*rent_back_bike*/
+
+.rent_back {
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.rent_back .title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.rent_back section:first-of-type {
+    margin-bottom: 40px;
+}
+
+#rentedBikesTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#rentedBikesTable th, #rentedBikesTable td {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    text-align: left;
+}
+
+#rentedBikesTable th {
+    background-color: #e9ecef;
+    font-weight: bold;
+}
+
+#rentedBikesTable td {
+    background-color: var(--white);
+}
+
+/* Formulář pro vrácení kola */
+#bikeReturnForm {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#bikeReturnForm .form-control {
+    display: flex;
+    flex-direction: column;
+}
+
+#bikeReturnForm label {
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+#bikeReturnForm input,
+#bikeReturnForm select,
+#bikeReturnForm textarea {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+#bikeReturnForm textarea {
+    resize: vertical;
+}
+
+#bikeReturnForm .btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#bikeReturnForm .btn:hover {
+    background-color: #0056b3;
+}
+
+/* Sekce pro půjčování kol */
+.rent_back section:last-of-type {
+    margin-bottom: 40px;
+}
+
+/* Tabulka pro půjčování kol */
+#orderedBikesTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#orderedBikesTable th, #orderedBikesTable td {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    text-align: left;
+}
+
+#orderedBikesTable th {
+    background-color: #e9ecef;
+    font-weight: bold;
+}
+
+#orderedBikesTable td {
+    background-color: #ffffff;
+}
+
+/* Formulář pro půjčení kola */
+#bikeRentalForm {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#bikeRentalForm .form-control {
+    display: flex;
+    flex-direction: column;
+}
+
+#bikeRentalForm label {
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+#bikeRentalForm input,
+#bikeRentalForm select {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+#bikeRentalForm .btn {
+    background-color: var(--main_color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#bikeRentalForm .btn:hover {
+    background-color: #218838;
+}
+
+
+/*rent_back_bike end*/
+
+/*Servis*/
+/* Specifický styl pro stránku servisního technika */
+.service_page {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.service_page .title {
+    font-size: 2rem;
+    color: #343a40;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Styl pro tabulku */
+#serviceBikesTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#serviceBikesTable th, #serviceBikesTable td {
+    border: 1px solid #dee2e6;
+    padding: 12px;
+    text-align: left;
+}
+
+#serviceBikesTable th {
+    background-color: #e9ecef;
+    font-weight: bold;
+}
+
+#serviceBikesTable td {
+    background-color: #ffffff;
+}
+
+/* Styl pro select box se statusem */
+.bike-status {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    width: 150px;
+}
+
+/* Styl pro tlačítko pro uložení změn */
+.update-status {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.update-status:hover {
+    background-color: #0056b3;
+}
+
+/*Servis end*/
 
 
 @media screen and (max-width: 1250px) {
@@ -1646,6 +1865,30 @@ table td {
 
     .user_review .description {
         font-size: 12px;
+    }
+
+    #serviceBikesTable {
+        width: 100%;
+        overflow-x: auto;
+        display: block; /* Povolit horizontální scrollování */
+    }
+
+    .service_page .title {
+        font-size: 1.5rem; /* Menší font pro mobilní zařízení */
+    }
+
+    /* Vylepšené styly pro tabulku na mobilních zařízeních */
+    #serviceBikesTable th, #serviceBikesTable td {
+        padding: 8px;
+        font-size: 0.9rem; /* Menší text pro lepší přehlednost */
+    }
+
+    .bike-status {
+        width: auto; /* Aby bylo možné přizpůsobit šířku na malých obrazovkách */
+    }
+
+    .update-status {
+        padding: 6px 12px; /* Menší tlačítko pro mobilní verzi */
     }
 
 }
