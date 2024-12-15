@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, redirect, render_template, url_for, request
+from flask import Flask, flash, jsonify, redirect, render_template, url_for, request
 from flask_jwt_extended import JWTManager
 from flask_wtf import CSRFProtect
 from sqlalchemy import create_engine, inspect, text
@@ -6,7 +6,9 @@ from config import Config
 from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
 from db import db
+from models.news_model import News
 from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
+from utils.email_utils import send_contact_form, send_email
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -64,7 +66,8 @@ def home():
 
 @app.route('/news', methods=['GET'])
 def news():
-    return render_template("news.jinja", title="News", page="news"), 200
+    news_items = News.query.filter(News.published_at != None).order_by(News.published_at.desc()).all()
+    return render_template("news.jinja", title="News", page="news", news_items=news_items), 200
 
 @app.route('/rentals', methods=['GET'])
 def rentals():
@@ -74,8 +77,21 @@ def rentals():
 def photos():
     return render_template("photos.jinja", title="Photos", page="photos"), 200
 
-@app.route('/contacts', methods=['GET'])
+@app.route('/contacts', methods=['GET', 'POST'])
 def contacts():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+        if not name or not email or not message:
+            flash("Please fill in all fields.", "error")
+            return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
+        try:
+            send_contact_form(email, name, message)
+            flash("Your message has been sent successfully!", "success")
+        except Exception as e:
+            flash(f"Failed to send your message. Please try again later. Error: {e}", "error")
+        return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
     return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
 
 app.register_blueprint(bike_bp, url_prefix='/bikes')
