@@ -85,6 +85,15 @@ def photos():
 def contacts():
     return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
 
+#For testing
+@app.route('/bike', methods=['GET'])
+def bike_view():
+    return render_template("bike_detail.jinja", title="Bike", page="bike"), 200
+
+@app.route('/admin', methods=['GET'])
+def admin():
+    return render_template("admin_page.jinja", title="Bike", page="bike"), 200
+
 app.register_blueprint(bike_bp, url_prefix='/bikes')
 app.register_blueprint(category_bp, url_prefix='/categories')
 app.register_blueprint(inspection_bp, url_prefix='/inspections')

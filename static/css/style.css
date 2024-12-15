@@ -16,6 +16,7 @@ body{
     --gray_btn: #C9C9C9;
     --white: #fff;
     --black: #000;
+    --price: #ec0000;
 }
 
 
@@ -722,7 +723,7 @@ footer nav {
     gap: 5px;
 }
 
-.bike .bike_img {
+.bike_img {
     width: 300px;
 
 }
@@ -733,13 +734,13 @@ footer nav {
     gap: 10px;
 }
 
-.bike_labels .fa-circle-check, .fa-circle-xmark{
+.fa-circle-check, .fa-circle-xmark{
     color: #15b800;
     margin: 0;
     font-size: 32px;
 }
 
-.bike_labels .fa-circle-xmark{
+.fa-circle-xmark{
     color: #e00000;
 }
 
@@ -756,7 +757,7 @@ footer nav {
 }
 
 .bike p{
-    color: #ec0000;
+    color: var(--price);
     font-size: 24px;
 }
 
@@ -817,8 +818,350 @@ footer nav {
     opacity: 0.5;
 }
 
-
 /*Pujcovna page end*/
+
+/*Admin page start*/
+
+.admin_page_body{
+    margin: auto;
+    text-align: center;
+}
+
+.admin_page_body h1 {
+    margin: 25px;
+    text-transform: uppercase;
+    font-size: 40px;
+    border-bottom: 1px solid var(--scnd_btn_color);
+    color: var(--scnd_btn_color);
+}
+
+
+/* Formuláře a tabulky */
+
+.table-responsive {
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+}
+
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid var(--gray_btn);
+}
+
+table th {
+    background-color: var(--gray_btn);
+    color: var(--black);
+}
+
+table td {
+    background-color: var(--white);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    max-width: 570px;
+    padding: 10px;
+    border: 1px solid var(--gray_btn);
+    border-radius: 4px;
+    margin: auto;
+}
+
+.btn {
+    padding: 10px 20px;
+    color: var(--white);
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Sekce pro různé uživatele, novinky a bike */
+.admin_page_body section {
+    margin-bottom: 30px;
+    padding: 0;
+    align-items: flex-start;
+    overflow: auto;
+}
+
+.card {
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 5px 6px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    width: 100%;
+    font-weight: 600;
+    font-size: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.card-body{
+    overflow: auto;
+    flex: 1;
+}
+
+
+/* Modal (pro editaci) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 100px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    max-width: 600px;
+    border-radius: 8px;
+}
+
+.modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: var(--black);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+/*Admin page end*/
+
+/*Bike detail*/
+
+.bike_preview, .more_bikes{
+    padding: 20px 15%;
+    align-items: flex-start;
+    
+}
+
+.title_row h1{
+    font-size: 32px;
+}
+
+.bike_preview h3{
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.title_row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--black);
+    height: 40px;
+    width: 100%;
+
+}
+
+.title_row .avalibality{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 24px;
+    font-weight: 600;
+    width: 150px;
+}
+
+
+.preview_container{
+    display: flex;
+    justify-content: space-between;
+}
+.preview_container .bike_img {
+    width: 500px;
+    margin-right: 30px;
+}
+
+.preview_data{
+    display: flex;
+    flex-direction: column;
+}
+
+.preview_data .title_row{
+    border-bottom: none;
+    margin: 10px 0;
+}
+
+.preview_data .description{
+    font-size: 20px;
+}
+
+.preview_data .price{
+    font-size: 32px;
+    color: var(--price);
+}
+
+.preview_data .scnd_btn {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 20px;
+    margin: 0;
+    border-radius: 10px;
+}
+
+.preview_data button{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-style: none;
+    color: var(--white);
+    font-size: 20px;
+    font-weight: 600;
+    background: none;
+    cursor: pointer;
+}
+
+.rental-form{
+    width: 100%;
+
+}
+
+.rental-form label{
+    margin-right: 10px;
+    font-weight: 600;
+    font-size: 24px;
+
+}
+
+.rental-form input{
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 400px;
+    font-size: 20px;
+}
+
+.rental-form button{
+    padding: 10px;
+    background-color: var(--main_color);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.rental-form button:hover{
+    background-color: var(--scnd_btn_color);
+}
+
+.preview_data #output {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e7f7e7;
+    border: 1px solid #d4eed4;
+    border-radius: 4px;
+    color: var(--scnd_btn_color);
+}
+
+.more_bikes{
+    display: flex;
+    align-items: center;
+}
+
+.more_bikes .preview_container{
+    width: 100%;
+    justify-content: center;
+}
+
+
+.more_bikes .preview_container .bike_img{
+    width: 250px;    
+}
+.review_for_bike{
+    padding: 0 15%;
+}
+
+.review_for_bike .preview_container{
+    width: 100%;
+
+}
+
+.review_for_bike .preview_container {
+    flex-direction: column;
+}
+
+.review_for_bike .preview_container .user_review {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-top: 20px;
+}
+
+.review_for_bike .user_profile_preview .user_icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--scnd_btn_color);
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.review_for_bike .user_profile_preview{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.review_for_bike .user_profile_preview img{
+    width: 60px;
+}
+
+.review_for_bike .user_profile_preview .name_and_rating{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+
+
+/*Bike detail end*/
 
 
 @media screen and (max-width: 1250px) {
@@ -1131,7 +1474,7 @@ footer nav {
     }
 
     .pujcovna_filters {
-        display: none; /* Skrytí filtrů pro mobilní zařízení */
+        display: none;
     }
 
     #sorting_btn {
@@ -1146,7 +1489,7 @@ footer nav {
     }
 
     .sorting-options {
-        display: none; /* Skrytí možností třídění na mobilu */
+        display: none; 
     }
 
     .bike_collection {
@@ -1154,8 +1497,155 @@ footer nav {
         flex-direction: column;
         align-items: center;
     }
+    
+    /* Tlačítka */
+    .admin_page_body .btn {
+        padding: 6px 10px;
+        font-size: 15px;
+    }
+
+    .admin_page_body table th, table td {
+        padding: 4px;
+        font-size: 15px;
+    }
+
+    /* Modalní okna */
+    .admin_page_body .modal-content {
+        max-width: 500px;
+        padding: 15px;
+    }
+
+    /* Formuláře */
+    .admin_page_body .form-control {
+        max-width: 100%;
+        padding: 8px;
+        max-width: 340px;
+    }
+
+    .admin_page_body .card {
+        max-width: 370px;
+        padding: 0;
+    }
+
+    .admin_page_body h1 {
+        font-size: 28px;
+    }
+
+    .admin_page_body .card-header {
+        font-size: 18px;
+        margin-bottom: 0px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    /*Bike detail*/
+
+    .bike_preview{
+        align-items: center;
+    }
+
+    .bike_preview, .more_bikes{
+        padding: 10px 5%;  
+    }
+
+    .title_row h1{
+        font-size: 20px;
+    }
+
+    .bike_preview h3{
+        font-size: 16px;
+    }
+
+    .title_row{
+        flex-direction: column;
+        height: auto;
+        gap: 10px;
+        padding-bottom: 10px;
+    }
+
+    .title_row .avalibality{
+        font-size: 16px;
+        width: 120px;
+    }
 
 
+    .preview_container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .preview_container .bike_img {
+        width: 300px;
+        margin-right: 15px;
+    }
+
+
+    .preview_data .title_row{
+        margin: 5px 0;
+        flex-direction: column;
+    }
+
+    .preview_data .description{
+        font-size: 14px;
+    }
+
+    .preview_data .price{
+        font-size: 24px;
+    }
+
+    .preview_data .scnd_btn {
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        padding-left: 10px;
+        border-radius: 10px;
+        width: 140px;
+    }
+
+    .preview_data button{
+        font-size: 14px;
+    }
+
+    .rental-form{
+        width: 100%
+    }
+
+    .rental-form label{
+        margin-right: 10px;
+        font-weight: 600;
+        font-size: 24px;
+
+    }
+
+    .rental-form input{
+        width: 300px;
+        font-size: 14px;
+    }
+
+    .rental-form button{
+        font-size: 14px;
+    }
+
+
+    .preview_data #output {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #e7f7e7;
+        border: 1px solid #d4eed4;
+        border-radius: 4px;
+        color: var(--scnd_btn_color);
+    }
+
+
+    .review_for_bike{
+        padding: 0 5%;
+    }
+
+    .user_review .description {
+        font-size: 12px;
+    }
 
 }
-

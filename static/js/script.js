@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     const bikes = document.querySelectorAll(".bike"); // Seznam všech kol
-    const bikesPerPage = 12; // Počet kol na jednu stránku
+    const bikesPerPage = 8; // Počet kol na jednu stránku
     const paginationContainer = document.getElementById("pagination");
 
     // Funkce pro zobrazení konkrétní stránky
@@ -227,6 +227,122 @@ document.addEventListener("DOMContentLoaded", () => {
     // Inicializace filtrů při načtení stránky
     filterBikes();
 });
+
+
+/* ========================== 
+   Admin menu script
+========================== */
+
+// Funkce pro otevření modálního okna pro editaci uživatele
+function openEditUserModal(userId) {
+    // Nastavíme modal pro uživatele podle ID (mohli bychom načítat data z serveru)
+    document.getElementById('editUserModal').style.display = 'block';
+    // Můžeme zde třeba přidat naplnění polí daty konkrétního uživatele
+}
+
+// Funkce pro otevření modálního okna pro editaci novinky
+function openEditNewsModal(newsId) {
+    document.getElementById('editNewsModal').style.display = 'block';
+    // Můžeme přidat načítání dat konkrétní novinky
+}
+
+// Funkce pro otevření modálního okna pro editaci biků
+function openEditBikeModal(bikeId) {
+    document.getElementById('editBikeModal').style.display = 'block';
+    // Můžeme přidat načítání dat o konkrétním biku
+}
+
+// Funkce pro zavření modálního okna
+function closeEditModal() {
+    // Zavře všechny modální okna
+    document.getElementById('editUserModal').style.display = 'none';
+    document.getElementById('editNewsModal').style.display = 'none';
+    document.getElementById('editBikeModal').style.display = 'none';
+}
+
+// Funkce pro změnu aktivního menu v sidebaru
+function setActiveMenu(item) {
+    let menuItems = document.querySelectorAll('.sidebar .list-group-item');
+    menuItems.forEach(function (menuItem) {
+        menuItem.classList.remove('active');
+    });
+    item.classList.add('active');
+}
+
+// Funkce pro odstranění uživatele
+function deleteUser(userId) {
+    if (confirm("Opravdu chcete odstranit tohoto uživatele?")) {
+        // Volání serveru pro odstranění uživatele
+        console.log("Uživatel s ID " + userId + " byl odstraněn.");
+        // Zde bychom mohli použít AJAX pro odeslání požadavku na server pro odstranění
+    }
+}
+
+// Funkce pro odstranění novinky
+function deleteNews(newsId) {
+    if (confirm("Opravdu chcete odstranit tuto novinku?")) {
+        console.log("Novinka s ID " + newsId + " byla odstraněna.");
+        // Opět bychom použili AJAX pro odeslání požadavku na server pro odstranění
+    }
+}
+
+// Funkce pro odstranění biku
+function deleteBike(bikeId) {
+    if (confirm("Opravdu chcete odstranit tento bike?")) {
+        console.log("Bike s ID " + bikeId + " byl odstraněn.");
+        // Pro odstranění biku by se použil AJAX požadavek na server
+    }
+}
+
+function openNewsModal() {
+    document.getElementById('newsModal').style.display = 'block';
+}
+
+function openBikeModal() {
+    document.getElementById('bikeModal').style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+
+/* výběr období pronájmu kola */
+flatpickr("#rental-datetime", {
+    mode: "range",
+    enableTime: true,
+    dateFormat: "d.m.Y H:i", 
+    time_24hr: true,         
+    locale: "cs"      
+});
+
+document.querySelector('.rental-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Zabráníme výchozímu odeslání formuláře
+
+    const rentalDatetime = document.getElementById('rental-datetime').value;
+    const output = document.getElementById('output');
+
+    if (!rentalDatetime) {
+        alert('Prosím, vyberte období pronájmu.');
+        return;
+    }
+
+    const [start, end] = rentalDatetime.split(" až ");
+    if (!end) {
+        alert('Prosím, vyberte konec období.');
+        return;
+    }
+
+    output.innerHTML = `
+        <strong>Vybrané období:</strong><br>
+        Od ${start} do ${end}
+    `;
+});
+
+
+
+
+
 
 function togglePassword(passwordFieldId, toggleIconId) {
 
