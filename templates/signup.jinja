@@ -1,12 +1,12 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-<main class="login-page">
+<main>
     <div class="user_icon">
         <i class="fa-regular fa-user"></i>
     </div>
-    <form method="POST" class="login" action="{{ url_for('user_bp.login') }}">
-        <h1>Přihlášení</h1>
+    <form method="POST" class="login" action="{{ url_for('user_bp.signup') }}">
+        <h1>Registrace</h1>
 
         {{ form.hidden_tag() }}
 
@@ -16,6 +16,18 @@
             {% if form.username.errors %}
             <ul class="errors">
                 {% for error in form.username.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
+        <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            {{ form.email(class="form-field", placeholder="Email") }}
+            {% if form.email.errors %}
+            <ul class="errors">
+                {% for error in form.email.errors %}
                 <li>{{ error }}</li>
                 {% endfor %}
             </ul>
@@ -36,8 +48,18 @@
             {% endif %}
         </div>
 
-        <div class="forgot-password">
-            <a href="{{ url_for('user_bp.forgot_password') }}">Zapomněli jste uživatelské jméno a heslo?</a>
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            {{ form.password1(class="form-field", placeholder="Potvrdit heslo") }}
+            <i class="fa-solid fa-eye" id="toggle-password1" style="cursor: pointer;"
+                onclick="togglePassword('password1', 'toggle-password1')"></i>
+            {% if form.password1.errors %}
+            <ul class="errors">
+                {% for error in form.password1.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
 
         <div class="row_reg">
@@ -48,13 +70,13 @@
         {% if messages %}
         <ul class="flashes">
             {% for message in messages %}
-            <li class="alert alert-{{ 'success' if 'success' in message else 'danger' }}">{{ message }}</li>
+            <li>{{ message }}</li>
             {% endfor %}
         </ul>
         {% endif %}
         {% endwith %}
 
-        <a class="white_btn" href="{{ url_for('user_bp.signup') }}">Nemáte účet? Registrujte se zde</a>
+        <a class="white_btn" href="{{ url_for('user_bp.login') }}">Už máte účet? Přihlaste se zde</a>
     </form>
 </main>
 {% endblock %}

@@ -1,8 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-*{margin: 0; font-family: "Inter", sans-serif; padding: 0;}
+* {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    padding: 0;
+}
 
-body{
+body {
     display: flex;
     flex-direction: column;
     min-width: 370px;
@@ -19,18 +23,23 @@ body{
 }
 
 
-.fa-solid, .fa-regular, .fa-brands {
+.fa-solid,
+.fa-regular,
+.fa-brands {
     font-size: 24px;
     margin-right: 10px;
     text-decoration: none;
 }
 
-.down_container .fa-solid, .fa-regular, .fa-brands{
+.down_container .fa-solid,
+.fa-regular,
+.fa-brands {
     font-size: 40px;
     margin-right: 20px;
 }
 
-.mobile, .search_bar {
+.mobile,
+.search_bar {
     display: none;
 }
 
@@ -38,7 +47,7 @@ body{
     display: block;
 }
 
-header{
+header {
     position: sticky;
     z-index: 5;
     top: 0;
@@ -50,7 +59,8 @@ header{
 
 }
 
-header a, footer a {
+header a,
+footer a {
     text-decoration: none;
     color: var(--white);
     font-size: 24px;
@@ -74,9 +84,10 @@ nav {
     height: auto;
 }
 
-.acc_btn, .kontakt_btn {
+.acc_btn,
+.kontakt_btn {
     background-color: var(--scnd_btn_color);
-    display:flex ;
+    display: flex;
     justify-content: center;
     align-items: center;
     width: 220px;
@@ -119,13 +130,13 @@ footer .title {
     margin: 0 0 5px 0;
 }
 
-footer p{
+footer p {
     text-transform: none;
     color: var(--white);
     font-size: 20px;
 }
 
-footer a{
+footer a {
     text-decoration: underline;
     font-size: 18px;
     font-weight: 500;
@@ -135,7 +146,7 @@ footer nav {
     width: 500px;
 }
 
-.up_container{
+.up_container {
     display: flex;
     justify-content: space-between;
     width: 600px;
@@ -156,14 +167,22 @@ footer nav {
 
 }
 
-.kontakt_btn{
+.kontakt_btn {
     position: absolute;
     right: 220px;
     text-transform: uppercase;
     font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    background: none;
 }
 
-.down_container{
+.kontakt_btn a {
+    text-decoration: none;
+    text-transform: none;
+}
+
+.down_container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -172,7 +191,7 @@ footer nav {
     border-width: 2px;
 }
 
-.image_roll{
+.image_roll {
     position: relative;
     height: 70vh;
     overflow: hidden;
@@ -295,7 +314,8 @@ footer nav {
     margin-bottom: 5px;
 }
 
-.contact_form input, .contact_form textarea {
+.contact_form input,
+.contact_form textarea {
     border: 1px solid var(--gray_btn);
     border-radius: 5px;
     padding: 10px;
@@ -462,7 +482,7 @@ footer nav {
     width: 40%;
 }
 
-.left_container .user_icon{
+.left_container .user_icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -471,12 +491,13 @@ footer nav {
     width: 400px;
     height: 400px;
 }
+
 .user_icon img {
     width: 220px;
 }
 
 
-.left_container .user_row{
+.left_container .user_row {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -488,14 +509,15 @@ footer nav {
     margin: 0 10px;
 }
 
-.left_container .user_row .scnd_btn, .employer_btn{
+.left_container .user_row .scnd_btn,
+.employer_btn {
     background-color: var(--scnd_btn_color);
     border-radius: 8px;
     padding: 10px;
     margin: 0 20px;
 }
 
-.left_container .user_row .scnd_btn button{
+.left_container .user_row .scnd_btn button {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -514,7 +536,7 @@ footer nav {
     min-width: 230px;
 }
 
-.left_container .employer_btn button{
+.left_container .employer_btn button {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -557,7 +579,10 @@ footer nav {
     font-size: 28px;
 }
 
-.stats_row, .session_row, .review_row, .history_row {
+.stats_row,
+.session_row,
+.review_row,
+.history_row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -565,7 +590,8 @@ footer nav {
     width: 95%;
 }
 
-.session_row img, .history_row img {
+.session_row img,
+.history_row img {
     width: 150px;
     height: auto;
 }
@@ -585,7 +611,8 @@ footer nav {
     color: gold;
 }
 
-.history_details, .session_details {
+.history_details,
+.session_details {
     display: flex;
     justify-content: space-between;
     width: 500px;
@@ -608,17 +635,18 @@ footer nav {
 .pujcovna_full_page {
     display: flex;
     justify-content: center;
-    padding:0 80px;
+    padding: 0 80px;
     margin-top: 20px;
 }
 
-.pujcovna_filters{
+.pujcovna_filters {
     width: 400px;
     padding: 0 20px;
     margin-top: 70px;
 }
 
-.filter-save, .scnd_btn {
+.filter-save,
+.scnd_btn {
     display: block;
     margin: auto;
     width: 90%;
@@ -640,7 +668,7 @@ footer nav {
     margin: 0;
 }
 
-.pujcovna_filters span{
+.pujcovna_filters span {
     font-size: 20px;
 }
 
@@ -690,7 +718,7 @@ footer nav {
     border-bottom: 1px solid var(--black);
 }
 
-.pujcovna_search_row .search_bar{
+.pujcovna_search_row .search_bar {
     color: var(--gray_btn);
     border-style: solid;
     border-radius: 5px;
@@ -714,7 +742,7 @@ footer nav {
 
 }
 
-.bike{
+.bike {
     cursor: pointer;
     margin: 20px;
     display: flex;
@@ -727,19 +755,20 @@ footer nav {
 
 }
 
-.bike_labels{
+.bike_labels {
     display: flex;
     justify-content: center;
     gap: 10px;
 }
 
-.bike_labels .fa-circle-check, .fa-circle-xmark{
+.bike_labels .fa-circle-check,
+.fa-circle-xmark {
     color: #15b800;
     margin: 0;
     font-size: 32px;
 }
 
-.bike_labels .fa-circle-xmark{
+.bike_labels .fa-circle-xmark {
     color: #e00000;
 }
 
@@ -755,7 +784,7 @@ footer nav {
     font-weight: 400;
 }
 
-.bike p{
+.bike p {
     color: #ec0000;
     font-size: 24px;
 }
@@ -803,7 +832,8 @@ footer nav {
     margin: 0;
     width: 200px;
     z-index: 10;
-    display: none; /* Skryté ve výchozím stavu */
+    display: none;
+    /* Skryté ve výchozím stavu */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -1028,11 +1058,12 @@ table td {
         padding: 5px 5%;
     }
 
-    header .title{
+    header .title {
         color: var(--white);
         text-transform: none;
     }
-    header .Kontakt{
+
+    header .Kontakt {
         width: 100px;
         display: flex;
         align-items: center;
@@ -1042,7 +1073,7 @@ table td {
         font-size: 20px;
     }
 
-    
+
     .text {
         font-size: 14px;
     }
@@ -1058,12 +1089,12 @@ table td {
         padding: 10px 5% 10px 5%;
     }
 
-    .image_roll{
+    .image_roll {
         height: 50vh;
     }
 
 
-    .logo_image{
+    .logo_image {
         display: none;
     }
 
@@ -1077,16 +1108,18 @@ table td {
         text-align: center;
     }
 
-    .fa-regular, .fa-brands, .fa-solid {
+    .fa-regular,
+    .fa-brands,
+    .fa-solid {
         margin: 0;
     }
 
-    .fa-user{
+    .fa-user {
         font-size: 30px;
 
     }
 
-    .fa-magnifying-glass{
+    .fa-magnifying-glass {
         font-size: 30px;
 
     }
@@ -1118,7 +1151,7 @@ table td {
 
     /*footer*/
 
-    .kontakt_btn{
+    .kontakt_btn {
         display: none;
     }
 
@@ -1126,13 +1159,13 @@ table td {
         padding: 30px 5% 30px 5%;
         margin-top: 20px;
     }
-    
-    footer .fa-solid{
+
+    footer .fa-solid {
         font-size: 15px;
         margin-right: 5px;
     }
-    
-    footer .up_container{
+
+    footer .up_container {
         width: 100%;
         max-width: 600px;
         justify-content: space-between;
@@ -1163,11 +1196,11 @@ table td {
         justify-content: space-between;
     }
 
-    footer a{
+    footer a {
         font-size: 12px;
     }
 
-    .down_container .Kontakt{
+    .down_container .Kontakt {
         order: 2;
         display: flex;
         justify-content: space-between;
@@ -1176,7 +1209,7 @@ table td {
 
     /*menu hamburger*/
 
-    .fa-bars{
+    .fa-bars {
         font-size: 30px;
         color: var(--white);
     }
@@ -1273,10 +1306,11 @@ table td {
     .show_all {
         font-size: 14px;
     }
+
     .pujcovna_full_page {
         width: 100%;
         margin: 0;
-        padding:0 ;
+        padding: 0;
     }
 
     .pujcovna_filters {
@@ -1348,3 +1382,11 @@ table td {
     }
 }
 
+#cookie-banner p {
+    display: inline;
+    font-size: 14px;
+}
+
+#cookie-banner button:hover {
+    background-color: #45a049;
+}

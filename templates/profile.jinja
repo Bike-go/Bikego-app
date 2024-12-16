@@ -1,104 +1,187 @@
 {% extends '__main.jinja' %}
 {% block content %}
-    <div class="profile">
-        <div class="left_container">
-            <div class="user_icon"> 
-                <img src="{{ url_for('static', filename=user.profile_picture_url if user.profile_picture_url else 'images/user.png') }}" alt="User Picture">
-            </div>
-            <div class="user_row">
-                {# Show additional user info based on the role #}
-                {% if user.role in ['Employee', 'Admin', 'Service'] %}
-                    <section class="user_details">
-                        <p style="display:none"><strong>Id:</strong> {{ user.id }}</p>
-                        <p><strong>Role:</strong> {{ user.role }}</p>
-                        <p><strong>Username:</strong> {{ user.username }}</p>
-                        <p><strong>Email:</strong> {{ user.email }}</p>
-                        <p><strong>Phone Number:</strong> {{ user.phone_number if user.phone_number else 'Not set' }}</p>
-                        <p style="display:none"><strong>Account Created:</strong> {{ user.created_at }}</p>
-                        <p style="display:none"><strong>Last Login:</strong> {{ user.last_login }}</p>
-                        <p><strong>Dark Mode:</strong> {{ 'Enabled' if user.darkmode else 'Disabled' }}</p>
-                        <p><a href="{{ url_for('user_bp.login') }}"><strong>Admin panel</strong></a></p>
-                        <p><a href="{{ url_for('user_bp.logout') }}">logout</a></p>
-                    </section>
-                {% elif user.role == 'Customer' %}
-                    <section class="user_details">
-                    <p><strong>Username:</strong> {{ user.username }}</p>
-                        <p><strong>Email:</strong> {{ user.email }}</p>
-                        <p><strong>Phone Number:</strong> {{ user.phone_number if user.phone_number else 'Not set' }}</p>
-                        <p><strong>Dark Mode:</strong> {{ 'Enabled' if user.darkmode else 'Disabled' }}</p>
-                        <p><a href="{{ url_for('user_bp.logout') }}">logout</a></p>
-                    </section>
-                {% endif %}
-            </div>
-            <div class="user_row">             
-                <div class="scnd_btn"> 
-                    <button id="edit_profile"> Upravit profil <i class="fa-solid fa-pen"></i> </button>
-                </div>
-                <div class="scnd_btn">
-                    <button id="settings"> Nastavení <i class="fa-solid fa-gear"></i> </button>
-                </div>
-            </div>
-            <div class="employer_btn">
-                <button id="back_bike">Zaznamenat vrácení <i class="fa-solid fa-bicycle"></i></button>
-            </div>
+<div class="profile">
+    <div class="left_container">
+        <div class="user_icon">
+            <img src="{{ user.profile_picture_url if user.profile_picture_url else url_for('static', filename='images/user.png') }}"
+                alt="Profilový obrázek uživatele {{ user.username }}" referrerpolicy="no-referrer">
         </div>
 
-        <div class="right_container">
-            <section class="stats">
-                <h2>My stats</h2>
-                <div class="stats_row">
-                    <span>Total time of reservation:</span>
-                    <span>{{ total_time }} 00:00:00</span>
-                </div>
-                <div class="stats_row">
-                    <span>Favourite bike:</span>
-                    <span>{{ favourite_bike }} title</span>
-                </div>
-                <div class="stats_row">
-                    <span>Lorem ipsum:</span>
-                    <span>{{ lorem_text }} lorem</span>
-                </div>
-            </section>
-
-            <section class="sessions">
-                <h2>Active session</h2>
-                <div class="session_row">
-                    <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Bike">
-                    <div class="session_details">
-                        <span> title</span>
-                        <span> 00:00:00</span>
-                        <span> date</span>
+        <div class="user_row">
+            <section class="user_details">
+                <form enctype="multipart/form-data" method="POST" class="login"
+                    action="{{ url_for('user_bp.profile') }}">
+                    <div class="form-group">
+                        <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
                     </div>
-                </div>
-            </section>
 
-            <section class="reviews">
-                <h2>My reviews</h2>
-                <div class="review_row">
-                    <span class="review_title">Review title</span>
-                    <span class="stars">⭐⭐⭐⭐⭐</span>
-                    <p>Lorem ipsum bla bla blasSed ac dolor sit amet purus malesuada...  </p>
-                </div>
-                <div class="review_row">
-                    <span class="review_title">Review title</span>
-                    <span class="stars">⭐⭐⭐⭐⭐</span>
-                    <p>Lorem ipsum bla bla blasSed ac dolor sit amet purus malesuada...  </p>
-                </div>
-            </section>
-
-            <section class="history">
-                <h2>Purchase history</h2>
-                <div class="history_row">
-                    <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Bike">
-                    <div class="history_details">
-                        <span>Title</span>
-                        <span>00:00:00</span>
-                        <span>date</span>
+                    <div class="input-group">
+                        <label for="{{ form.username.id }}" class="form-label">{{ form.username.label }}</label>
+                        <i class="fa-solid fa-user"></i>
+                        {{ form.username(class="form-field", placeholder="Uživatelské jméno") }}
+                        {% if form.username.errors %}
+                        <ul class="errors">
+                            {% for error in form.username.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
-                </div>
-                <a href="#" class="show_all">Show all</a>
+
+                    <div class="input-group">
+                        <label for="{{ form.email.id }}" class="form-label">{{ form.email.label }}</label>
+                        <i class="fa-solid fa-envelope"></i>
+                        {{ form.email(class="form-field", placeholder="Email") }}
+                        {% if form.email.errors %}
+                        <ul class="errors">
+                            {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+
+                    <div class="input-group">
+                        <label for="{{ form.phone_number.id }}" class="form-label">{{ form.phone_number.label }}</label>
+                        <i class="fa-solid fa-phone"></i>
+                        {{ form.phone_number(class="form-field", placeholder="Telefonní číslo") }}
+                        {% if form.phone_number.errors %}
+                        <ul class="errors">
+                            {% for error in form.phone_number.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+
+                    <div class="input-group">
+                        <label for="{{ form.darkmode.id }}" class="form-label">{{ form.darkmode.label }}</label>
+                        <i class="fa-solid fa-moon"></i>
+                        {{ form.darkmode(class="form-field") }}
+                        {% if form.darkmode.errors %}
+                        <ul class="errors">
+                            {% for error in form.darkmode.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+
+                    <div class="input-group">
+                        <label for="{{ form.profile_picture.id }}" class="form-label">{{ form.profile_picture.label
+                            }}</label>
+                        <i class="fa-solid fa-image"></i>
+                        {{ form.profile_picture(class="form-field") }}
+                        {% if form.profile_picture.errors %}
+                        <ul class="errors">
+                            {% for error in form.profile_picture.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+
+                    <div class="row_reg">
+                        {{ form.submit(class="create") }}
+                    </div>
+
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    <ul class="flashes">
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+                </form>
             </section>
+        </div>
+
+        {% if user.role == 'Admin' %}
+        <div class="admin_panel">
+            <a href="{{ url_for('home') }}">Admin panel</a>
+        </div>
+        {% endif %}
+
+        <div class="user_row">
+            <div class="scnd_btn">
+                <form method="POST" class="login" action="{{ url_for('user_bp.forgot_password') }}">
+                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                    <input type="email" name="email" class="form-field" value="{{ user.email }}" readonly hidden />
+                    <button type="submit" class="btn">Změnit heslo</button>
+                </form>
+            </div>
+
+            <div class="scnd_btn">
+                <form method="POST" class="login" action="{{ url_for('user_bp.logout') }}">
+                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                    <button type="submit" class="btn">Odhlášení</button>
+                </form>
+            </div>
+
+            <div class="scnd_btn">
+                <form method="POST" class="login" action="{{ url_for('user_bp.delete_user') }}">
+                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                    <label for="password" class="form-label">Heslo</label>
+                    <input type="password" name="password" class="form-control" placeholder="Zadejte své heslo"
+                        required />
+                    <button type="submit" class="btn">Smazat profil</button>
+                </form>
+            </div>
         </div>
     </div>
 
+    <div class="right_container">
+        <section class="stats">
+            <h2>Moje statistiky</h2>
+            <div class="stats_row">
+                <span>Celkový čas rezervace:</span>
+                <span>{{ total_time }} hours</span>
+            </div>
+            <div class="stats_row">
+                <span>Oblíbený bike:</span>
+                <span>{{ favourite_bike[0] if favourite_bike else 'N/A' }}</span>
+            </div>
+        </section>
+
+        <section class="sessions">
+            <h2>Aktivní sezení</h2>
+            {% for session, bike in active_sessions %}
+            <div class="session_row">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální sezení - Bike">
+                <div class="session_details">
+                    <span>{{ bike.model }}</span>
+                    <span>{{ session.reservation_start.strftime('%H:%M:%S') }}</span>
+                    <span>{{ session.reservation_start.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+        <section class="reviews">
+            <h2>Moje recenze</h2>
+            {% for review in reviews %}
+            <div class="review_row">
+                <span class="review_title">{{ review.comment[:50] }}</span>
+                <p>{{ review.comment }}</p>
+            </div>
+            {% endfor %}
+        </section>
+
+        <section class="history">
+            <h2>Historie nákupů</h2>
+            {% for rental, bike in purchase_history %}
+            <div class="history_row">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Historie nákupu - Bike">
+                <div class="history_details">
+                    <span>{{ bike.model }}</span>
+                    <span>{{ rental.start_time.strftime('%H:%M:%S') }}</span>
+                    <span>{{ rental.start_time.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+    </div>
+</div>
 {% endblock %}

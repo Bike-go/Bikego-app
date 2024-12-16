@@ -1,20 +1,22 @@
-
-from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
-from flask_jwt_extended import JWTManager, get_jwt_identity, unset_jwt_cookies
+import os
+from flask import Flask, flash, jsonify, redirect, render_template, url_for, request
+from flask_jwt_extended import JWTManager
+from flask_wtf import CSRFProtect
 from sqlalchemy import create_engine, inspect, text
 from config import Config
 from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
 from db import db
+from models.news_model import News
 from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
+from utils.email_utils import send_contact_form
 
 app = Flask(__name__)
-
 app.config.from_object(Config)
-
 db.init_app(app)
 migrate = Migrate(app, db)
-app.secret_key = app.config["JWT_SECRET_KEY"]
+app.secret_key = app.config["SECRET_KEY"]
+csrf = CSRFProtect(app)
 jwt = JWTManager(app)
 
 def check_and_upload_schema(schema_name: str):
@@ -25,7 +27,6 @@ def check_and_upload_schema(schema_name: str):
     with app.app_context():
         engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
         inspector = inspect(engine)
-
         try:
             with engine.connect() as conn:
                 schema_check_query = f"""
@@ -34,19 +35,28 @@ def check_and_upload_schema(schema_name: str):
                     WHERE schema_name = :schema_name
                 """
                 result = conn.execute(text(schema_check_query), {"schema_name": schema_name}).fetchone()
-
                 if not result:
                     print(f"Schema '{schema_name}' does not exist. Creating schema...")
                     conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {schema_name}"))
                     conn.commit()
+                    try:
+                        data_file = "data.sql"
+                        if not os.path.exists(data_file):
+                            print(f"Data file '{data_file}' not found. Skipping data insertion.")
+                        else:
+                            with open(data_file, "r") as f:
+                                sql_script = f.read()
+                                conn.execute(text(sql_script))
+                                conn.commit()
+                                print("Data inserted successfully.")
+                    except Exception as e:
+                        print(f"Error inserting data into schema '{schema_name}': {e}")
                     print(f"Schema '{schema_name}' created successfully.")
                 else:
                     print(f"Schema '{schema_name}' already exists.")
-
             existing_tables = inspector.get_table_names(schema=schema_name)
             model_tables = db.metadata.tables.keys()
             missing_tables = [table for table in model_tables if table not in existing_tables]
-
             if missing_tables:
                 print(f"Missing tables detected in schema '{schema_name}': {missing_tables}")
                 print("Creating missing tables...")
@@ -60,44 +70,54 @@ def check_and_upload_schema(schema_name: str):
             engine.dispose()
 
 @app.route('/', methods=['GET'])
-def view_Home():
-    return render_template("homePage.jinja", title="Domů"), 200
+def root():
+    return redirect(url_for("home")), 301
 
-@app.route('/Novinky')
-def view_Novinky():
-    return render_template("novinky.jinja", title="Novinky")
+@app.route('/home', methods=['GET'])
+def home():
+    return render_template("home.jinja", title="Home", page="home"), 200
 
-@app.route('/Půjčovná')
-def view_Pujcovna():
-    return render_template("pujcovna.jinja", title="Půjčovná")
+@app.route('/news', methods=['GET'])
+def news():
+    news_items = News.query.filter(News.published_at != None).order_by(News.published_at.desc()).all()
+    return render_template("news.jinja", title="News", page="news", news_items=news_items), 200
 
-@app.route('/Foto')
-def view_Foto():
-    return render_template("foto.jinja", title="Foto")
+@app.route('/rentals', methods=['GET'])
+def rentals():
+    return render_template("rentals.jinja", title="Rentals", page="rentals"), 200
 
-@app.route('/Kontakt')
-def view_Kontakt():
-    return render_template("kontakt.jinja", title="Kontakt")
+@app.route('/photos', methods=['GET'])
+def photos():
+    return render_template("photos.jinja", title="Photos", page="photos"), 200
 
-@app.route('/login')
-def view_login():
-    return render_template("login.jinja", title="Přihlášení", page="login")
+@app.route('/contacts', methods=['GET', 'POST'])
+def contacts():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+        if not name or not email or not message:
+            flash("Please fill in all fields.", "error")
+            return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
+        try:
+            send_contact_form(email, name, message)
+            flash("Your message has been sent successfully!", "success")
+        except Exception as e:
+            flash(f"Failed to send your message. Please try again later. Error: {e}", "error")
+        return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
+    return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
 
-@app.route('/register')
-def view_register():
-    return render_template("register.jinja", title="Registrace", page="register")
+@app.route('/tos', methods=['GET'])
+def tos():
+    return render_template("terms_of_services.jinja", title="Terms of Service", page="tos"), 200
 
-@app.route('/confirm_password')
-def view_new_pass():
-    return render_template("new_pass.jinja", title="Obnovení hesla", page="confirm_password")
+@app.route('/privacy', methods=['GET'])
+def privacy():
+    return render_template("privacy_policy.jinja", title="Privacy Policy", page="privacy"), 200
 
-@app.route('/reset_password')
-def view_reset_pass():
-    return render_template("reset_pass.jinja", title="Obnovení hesla", page="reset_password")
-
-@app.route('/profile')
-def view_profile():
-    return render_template("profile.jinja", title="Profil")
+@app.route('/cookies', methods=['GET'])
+def cookies():
+    return render_template("cookies_policy.jinja", title="Cookies Policy", page="cookies"), 200
 
 app.register_blueprint(bike_bp, url_prefix='/bikes')
 app.register_blueprint(category_bp, url_prefix='/categories')
@@ -112,48 +132,23 @@ app.register_blueprint(rental_bp, url_prefix='/rentals')
 app.register_blueprint(repair_bp, url_prefix='/repairs')
 app.register_blueprint(reservation_bp, url_prefix='/reservation')
 app.register_blueprint(review_bp, url_prefix='/reviews')
-app.register_blueprint(user_bp, url_prefix='/users')
+app.register_blueprint(user_bp, url_prefix='/')
 
-# Handle 401 Unauthorized errors globally
-@app.errorhandler(401)
-def unauthorized(error):
-    return redirect(url_for("user_bp.login"))
-
-# Handle invalid JWT tokens (e.g., malformed, incorrect)
-@jwt.invalid_token_loader
-def invalid_token_callback(jwt_header, jwt_payload):
-    # Redirect to login with a flash message
-    flash("Invalid token. Please log in again.", "error")
-    return redirect(url_for("user_bp.login"))
-
-# Handle cases where the Authorization header is missing
-@jwt.unauthorized_loader
-def unauthorized_callback(error):
-    # Redirect to login with a flash message
-    flash("Missing Authorization Header. Please log in.", "error")
-    return redirect(url_for("user_bp.login"))
-
-# Handle expired tokens
 @jwt.expired_token_loader
-def expired_token_callback(jwt_header, jwt_payload):
-    if jwt_payload['type'] == 'access':
-        try:
-            # Try to get the user's identity from the refresh token
-            current_user = get_jwt_identity()  # Raises an error if refresh token is invalid
-            # If valid, redirect to refresh token endpoint
-            return redirect(url_for("user_bp.refresh", next=request.path))
-        except:
-            # Handle invalid or expired refresh token
-            flash("Your session has expired. Please log in again.", "error")
-            response = jsonify({"msg": "Refresh token has expired or is invalid. Please log in again."})
-            unset_jwt_cookies(response)
-            return redirect(url_for("user_bp.login"))
-    else:
-        # Handle refresh token expiration
-        flash("Refresh token expired. Please log in again.", "error")
-        response = jsonify({"msg": "Refresh token has expired. Please log in again."})
-        unset_jwt_cookies(response)
-        return redirect(url_for("user_bp.login"))
+def expired_token_callback(jwt_header, jwt_data):
+    user_id = jwt_data.get('sub')
+    if user_id:
+        original_url = request.referrer or url_for('home', _external=True)
+        return redirect(url_for('user_bp.refresh_token', next=original_url, _external=True), 307)
+    return jsonify({"message": "Token has expired"}), 401
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):
+    return jsonify({"message": error}), 401
+
+@jwt.unauthorized_loader
+def missing_token_error(error):
+    return jsonify({"message": error}), 401
 
 if __name__ == "__main__":
     try:

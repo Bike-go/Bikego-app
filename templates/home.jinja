@@ -1,0 +1,44 @@
+{% extends '__main.jinja' %}
+
+{% block content %}
+<!-- Search Bar -->
+<div class="search_bar">
+    <form action="#" method="get">
+        <label for="search" class="sr-only">Search</label>
+        <input type="search" id="search" name="search" placeholder="Search...">
+        <button type="submit" id="btn_search" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
+</div>
+
+<!-- Image Roll / Slider -->
+<section class="image_roll">
+    <img src="{{ url_for('static', filename='images/bike1.jpg') }}" alt="Bike 1" class="slide active">
+    <img src="{{ url_for('static', filename='images/bike2.jpg') }}" alt="Bike 2" class="slide">
+    <img src="{{ url_for('static', filename='images/bike3.jpg') }}" alt="Bike 3" class="slide">
+
+    <div class="indicator-container">
+        <div class="indicator active" onclick="goToSlide(0)"></div>
+        <div class="indicator" onclick="goToSlide(1)"></div>
+        <div class="indicator" onclick="goToSlide(2)"></div>
+    </div>
+</section>
+
+<!-- "O nás" Section -->
+<section>
+    <div class="title">O nás</div>
+    <div class="text">
+        <p>Naše firma se specializuje na provoz moderního online systému pro půjčování kol a správu bikeparku...</p>
+        <p>Systém je navržen tak, aby uspokojil potřeby nejen rekreačních cyklistů, ale i pravidelných návštěvníků a
+            nadšenců do cyklistiky...</p>
+        <p>Naše platforma využívá nejnovější technologie pro zajištění bezpečnosti a spolehlivosti...</p>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section>
+    <div class="title">Mapa areálu</div>
+    <img src="{{ url_for('static', filename='images/mapa.jpg') }}" alt="BikeGo mapa" class="map_image">
+</section>
+{% endblock %}

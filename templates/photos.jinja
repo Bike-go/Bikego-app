@@ -1,0 +1,22 @@
+{% extends '__main.jinja' %}
+
+{% block content %}
+    <section class="gallery_page">
+        <div class="title">Foto Galerie</div>
+        <div class="text">
+            <p>Prohlédněte si naše nejnovější fotky z bikeparku a zachycené zážitky na našich trailech.</p>
+        </div>
+
+        <div class="gallery">
+            {% set images = ['bike1.jpg', 'bike2.jpg', 'bike3.jpg', 'bike4.jpg', 'bike5.jpg'] %}
+            
+            {% for image in images %}
+                <div class="gallery_item">
+                    <a href="{{ url_for('static', filename='images/' + image) }}" target="_blank">
+                        <img src="{{ url_for('static', filename='images/' + image) }}" alt="Obrázek kola v bikeparku">
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

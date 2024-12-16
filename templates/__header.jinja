@@ -1,34 +1,48 @@
 {% block header %}
-    <header class="pc">
-        <img src="../static/images/logo.png" alt="BikeGo" class="logo_image">
-        <nav>
-            <a href="{{ url_for('view_Home') }}">Domů</a>
-            <a href="{{ url_for('view_Novinky') }}">Novinky</a>
-            <a href="{{ url_for('view_Pujcovna') }}">Půjčovná</a>
-            <a href="{{ url_for('view_Foto') }}">Foto</a>
-            <a href="{{ url_for('view_Kontakt') }}">Kontakt</a>
-        </nav>
-        <a href="{{url_for('view_login')}}" class="acc_btn">Můj účet</a>        
-    </header>
+<header class="pc">
+    <!-- Logo -->
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BikeGo" class="logo_image">
 
-    <header class="mobile">
-        <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-        <div class="side_menu" id="sideMenu">
-            <a href="{{ url_for('view_Home') }}">Domů</a>
-            <a href="{{ url_for('view_Novinky') }}">Novinky</a>
-            <a href="{{ url_for('view_Pujcovna') }}">Půjčovná</a>
-            <a href="{{ url_for('view_Foto') }}">Foto</a>
-            <a href="{{ url_for('view_Kontakt') }}">Kontakt</a>
-        </div>
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+        <a href="{{ url_for('home') }}" class="nav-link">Domů</a>
+        <a href="{{ url_for('news') }}" class="nav-link">Novinky</a>
+        <a href="{{ url_for('rentals') }}" class="nav-link">Půjčovna</a>
+        <a href="{{ url_for('photos') }}" class="nav-link">Foto</a>
+        <a href="{{ url_for('contacts') }}" class="nav-link">Kontakt</a>
+    </nav>
 
-        <div class="Kontakt">
-            <i class="fa-solid fa-bars" id="btn_menu"></i>
-            <p class="title">BikeGO</p>
-        </div>
-        
-        <a href="" class="acc_btn">
-            <i class="fa-regular fa-user"></i>
-        </a>
+    <!-- Account Button -->
+    <a href="{{ url_for('user_bp.login') }}" class="acc_btn">
+        Můj účet
+    </a>
+</header>
 
-    </header>
+<!-- Mobile Header -->
+<header class="mobile">
+    <!-- Overlay for menu toggle -->
+    <div class="overlay" id="overlay" onclick="toggleMenu()" aria-hidden="true"></div>
+
+    <!-- Mobile Side Menu -->
+    <div class="side_menu" id="sideMenu" role="navigation" aria-label="Mobile Navigation">
+        <a href="{{ url_for('home') }}" class="nav-link">Domů</a>
+        <a href="{{ url_for('news') }}" class="nav-link">Novinky</a>
+        <a href="{{ url_for('rentals') }}" class="nav-link">Půjčovna</a>
+        <a href="{{ url_for('photos') }}" class="nav-link">Foto</a>
+        <a href="{{ url_for('contacts') }}" class="nav-link">Kontakt</a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <div class="mobile-menu-toggle">
+        <button id="btn_menu" aria-label="Toggle navigation menu" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <p class="title">BikeGO</p>
+    </div>
+
+    <!-- Account Button -->
+    <a href="{{ url_for('user_bp.login') }}" class="acc_btn">
+        <i class="fa-regular fa-user"></i>
+    </a>
+</header>
 {% endblock %}

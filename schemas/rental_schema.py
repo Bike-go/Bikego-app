@@ -1,8 +1,7 @@
-from marshmallow import fields, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, EXCLUDE
 from models.rental_model import Rental
 
-class RentalSchema(SQLAlchemyAutoSchema):
+class RentalSchema(Schema):
     class Meta:
         model = Rental
         load_instance = True

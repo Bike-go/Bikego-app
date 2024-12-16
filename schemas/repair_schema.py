@@ -1,8 +1,7 @@
-from marshmallow import fields, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, EXCLUDE
 from models.repair_model import Repair
 
-class RepairSchema(SQLAlchemyAutoSchema):
+class RepairSchema(Schema):
     class Meta:
         model = Repair
         load_instance = True

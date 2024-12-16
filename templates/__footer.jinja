@@ -1,48 +1,60 @@
 {% block footer %}
-    <footer>
+<footer>
     <div class="up_container">
-                <div class="container_1">
-                    <div class="title">BikeGO</div>
-                    <div class="address">
-                        <p>Czech Republic, Brno</p> 
-                        <p>Ulice 180/12</p>
-                    </div>
-                </div>
-        
-                <div class="container_2">
-                    <div class="Kontakt">
-                        <i class="fa-solid fa-phone"></i> +420 123 456 789
-                    </div>
-                    <div class="Kontakt">
-                        <i class="fa-solid fa-phone"></i> +280 123 000 258 
-                    </div>
-                    <div class="Kontakt">
-                        <i class="fa-solid fa-fax"></i> +420 64211 5485 -200
-                    </div>
-                    <div class="Kontakt">
-                        <i class="fa-solid fa-envelope"></i> bikego@email.cz
-                    </div>
-                </div>
-                <a href="{{ url_for('view_Kontakt') }}" class="kontakt_btn">Kontakt</a>
+        <div class="container_1">
+            <div class="title">BikeGO</div>
+            <div class="address">
+                <p>Česká republika, Brno</p>
+                <p>Ulice 180/12</p>
             </div>
+        </div>
 
-            <div class="down_container">
-                <div class="Kontakt">
-                    <a href="" class="fa-regular fa-envelope"></a>
-                    <a href="" class="fa-brands fa-facebook"></a>
-                    <a href="" class="fa-brands fa-instagram"></a>
-                    <a href="" class="fa-brands fa-youtube"></a>
+        <div class="container_2">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>+420 123 456 789</span>
                 </div>
-
-                <nav>
-                    <a href="{{ url_for('view_Home') }}">Domů</a>
-                    <a href="{{ url_for('view_Novinky') }}">Novinky</a>
-                    <a href="{{ url_for('view_Pujcovna') }}">Půjčovná</a>
-                    <a href="{{ url_for('view_Foto') }}">Foto</a>
-                    <a href="{{ url_for('view_Kontakt') }}">Kontakt</a>
-                </nav>
-
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BikeGo" class="logo_image">
+                <div class="contact-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>+280 123 000 258</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-fax"></i>
+                    <span>+420 64211 5485 -200</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>bikego@email.cz</span>
+                </div>
             </div>
-    </footer>
+            <div class="kontakt_btn">
+                <a href="{{ url_for('cookies') }}">Cookies</a>
+                <a href="{{ url_for('tos') }}">Podmínky služby</a>
+                <a href="{{ url_for('privacy') }}">Zásady ochrany osobních údajů</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="down_container">
+        <div class="social-links">
+            <a href="mailto:bikego@email.cz" class="social-icon fa-regular fa-envelope" title="Email"></a>
+            <a href="https://www.facebook.com/BikeGo" class="social-icon fa-brands fa-facebook" title="Facebook"></a>
+            <a href="https://www.instagram.com/BikeGo" class="social-icon fa-brands fa-instagram" title="Instagram"></a>
+            <a href="https://www.youtube.com/c/BikeGo" class="social-icon fa-brands fa-youtube" title="YouTube"></a>
+        </div>
+
+        <nav class="footer-nav">
+            <a href="{{ url_for('home') }}" class="nav-link">Domů</a>
+            <a href="{{ url_for('news') }}" class="nav-link">Novinky</a>
+            <a href="{{ url_for('rentals') }}" class="nav-link">Půjčovna</a>
+            <a href="{{ url_for('photos') }}" class="nav-link">Foto</a>
+            <a href="{{ url_for('contacts') }}" class="nav-link">Kontakt</a>
+        </nav>
+
+        <div class="footer-logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BikeGo Logo" class="logo_image">
+        </div>
+    </div>
+</footer>
 {% endblock %}
