@@ -1,6 +1,6 @@
 import os
 from flask import Flask, flash, jsonify, redirect, render_template, url_for, request
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, get_jwt_identity, verify_jwt_in_request
 from flask_wtf import CSRFProtect
 from sqlalchemy import create_engine, inspect, text
 from config import Config
@@ -149,6 +149,16 @@ def invalid_token_callback(error):
 @jwt.unauthorized_loader
 def missing_token_error(error):
     return jsonify({"message": error}), 401
+
+@app.context_processor
+def inject_user():
+    try:
+        verify_jwt_in_request(optional=True)
+        is_logged_in = bool(get_jwt_identity())
+    except Exception:
+        is_logged_in = False
+
+    return {'is_logged_in': is_logged_in}
 
 if __name__ == "__main__":
     try:
