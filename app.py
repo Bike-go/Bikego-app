@@ -1,3 +1,4 @@
+import os
 from flask import Flask, flash, jsonify, redirect, render_template, url_for, request
 from flask_jwt_extended import JWTManager
 from flask_wtf import CSRFProtect
@@ -8,7 +9,7 @@ from flask_migrate import Migrate
 from db import db
 from models.news_model import News
 from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
-from utils.email_utils import send_contact_form, send_email
+from utils.email_utils import send_contact_form
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -38,6 +39,18 @@ def check_and_upload_schema(schema_name: str):
                     print(f"Schema '{schema_name}' does not exist. Creating schema...")
                     conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {schema_name}"))
                     conn.commit()
+                    try:
+                        data_file = "data.sql"
+                        if not os.path.exists(data_file):
+                            print(f"Data file '{data_file}' not found. Skipping data insertion.")
+                        else:
+                            with open(data_file, "r") as f:
+                                sql_script = f.read()
+                                conn.execute(text(sql_script))
+                                conn.commit()
+                                print("Data inserted successfully.")
+                    except Exception as e:
+                        print(f"Error inserting data into schema '{schema_name}': {e}")
                     print(f"Schema '{schema_name}' created successfully.")
                 else:
                     print(f"Schema '{schema_name}' already exists.")
@@ -94,6 +107,18 @@ def contacts():
         return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
     return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
 
+@app.route('/tos', methods=['GET'])
+def tos():
+    return render_template("terms_of_services.jinja", title="Terms of Service", page="tos"), 200
+
+@app.route('/privacy', methods=['GET'])
+def privacy():
+    return render_template("privacy_policy.jinja", title="Privacy Policy", page="privacy"), 200
+
+@app.route('/cookies', methods=['GET'])
+def cookies():
+    return render_template("cookies_policy.jinja", title="Cookies Policy", page="cookies"), 200
+
 app.register_blueprint(bike_bp, url_prefix='/bikes')
 app.register_blueprint(category_bp, url_prefix='/categories')
 app.register_blueprint(inspection_bp, url_prefix='/inspections')
@@ -113,12 +138,8 @@ app.register_blueprint(user_bp, url_prefix='/')
 def expired_token_callback(jwt_header, jwt_data):
     user_id = jwt_data.get('sub')
     if user_id:
-        # Determine the original URL or a fallback URL
         original_url = request.referrer or url_for('home', _external=True)
-        # Redirect to the refresh_token endpoint with `next` parameter
-        # Adjust to use `POST` request, ensuring the original URL is passed in the body or as part of the form
         return redirect(url_for('user_bp.refresh_token', next=original_url, _external=True), 307)
-    # If no user ID is found in the token, return an error message
     return jsonify({"message": "Token has expired"}), 401
 
 @jwt.invalid_token_loader

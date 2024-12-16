@@ -1,24 +1,24 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-    <section class="news_page">
-        <div class="title">Novinky</div>
-        <div class="text">
-            <p>Objevte nejnovější informace, aktuality a zajímavosti ze světa BikeGo a našeho bikeparku.</p>
-        </div>
+<section class="news_page">
+    <div class="title">Novinky</div>
+    <div class="text">
+        <p>Objevte nejnovější informace, aktuality a zajímavosti ze světa BikeGo a našeho bikeparku.</p>
+    </div>
 
-        <div class="news_list">
-            {% for news in news_items %}
-            <article class="news_item" role="article">
-                <a href="#" class="news_title" title="{{ news.title }}">{{ news.title }}</a>
-                <p class="news_date">{{ news.published_at.strftime('%d. %B %Y') }}</p>
-                <p class="news_excerpt">{{ news.content[:100] }}...</p>
-            </article>
-            {% endfor %}
+    <div class="news_list">
+        {% for news in news_items %}
+        <article class="news_item" role="article">
+            <a href="" class="news_title" title="{{ news.title }}">{{ news.title }}</a>
+            <p class="news_date">{{ news.published_at.strftime('%d. %B %Y') }}</p>
+            <p class="news_excerpt">{{ news.content[:100] }}...</p>
+        </article>
+        {% endfor %}
 
-            {% if news_items|length == 0 %}
-            <p class="no_news">Momentálně nejsou k dispozici žádné novinky.</p>
-            {% endif %}
-        </div>
-    </section>
+        {% if news_items|length == 0 %}
+        <p class="no_news">Momentálně nejsou k dispozici žádné novinky.</p>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

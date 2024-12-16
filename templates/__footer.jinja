@@ -28,7 +28,11 @@
                     <span>bikego@email.cz</span>
                 </div>
             </div>
-            <a href="{{ url_for('contacts') }}" class="kontakt_btn">Kontakt</a>
+            <div class="kontakt_btn">
+                <a href="{{ url_for('cookies') }}">Cookies</a>
+                <a href="{{ url_for('tos') }}">Podmínky služby</a>
+                <a href="{{ url_for('privacy') }}">Zásady ochrany osobních údajů</a>
+            </div>
         </div>
     </div>
 
@@ -43,7 +47,7 @@
         <nav class="footer-nav">
             <a href="{{ url_for('home') }}" class="nav-link">Domů</a>
             <a href="{{ url_for('news') }}" class="nav-link">Novinky</a>
-            <a href="{{ url_for('rentals') }}" class="nav-link">Půjčovná</a>
+            <a href="{{ url_for('rentals') }}" class="nav-link">Půjčovna</a>
             <a href="{{ url_for('photos') }}" class="nav-link">Foto</a>
             <a href="{{ url_for('contacts') }}" class="nav-link">Kontakt</a>
         </nav>
