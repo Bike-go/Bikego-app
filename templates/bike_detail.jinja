@@ -1,7 +1,135 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-<section class="bike_detail">
+<main>
+    <section class="bike_preview">
+        <div class="title_row">
+            <h1>Full title</h1>
+            <div class="avalibality"><i class="fa-solid fa-circle-check"></i> Dostupny</div>
+        </div>
+
+        <div class="preview_container">
+            <div class="bike_img">
+                <img src="{{url_for('static', filename='images/example.jpg')}}" class="bike_img">
+            </div>
+
+            <div class="preview_data">
+                <div class="title_row">
+                    <h3>Kategorie</h3>
+                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                </div>
+                <div class="title_row">
+                    <h3>Velikost: M <!-- {{velikost}} --></h3>
+                    <div class="scnd_btn"> <button id="add_review"> Napsat recenzi </button> <i class="fa-solid fa-pen"></i></div>
+                </div>
+                
+                <p class="title_row description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna in magna gravida vehicula. </p>
+
+                <p class="title_row price"> 100Kč/den</p>
+                
+                <form class="rental-form" method="POST">
+                    <div class="title_row">
+                        <input type="text" id="rental-datetime" name="rental-datetime" placeholder="Doba zapůjčení kola:" required>
+                        <button type="submit">Rezervovat</button>
+                    </div>
+                    
+                    
+                </form>
+                <div id="output"></div>
+            
+            </div>
+
+        </div>
+    
+    </section>
+
+    <section class="more_bikes">
+        <div class="title_row">
+            <h1>Další nabídky</h1>
+        </div>
+        <div class="preview_container">
+             <div class="bike" data-kategorie="trailové" data-velikost="S" data-material="steel" data-typ-brzdy="hydraulic" data-znacka="surly" data-barva="žlutá">
+                <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                <div class="bike_labels">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div class="b_label">S</div>
+                    <div class="b_label">Trailové</div>
+                </div>
+                <h2>Trailové kolo 10</h2>
+                <h4>Trailové</h4>
+                <p>470Kč/den</p>
+            </div>
+
+            <div class="bike" data-kategorie="enduro" data-velikost="L" data-material="carbon" data-typ-brzdy="rim" data-znacka="ibis" data-barva="modrá">
+                <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                <div class="bike_labels">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div class="b_label">L</div>
+                    <div class="b_label">Enduro</div>
+                </div>
+                <h2>Enduro kolo 11</h2>
+                <h4>Enduro</h4>
+                <p>550Kč/den</p>
+            </div>
+
+            <div class="bike" data-kategorie="cross country" data-velikost="M" data-material="aluminum" data-typ-brzdy="disc" data-znacka="surly" data-barva="bílá">
+                <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                <div class="bike_labels">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div class="b_label">M</div>
+                    <div class="b_label">Cross Country</div>
+                </div>
+                <h2>Cross Country kolo 12</h2>
+                <h4>Cross Country</h4>
+                <p>420Kč/den</p>
+            </div>
+        </div>   
+    </section>
+
+    <section class="review_for_bike">
+        <div class="title_row">
+            <h1>Recenze</h1>
+        </div>
+        
+        <div class="preview_container">
+            <div class="user_review">
+                <div class="user_profile_preview">
+                    <div class="user_icon"><img src="{{url_for('static', filename='images/user.png')}}" alt="Profilový obrázek uživatele" referrerpolicy="no-referrer"></div>
+                    <div class="name_and_rating">
+                        <h3>User</h3>
+                        <p>⭐⭐⭐⭐⭐</p>
+                    </div>
+                </div>
+                
+                <p class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna in magna gravida vehicula.</p>
+            </div>
+
+            <div class="user_review">
+                <div class="user_profile_preview">
+                    <div class="user_icon"><img src="{{url_for('static', filename='images/user.png')}}" alt="Profilový obrázek uživatele" referrerpolicy="no-referrer"></div>
+                    <div class="name_and_rating">
+                        <h3>User</h3>
+                        <p>⭐⭐⭐⭐⭐</p>
+                    </div>
+                </div>
+                
+                <p class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna in magna gravida vehicula.</p>
+            </div>
+
+            <div class="user_review">
+                <div class="user_profile_preview">
+                    <div class="user_icon"><img src="{{url_for('static', filename='images/user.png')}}" alt="Profilový obrázek uživatele" referrerpolicy="no-referrer"></div>
+                    <div class="name_and_rating">
+                        <h3>User</h3>
+                        <p>⭐⭐⭐⭐⭐</p>
+                    </div>
+                </div>
+                
+                <p class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna in magna gravida vehicula.</p>
+            </div>
+        </div>        
+    </section>
+    <section class="bike_detail">
     <div class="title">Detail kola</div>
     <div class="bike_detail_card">
         <div class="bike_images">
@@ -27,4 +155,5 @@
         </div>
     </div>
 </section>
+</main>
 {% endblock %}

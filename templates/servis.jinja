@@ -1,0 +1,65 @@
+{% extends '__main.jinja' %}
+
+{% block content %}
+    <div class="service_page">
+        <h2 class="title">Přehled kol na servis</h2>
+        
+        <!-- Tabulka s koly, které potřebují servis -->
+        <table id="serviceBikesTable" class="table-responsive">
+            <thead>
+                <tr>
+                    <th>ID kola</th>
+                    <th>Popis poškození</th>
+                    <th>Status</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Statická data pro 3 kola -->
+                <tr>
+                    <td>001</td>
+                    <td>Poškozený rám</td>
+                    <td>
+                        <select class="bike-status" data-bike-id="001">
+                            <option value="waiting" selected>Čekání</option>
+                            <option value="in_repair">Opravuji se</option>
+                            <option value="repaired">Opraveno</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn update-status" data-bike-id="001">Uložit</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Poškozené kolo</td>
+                    <td>
+                        <select class="bike-status" data-bike-id="002">
+                            <option value="waiting">Čekání</option>
+                            <option value="in_repair" selected>Opravuji se</option>
+                            <option value="repaired">Opraveno</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn update-status" data-bike-id="002">Uložit</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Poškozená brzda</td>
+                    <td>
+                        <select class="bike-status" data-bike-id="003">
+                            <option value="waiting">Čekání</option>
+                            <option value="in_repair">Opravuji se</option>
+                            <option value="repaired" selected>Opraveno</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn update-status" data-bike-id="003">Uložit</button>
+                    </td>
+                </tr>
+                <!-- Konec statických dat -->
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

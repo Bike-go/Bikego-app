@@ -228,6 +228,234 @@ document.addEventListener("DOMContentLoaded", () => {
     filterBikes();
 });
 
+
+/* ========================== 
+   Admin menu script
+========================== */
+
+// Funkce pro otevření modálního okna pro editaci uživatele
+function openEditUserModal(userId) {
+    // Nastavíme modal pro uživatele podle ID (mohli bychom načítat data z serveru)
+    document.getElementById('editUserModal').style.display = 'block';
+    // Můžeme zde třeba přidat naplnění polí daty konkrétního uživatele
+}
+
+// Funkce pro otevření modálního okna pro editaci novinky
+function openEditNewsModal(newsId) {
+    document.getElementById('editNewsModal').style.display = 'block';
+    // Můžeme přidat načítání dat konkrétní novinky
+}
+
+// Funkce pro otevření modálního okna pro editaci biků
+function openEditBikeModal(bikeId) {
+    document.getElementById('editBikeModal').style.display = 'block';
+    // Můžeme přidat načítání dat o konkrétním biku
+}
+
+// Funkce pro zavření modálního okna
+function closeEditModal() {
+    // Zavře všechny modální okna
+    document.getElementById('editUserModal').style.display = 'none';
+    document.getElementById('editNewsModal').style.display = 'none';
+    document.getElementById('editBikeModal').style.display = 'none';
+}
+
+// Funkce pro změnu aktivního menu v sidebaru
+function setActiveMenu(item) {
+    let menuItems = document.querySelectorAll('.sidebar .list-group-item');
+    menuItems.forEach(function (menuItem) {
+        menuItem.classList.remove('active');
+    });
+    item.classList.add('active');
+}
+
+// Funkce pro odstranění uživatele
+function deleteUser(userId) {
+    if (confirm("Opravdu chcete odstranit tohoto uživatele?")) {
+        // Volání serveru pro odstranění uživatele
+        console.log("Uživatel s ID " + userId + " byl odstraněn.");
+        // Zde bychom mohli použít AJAX pro odeslání požadavku na server pro odstranění
+    }
+}
+
+// Funkce pro odstranění novinky
+function deleteNews(newsId) {
+    if (confirm("Opravdu chcete odstranit tuto novinku?")) {
+        console.log("Novinka s ID " + newsId + " byla odstraněna.");
+        // Opět bychom použili AJAX pro odeslání požadavku na server pro odstranění
+    }
+}
+
+// Funkce pro odstranění biku
+function deleteBike(bikeId) {
+    if (confirm("Opravdu chcete odstranit tento bike?")) {
+        console.log("Bike s ID " + bikeId + " byl odstraněn.");
+        // Pro odstranění biku by se použil AJAX požadavek na server
+    }
+}
+
+function openNewsModal() {
+    document.getElementById('newsModal').style.display = 'block';
+}
+
+function openBikeModal() {
+    document.getElementById('bikeModal').style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+
+/* výběr období pronájmu kola */
+flatpickr("#rental-datetime", {
+    mode: "range",
+    enableTime: true,
+    dateFormat: "d.m.Y H:i", 
+    time_24hr: true,         
+    locale: "cs"      
+});
+
+document.querySelector('.rental-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Zabráníme výchozímu odeslání formuláře
+
+    const rentalDatetime = document.getElementById('rental-datetime').value;
+    const output = document.getElementById('output');
+
+    if (!rentalDatetime) {
+        alert('Prosím, vyberte období pronájmu.');
+        return;
+    }
+
+    const [start, end] = rentalDatetime.split(" až ");
+    if (!end) {
+        alert('Prosím, vyberte konec období.');
+        return;
+    }
+
+    output.innerHTML = `
+        <strong>Vybrané období:</strong><br>
+        Od ${start} do ${end}
+    `;
+});
+
+
+
+/* ========================== 
+   pujceni a vraceni kol
+========================== */
+
+// Mock API call to get rented bike data
+async function fetchRentedBikes() {
+    return [
+        { id: 'B002', user: 'Jan Novak', time: '15:00', price: '200 Kč' },
+        { id: 'B005', user: 'Eva Malá', time: '16:00', price: '150 Kč' }
+    ];
+}
+
+// Mock API call to get ordered bike data
+async function fetchOrderedBikes() {
+    return [
+        { id: 'B007', user: 'Karel Dvořák', date: '2024-12-15', time: '10:00' },
+        { id: 'B008', user: 'Lucie Novotná', date: '2024-12-15', time: '11:30' }
+    ];
+}
+
+// Populate rented bikes table
+async function populateRentedBikes() {
+    const rentedBikes = await fetchRentedBikes();
+    const tableBody = document.querySelector('#rentedBikesTable tbody');
+    const returnBikeSelect = document.querySelector('#returnBikeId');
+
+    tableBody.innerHTML = '';
+    returnBikeSelect.innerHTML = '<option value="">Vyberte ID kola</option>';
+
+    rentedBikes.forEach(bike => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${bike.id}</td>
+            <td>${bike.user}</td>
+            <td>${bike.time}</td>
+            <td>${bike.price}</td>
+        `;
+        tableBody.appendChild(row);
+
+        const option = document.createElement('option');
+        option.value = bike.id;
+        option.textContent = bike.id;
+        returnBikeSelect.appendChild(option);
+    });
+}
+
+// Populate ordered bikes table
+async function populateOrderedBikes() {
+    const orderedBikes = await fetchOrderedBikes();
+    const tableBody = document.querySelector('#orderedBikesTable tbody');
+    const rentalBikeSelect = document.querySelector('#rentalBikeId');
+
+    tableBody.innerHTML = '';
+    rentalBikeSelect.innerHTML = '<option value="">Vyberte ID kola</option>';
+
+    orderedBikes.forEach(bike => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${bike.id}</td>
+            <td>${bike.user}</td>
+            <td>${bike.date}</td>
+            <td>${bike.time}</td>
+        `;
+        tableBody.appendChild(row);
+
+        const option = document.createElement('option');
+        option.value = bike.id;
+        option.textContent = bike.id;
+        rentalBikeSelect.appendChild(option);
+    });
+}
+
+// Call populate functions on page load
+document.addEventListener('DOMContentLoaded', () => {
+    populateRentedBikes();
+    populateOrderedBikes();
+});
+
+
+/* ========================== 
+   servis
+========================== */
+document.addEventListener('DOMContentLoaded', function() {
+    const updateButtons = document.querySelectorAll('.update-status');
+    
+    updateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const bikeId = this.getAttribute('data-bike-id');
+            const statusSelect = document.querySelector(`.bike-status[data-bike-id="${bikeId}"]`);
+            const newStatus = statusSelect.value;
+
+            // Odeslání AJAX požadavku na server pro aktualizaci statusu
+            fetch('/update-bike-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ bike_id: bikeId, status: newStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Status úspěšně změněn.');
+                } else {
+                    alert('Chyba při změně statusu.');
+                }
+            })
+            .catch(error => {
+                alert('Došlo k chybě při komunikaci se serverem.');
+            });
+        });
+    });
+});
+
+
 function togglePassword(passwordFieldId, toggleIconId) {
 
     const passwordField = document.getElementById(passwordFieldId);

@@ -191,6 +191,22 @@ def contacts():
         return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
     return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
 
+@app.route('/bike', methods=['GET'])
+def bike_view():
+    return render_template("bike_detail.jinja", title="Bike", page="bike"), 200
+
+@app.route('/admin', methods=['GET'])
+def admin():
+    return render_template("admin_page.jinja", title="Admin", page="admin"), 200
+
+@app.route('/rent', methods=['GET'])
+def rent():
+    return render_template("rent_back_bike.jinja", title="rent", page="rent"), 200
+
+@app.route('/servis', methods=['GET'])
+def servis():
+    return render_template("servis.jinja", title="servis", page="servis"), 200
+
 @app.route('/tos', methods=['GET'])
 def tos():
     return render_template("terms_of_services.jinja", title="Terms of Service", page="tos"), 200
