@@ -54,12 +54,15 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Copy files to server using SFTP
-        run: |
-          sftp -oPort=${{ secrets.SSH_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            mkdir -p ~/bikego
-            put -r ./* ~/bikego/
-          EOF
+      - name: Upload files to server via SFTP
+        uses: Dylan700/sftp-upload-action@v1.2.3
+        with:
+          server: ${{ secrets.SERVER_IP }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          uploads: |
+            ./ => ~/bikego
 
       - name: Create .env file on server
         run: |
