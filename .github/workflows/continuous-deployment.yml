@@ -54,10 +54,12 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Copy files to server
+      - name: Copy files to server using SFTP
         run: |
-          ping -c 4 ${{ secrets.SERVER_IP }}
-          scp -P ${{ secrets.SSH_PORT }} -r . ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:~/bikego
+          sftp -oPort=${{ secrets.SSH_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            mkdir -p ~/bikego
+            put -r ./* ~/bikego/
+          EOF
 
       - name: Create .env file on server
         run: |
