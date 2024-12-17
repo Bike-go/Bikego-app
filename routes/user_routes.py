@@ -350,7 +350,7 @@ def render_profile_page(user, total_time, favourite_bike, active_sessions, revie
         csrf_token=csrf_token_from_jwt
     )
 
-@user_bp.route('/refresh_token', methods=['POST'])
+@user_bp.route('/refresh_token', methods=['POST', 'GET'])
 @jwt_required(refresh=True)
 def refresh_token():
     current_user = get_jwt_identity()

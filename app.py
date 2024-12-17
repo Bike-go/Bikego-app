@@ -7,6 +7,8 @@ from config import Config
 from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
 from db import db
+from models.bike_model import Bike, BrakeTypeEnum, FrameMaterialEnum
+from models.instance_bike_model import BikeSizeEnum, BikeStatusEnum, InstanceBike
 from models.news_model import News
 from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
 from utils.email_utils import send_contact_form
@@ -82,9 +84,91 @@ def news():
     news_items = News.query.filter(News.published_at != None).order_by(News.published_at.desc()).all()
     return render_template("news.jinja", title="News", page="news", news_items=news_items), 200
 
+from flask import request
+
 @app.route('/rentals', methods=['GET'])
 def rentals():
-    return render_template("rentals.jinja", title="Rentals", page="rentals"), 200
+    # Fetch query parameters for all filters
+    brand_filter = request.args.get('brand', None)
+    model_filter = request.args.get('model', None)
+    frame_material_filter = request.args.get('frame_material', None)
+    brake_type_filter = request.args.get('brake_type', None)
+    size_filter = request.args.get('size', None)
+    color_filter = request.args.get('color', None)
+    status_filter = request.args.get('status', None)
+    search_query = request.args.get('search', None)
+
+    # Base query to fetch bike instances joined with Bike
+    query = InstanceBike.query.join(Bike)
+
+    # Apply filters dynamically
+    if brand_filter:
+        query = query.filter(Bike.brand == brand_filter)
+    if model_filter:
+        query = query.filter(Bike.model == model_filter)
+    if frame_material_filter:
+        query = query.filter(Bike.frame_material == frame_material_filter)
+    if brake_type_filter:
+        query = query.filter(Bike.brake_type == brake_type_filter)
+    if size_filter:
+        query = query.filter(InstanceBike.size == size_filter)
+    if color_filter:
+        query = query.filter(InstanceBike.color.ilike(f"%{color_filter}%"))
+    if status_filter:
+        query = query.filter(InstanceBike.status == status_filter)
+    if search_query:
+        query = query.filter(
+            (Bike.model.ilike(f"%{search_query}%")) | 
+            (Bike.description.ilike(f"%{search_query}%"))
+        )
+
+    # Execute the query
+    bike_instances = query.all()
+
+    # Fetch distinct options dynamically for dropdowns
+    brands = db.session.query(Bike.brand).distinct().all()
+    brands = [brand[0] for brand in brands]
+
+    models = db.session.query(Bike.model).distinct().all()
+    models = [model[0] for model in models]
+
+    frame_materials = [material.value for material in FrameMaterialEnum]
+    brake_types = [brake.value for brake in BrakeTypeEnum]
+    sizes = [size.value for size in BikeSizeEnum]
+    statuses = [status.value for status in BikeStatusEnum]
+
+    colors = db.session.query(InstanceBike.color).distinct().all()
+    colors = [color[0] for color in colors]
+
+    return render_template(
+        "rentals.jinja",
+        title="Bike Instances",
+        bike_instances=bike_instances,
+        brands=brands,
+        models=models,
+        frame_materials=frame_materials,
+        brake_types=brake_types,
+        sizes=sizes,
+        colors=colors,
+        statuses=statuses,
+        selected_filters={
+            "brand": brand_filter,
+            "model": model_filter,
+            "frame_material": frame_material_filter,
+            "brake_type": brake_type_filter,
+            "size": size_filter,
+            "color": color_filter,
+            "status": status_filter,
+            "search": search_query,
+        },
+    ), 200
+
+@app.route('/rentals-detail/<uuid:bike_instance_id>', methods=['GET'])
+def rentals_detail(bike_instance_id):
+    bike_instance = InstanceBike.query.filter_by(id=bike_instance_id).join(Bike).first()
+    if not bike_instance:
+        return redirect(url_for("rentals")), 301
+    return render_template("bike_detail.jinja", title="Bike Detail", bike_instance=bike_instance), 200
 
 @app.route('/photos', methods=['GET'])
 def photos():
@@ -157,7 +241,6 @@ def inject_user():
         is_logged_in = bool(get_jwt_identity())
     except Exception:
         is_logged_in = False
-
     return {'is_logged_in': is_logged_in}
 
 if __name__ == "__main__":
