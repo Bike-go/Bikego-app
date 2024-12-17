@@ -49,11 +49,6 @@ jobs:
         run: |
           while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: Upload files to server via SFTP
         uses: Dylan700/sftp-upload-action@v1.2.3
         with:
@@ -64,9 +59,14 @@ jobs:
           uploads: |
             ./ => bikego
 
-      - name: Create .env file on server
-        run: |
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+      - name: SSH into Your Server and Deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
             set -e
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ~/bikego/.env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ~/bikego/.env
@@ -87,16 +87,9 @@ jobs:
             echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" >> ~/bikego/.env
             echo "SENDER_PASSWORD=${{ secrets.SENDER_PASSWORD }}" >> ~/bikego/.env
             echo "URL_IN_EMAIL=${{ secrets.URL_IN_EMAIL }}" >> ~/bikego/.env
-          EOF
-  
-      - name: SSH into server and deploy
-        run: |
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            set -e
             cd ~/bikego
             docker-compose down
             docker-compose up -d --build
-          EOF
 
       - name: Terminate OpenVPN Connection
         run: sudo pkill -f openvpn || true
