@@ -44,22 +44,22 @@ jobs:
           echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
           echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/openvpn.txt
     
-      - name: Connect to OpenVPN
-        run: |
-          sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass ~/openvpn.txt > /dev/null 2>&1 &
-    
       - name: Wait for VPN Connection
         run: |
-          while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
+          while ! curl -s https://www.google.com > /dev/null; do
+            echo "Waiting for VPN connection..."
+            sleep 2
+          done
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-  
+
       - name: Copy files to server
         run: |
-          scp -P ${{ secrets.SSH_PORT }} -r ./* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:~/bikego
+          ping -c 4 ${{ secrets.SERVER_IP }}
+          scp -P ${{ secrets.SSH_PORT }} -r . ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:~/bikego
 
       - name: Create .env file on server
         run: |
@@ -68,6 +68,9 @@ jobs:
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ~/bikego/.env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ~/bikego/.env
             echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ~/bikego/.env
+            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> ~/bikego/.env
+            echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> ~/bikego/.env
+            echo "POSTGRES_SCHEMA=${{ secrets.POSTGRES_SCHEMA }}" >> ~/bikego/.env
             echo "PGADMIN_DEFAULT_EMAIL=${{ secrets.PGADMIN_DEFAULT_EMAIL }}" >> ~/bikego/.env
             echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> ~/bikego/.env
             echo "FLASK_APP=${{ secrets.FLASK_APP }}" >> ~/bikego/.env
@@ -75,10 +78,12 @@ jobs:
             echo "FLASK_HOST=${{ secrets.FLASK_HOST }}" >> ~/bikego/.env
             echo "FLASK_PORT=${{ secrets.FLASK_PORT }}" >> ~/bikego/.env
             echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> ~/bikego/.env
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> ~/bikego/.env
             echo "IMGUR_CLIENT_ID=${{ secrets.IMGUR_CLIENT_ID }}" >> ~/bikego/.env
             echo "IMGUR_CLIENT_SECRET=${{ secrets.IMGUR_CLIENT_SECRET }}" >> ~/bikego/.env
             echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" >> ~/bikego/.env
             echo "SENDER_PASSWORD=${{ secrets.SENDER_PASSWORD }}" >> ~/bikego/.env
+            echo "URL_IN_EMAIL=${{ secrets.URL_IN_EMAIL }}" >> ~/bikego/.env
           EOF
   
       - name: SSH into server and deploy
