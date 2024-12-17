@@ -38,21 +38,25 @@ You’ll need to create a `.env` file in the root directory of the project. This
 Here’s a sample `.env` file:
 
 ```dotenv
+POSTGRES_USER=your_user
+POSTGRES_PASSWORD=your_password
+POSTGRES_DB=your_db
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5432
+POSTGRES_SCHEMA=db
+PGADMIN_DEFAULT_EMAIL=your_pg@email.com
+PGADMIN_DEFAULT_PASSWORD=your_pg_password
 FLASK_APP=app.py
 FLASK_ENV=development
 FLASK_HOST=0.0.0.0
 FLASK_PORT=5000
-POSTGRES_USER=your_user
-POSTGRES_PASSWORD=your_password
-POSTGRES_DB=your_db
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-POSTGRES_SCHEMA=public
 JWT_SECRET_KEY=your_secret_key
+SECRET_KEY=your_secret_key
 IMGUR_CLIENT_ID=your_client_id
 IMGUR_CLIENT_SECRET=your_client_secret
 SENDER_EMAIL=your_email
 SENDER_PASSWORD=your_email_password
+URL_IN_EMAIL=http://localhost:5000
 ```
 
 Replace the placeholder values with your own secrets and database credentials.

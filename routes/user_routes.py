@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
-from flask_jwt_extended import create_access_token, create_refresh_token, decode_token, get_jwt, jwt_required, get_jwt_identity, set_access_cookies, set_refresh_cookies, unset_jwt_cookies
-from marshmallow import ValidationError
+from flask_jwt_extended import create_access_token, create_refresh_token, decode_token, get_jwt, jwt_required, get_jwt_identity, set_access_cookies, set_refresh_cookies, unset_jwt_cookies, verify_jwt_in_request
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
@@ -11,7 +10,6 @@ from models.reservation_model import Reservation
 from models.review_model import Review
 from models.user_model import User
 from schemas import user_schema
-from utils.block_authenticated import block_authenticated
 from utils.email_utils import send_password_change, send_registration_email, send_reset_email, send_successfully_password_change
 from utils.imgur_utils import delete_image_from_imgur, upload_image_to_imgur
 from utils.validator_utils import is_valid_phone_number
@@ -70,7 +68,6 @@ def signup():
 
     return render_template("signup.jinja", title="Registrace", page="signup", form=form)
 
-# Verify email
 @user_bp.route("/verify-email/<token>", methods=["GET"])
 def verify_email(token):
     try:
@@ -106,7 +103,6 @@ def verify_email(token):
 
     return redirect(url_for("user_bp.login"))
 
-# Login
 @user_bp.route("/login", methods=["GET", "POST"])
 def login():
     form = user_schema.LoginForm()
@@ -135,8 +131,6 @@ def login():
             # Create the tokens we will be sending back to the user
             access_token = create_access_token(identity=user.id, additional_claims={"csrf": generate_csrf()})
             refresh_token = create_refresh_token(identity=user.id, additional_claims={"csrf": generate_csrf()})
-            #access_token = create_access_token(identity=user.id)
-            #refresh_token = create_refresh_token(identity=user.id)
 
             # Set the JWT cookies in the response
             response = redirect(url_for("user_bp.profile"))
@@ -151,7 +145,6 @@ def login():
 
     return render_template("login.jinja", title="Přihlášení", page="login", form=form)
 
-# Send password reset email
 @user_bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     form = user_schema.ForgotPasswordForm()
@@ -170,66 +163,35 @@ def forgot_password():
                 send_password_change(user.email, token)
             except Exception as e:
                 flash("An error occurred while sending the reset email. Please try again later.", "error")
-                return redirect(url_for("user_bp.forgot_password"))
+                return render_template("forgot_password.jinja", title="Obnovení hesla", page="forgot_password", form=form)
 
         # Generic success message (regardless of whether the email exists or not)
         flash("If the email is associated with an account, a reset link has been sent.", "success")
+        try:
+            verify_jwt_in_request(optional=True)  # Verify if a JWT token exists (optional)
+            user_id = get_jwt_identity()  # Get the identity from the token
+            if user_id:
+                return redirect(url_for("user_bp.profile"))  # Redirect to profile if authenticated
+        except Exception:
+            pass
+
         return redirect(url_for("user_bp.login"))
 
     return render_template("forgot_password.jinja", title="Obnovení hesla", page="forgot_password", form=form)
 
-# Change password
-@user_bp.route("/change-password/<token>", methods=["GET", "POST"])
-def change_password(token):
-    form = user_schema.ChangePasswordForm()
-
-    if form.validate_on_submit():
-        password0 = form.password0.data
-        password1 = form.password1.data
-
-        # Decode the token to extract the user ID
-        try:
-            decoded_token = decode_token(token)
-            user_id = decoded_token["sub"]
-        except Exception as e:
-            flash("Invalid or expired token. Please request a new password reset.", "error")
-            return redirect(url_for("user_bp.forgot_password"))
-
-        # Fetch the user
-        user = User.query.get(user_id)
-        if not user:
-            flash("User not found.", "error")
-            return redirect(url_for("user_bp.login"))
-
-        # Update the user's password
-        user.password_hash = generate_password_hash(password0)
-        db.session.commit()
-
-        flash("Password changed successfully. You can now log in with your new password.", "success")
-        return redirect(url_for("user_bp.login"))
-
-    return render_template("change_password.jinja", title="Obnovení hesla", page="change_password", form=form)
-
-# Logout
 @user_bp.route('/logout', methods=['POST'])
 def logout():
-    response = jsonify({'message': 'Logged out successfully'})
-    unset_jwt_cookies(response)
-    return redirect(url_for("home")), 200
+    response = redirect(url_for("home"))  # Redirect to home page
+    unset_jwt_cookies(response)  # Unset the JWT cookies to log out the user
+    return response
 
 @user_bp.route("/delete-user", methods=["POST"])  # Accept only POST requests
 @jwt_required()  # Ensure the user is authenticated
 def delete_user():
     # Get the current user ID from the JWT identity
     current_user_id = get_jwt_identity()
-    if not current_user_id:
-        flash("User not found.", "error")
-        return redirect(url_for("user_bp.settings"))
 
     user = User.query.get(current_user_id)
-    if not user:
-        flash("User not found.", "error")
-        return redirect(url_for("user_bp.settings"))
 
     # Retrieve password from the form
     password = request.form.get("password")
@@ -263,195 +225,130 @@ def delete_user():
     flash("Your account has been deleted successfully.", "success")
     return response
 
+@user_bp.route("/change-password/<token>", methods=["GET", "POST"])
+def change_password(token):
+    form = user_schema.ChangePasswordForm()
+
+    if form.validate_on_submit():
+        password0 = form.password0.data
+        password1 = form.password1.data
+
+        # Decode the token to extract the user ID
+        try:
+            decoded_token = decode_token(token)
+            user_id = decoded_token["sub"]
+        except Exception as e:
+            flash("Invalid or expired token. Please request a new password reset.", "error")
+            return redirect(url_for("user_bp.forgot_password"))
+
+        # Fetch the user
+        user = User.query.get(user_id)
+        if not user:
+            flash("User not found.", "error")
+            return redirect(url_for("user_bp.login"))
+
+        # Update the user's password
+        user.password_hash = generate_password_hash(password0)
+        db.session.commit()
+
+        flash("Password changed successfully. You can now log in with your new password.", "success")
+        return redirect(url_for("user_bp.login"))
+
+    return render_template("change_password.jinja", title="Obnovení hesla", page="change_password", form=form)
+
 @user_bp.route("/profile", methods=["GET", "POST"])
 @jwt_required()
 def profile():
-    # Get the current user's ID and role from the JWT token
     current_user_id = get_jwt_identity()
-
-    # Query the database to find the user by the extracted ID
     user = User.query.get(current_user_id)
 
-    # Dynamically select the form based on the user's role
-    if user.role.value == "Admin":
-        user_form = user_schema.AdminUserForm(obj=user)
-    else:
-        user_form = user_schema.RegularUserForm(obj=user)
+    user_form = user_schema.UserForm(obj=user)
 
-    # Query Total Reservation Time
-    total_time = (
-        db.session.query(func.sum(Reservation.reservation_end - Reservation.reservation_start).label('total_time'))
-        .filter(Reservation.User_id == user.id)
-        .scalar()
-    )
+    # Query data
+    total_time = db.session.query(func.sum(Reservation.reservation_end - Reservation.reservation_start).label('total_time')).filter(Reservation.User_id == user.id).scalar() or timedelta(0)
 
-    if not total_time:
-        total_time = timedelta(0)
+    favourite_bike = db.session.query(Bike.model).join(InstanceBike).join(Reservation).filter(Reservation.User_id == user.id).group_by(Bike.model).order_by(func.count(Reservation.id).desc()).limit(1).first()
+    favourite_bike = favourite_bike[0] if favourite_bike else "No favourite bike"
 
-    # Query Favourite Bike
-    favourite_bike = (
-        db.session.query(Bike.model)
-        .join(InstanceBike, InstanceBike.Bike_id == Bike.id)  # Explicit join condition
-        .join(Reservation, Reservation.Instance_Bike_id == InstanceBike.id)  # Explicit join condition
-        .filter(Reservation.User_id == user.id)  # Filter by User ID
-        .group_by(Bike.model)  # Group by Bike model
-        .order_by(func.count(Reservation.id).desc())  # Order by count of reservations
-        .limit(1)  # Limit to 1 result
-        .first()  # Get the first result
-    )
+    active_sessions = db.session.query(Reservation, InstanceBike).join(InstanceBike).filter(Reservation.User_id == user.id, Reservation.reservation_end > datetime.utcnow()).all() or []
 
-    if not favourite_bike:
-        favourite_bike = "No favourite bike"
+    reviews = db.session.query(Review).filter(Review.User_id == user.id).all() or []
 
-    # Query Active Sessions (Reservations that are not finished yet)
-    active_sessions = (
-        db.session.query(Reservation, InstanceBike)
-        .join(InstanceBike, Reservation.Instance_Bike_id == InstanceBike.id)  # Explicit join condition
-        .filter(Reservation.User_id == user.id, Reservation.reservation_end > datetime.utcnow())  # Filter by User ID and active reservations
-        .all()
-    )
+    purchase_history = db.session.query(Rental, InstanceBike).join(InstanceBike).filter(Rental.User_id == user.id).all() or []
 
-    if not active_sessions:
-        active_sessions = []
-
-    # Query User Reviews
-    reviews = (
-        db.session.query(Review)
-        .filter(Review.User_id == user.id)  # Filter by User ID
-        .all()
-    )
-
-    if not reviews:
-        reviews = []
-
-    # Query Purchase History (Rentals)
-    purchase_history = (
-        db.session.query(Rental, InstanceBike)
-        .join(InstanceBike, Rental.Instance_Bike_id == InstanceBike.id)  # Explicit join condition
-        .filter(Rental.User_id == user.id)  # Filter by User ID
-        .all()
-    )
-
-    if not purchase_history:
-        purchase_history = []
-
-    # Extract CSRF token from JWT
     csrf_token_from_jwt = get_jwt().get("csrf")
-
-    # Prepare data to render in the template
-    user_data = user_schema.UserSchema().dump(user)
-    user_data["role"] = user.role.value
 
     if request.method == "POST" and user_form.validate_on_submit():
         try:
-            # Deserialize and validate input data using the selected schema
             updated_data = user_form.data
 
-            # Check for unique username
+            # Validation for unique username and email
             if "username" in updated_data and updated_data["username"] != user.username:
                 if User.query.filter_by(username=updated_data["username"]).first():
                     flash("Username is already taken.", "error")
-                    return render_template("profile.jinja", 
-                           user=user_data, 
-                           title="Profil", 
-                           page="profile", 
-                           total_time=total_time, 
-                           favourite_bike=favourite_bike,
-                           active_sessions=active_sessions,
-                           reviews=reviews,
-                           purchase_history=purchase_history,
-                           form=user_form,
-                           csrf_token=csrf_token_from_jwt)
+                    return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
 
-            # Check for unique email
             if "email" in updated_data and updated_data["email"] != user.email:
                 if User.query.filter_by(email=updated_data["email"]).first():
                     flash("Email is already taken.", "error")
-                    return render_template("profile.jinja", 
-                           user=user_data, 
-                           title="Profil", 
-                           page="profile", 
-                           total_time=total_time, 
-                           favourite_bike=favourite_bike,
-                           active_sessions=active_sessions,
-                           reviews=reviews,
-                           purchase_history=purchase_history,
-                           form=user_form,
-                           csrf_token=csrf_token_from_jwt)
+                    return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
 
                 # If email changes, set email_verified to False and send verification email
                 token = create_access_token(identity=user.id, expires_delta=timedelta(minutes=60))
-                send_reset_email(user.email, updated_data["email"], token)  # Implement email sending logic
+                send_reset_email(user.email, updated_data["email"], token)
                 user.email_verified = False
 
-            # Validate phone number using regex
-            if "phone_number" in updated_data and updated_data["phone_number"]:
-                if not is_valid_phone_number(updated_data["phone_number"]):
-                    flash("Invalid phone number format.", "error")
-                    return render_template("profile.jinja", 
-                                        user=user_data, 
-                                        title="Profil", 
-                                        page="profile", 
-                                        total_time=total_time, 
-                                        favourite_bike=favourite_bike,
-                                        active_sessions=active_sessions,
-                                        reviews=reviews,
-                                        purchase_history=purchase_history,
-                                        form=user_form,
-                                        csrf_token=csrf_token_from_jwt)# Check if phone number is not empty and valid
+            # Validate phone number
+            if "phone_number" in updated_data and updated_data["phone_number"] and not is_valid_phone_number(updated_data["phone_number"]):
+                flash("Invalid phone number format.", "error")
+                return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
 
+            # Handle Dark mode toggle
             if "darkmode" in updated_data:
                 updated_data["darkmode"] = updated_data["darkmode"] == "true"
-                
-            # Update the user object with the validated data
+
+            # Update user data
             for key, value in updated_data.items():
                 setattr(user, key, value)
 
             # Handle profile picture update
             if "profile_picture" in request.files and request.files["profile_picture"]:
                 image_file = request.files["profile_picture"]
-
-                # Delete the old profile picture from Imgur if it exists
                 if user.picture_delete_hash:
                     delete_image_from_imgur(user.picture_delete_hash)
-
-                # Upload the new profile picture to Imgur
                 profile_picture_url, delete_hash = upload_image_to_imgur(image_file)
                 user.profile_picture_url = profile_picture_url
                 user.picture_delete_hash = delete_hash
 
-            # Save changes to the database
+            # Commit changes to the database
             db.session.commit()
             flash("Profile updated successfully.", "success")
         except Exception as e:
             db.session.rollback()
             flash(f"Error updating profile: {e}", "error")
 
-        # Re-render the profile page with updated user data
-        return render_template("profile.jinja", 
-                           user=user_data, 
-                           title="Profil", 
-                           page="profile", 
-                           total_time=total_time, 
-                           favourite_bike=favourite_bike,
-                           active_sessions=active_sessions,
-                           reviews=reviews,
-                           purchase_history=purchase_history,
-                           form=user_form,
-                           csrf_token=csrf_token_from_jwt)
+        # Re-render the profile page with updated data
+        return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
 
-    # For GET request, just render the profile page with serialized user data
-    return render_template("profile.jinja", 
-                           user=user_data, 
-                           title="Profil", 
-                           page="profile", 
-                           total_time=total_time, 
-                           favourite_bike=favourite_bike,
-                           active_sessions=active_sessions,
-                           reviews=reviews,
-                           purchase_history=purchase_history,
-                           form=user_form,
-                           csrf_token=csrf_token_from_jwt), 200, {"X-Content-Type-Options": "nosniff"}
+    # For GET request, render the profile page
+    return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
+
+def render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt, title="Profil", page="profile"):
+    user_data = user_schema.UserSchema().dump(user)
+    user_data["role"] = user.role.value
+    return render_template(
+        "profile.jinja", 
+        user=user_data, 
+        title=title, 
+        page=page, 
+        total_time=total_time, 
+        favourite_bike=favourite_bike,
+        active_sessions=active_sessions,
+        reviews=reviews,
+        purchase_history=purchase_history,
+        form=user_form,
+        csrf_token=csrf_token_from_jwt
+    )
 
 @user_bp.route('/refresh_token', methods=['POST', 'GET'])
 @jwt_required(refresh=True)
@@ -460,11 +357,8 @@ def refresh_token():
     access_token = create_access_token(identity=current_user)
     response = jsonify({'refresh': True})
     set_access_cookies(response, access_token)
-    
-    # Get the `next` parameter from the query string
     next_url = request.args.get('next')
     if next_url:
-        response.headers['Location'] = next_url  # Set redirect location
-        return response, 307  # Temporary redirect
-    
-    return response, 200  # Default response if no `next` is provided
+        response.headers['Location'] = next_url
+        return response, 307
+    return response, 200

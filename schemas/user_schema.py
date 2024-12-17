@@ -7,9 +7,11 @@ from models.user_model import User
 
 class ForgotPasswordForm(FlaskForm):
     email = StringField('E-mail', validators=[
-        DataRequired(), Email(message="Invalid email format"), Length(max=100)
+        DataRequired(), 
+        Email(message="Invalid email format"), 
+        Length(max=100)
     ])
-    submit = SubmitField('odeslat ověřovací kód')
+    submit = SubmitField('Odeslat ověřovací kód')
 
 class ChangePasswordForm(FlaskForm):
     password0 = PasswordField('Heslo', validators=[
@@ -44,33 +46,13 @@ class UserSignupForm(FlaskForm):
     ])
     submit = SubmitField('Vytvořit účet')
 
-class AdminUserForm(FlaskForm):
-    id = StringField("ID", render_kw={"readonly": True})
-    username = StringField("Uživatelské jméno", validators=[
-        DataRequired(),
-        Length(min=1, max=45, message="Uživatelské jméno musí mít mezi 1 a 45 znaky.")
+class DeleteForm(FlaskForm):
+    password = PasswordField('Heslo', validators=[
+        DataRequired(), Length(min=8)
     ])
-    email = StringField("Email", validators=[
-        DataRequired(),
-        Email(message="Zadejte platnou emailovou adresu."),
-        Length(max=100, message="Email nesmí být delší než 100 znaků.")
-    ])
-    phone_number = StringField("Telefonní číslo", validators=[
-        Optional(),
-        Length(max=15, message="Telefonní číslo nesmí být delší než 15 znaků."),
-        Regexp(r'^\+?[0-9]*$', message="Telefonní číslo může obsahovat pouze čísla a +.")
-    ])
-    darkmode = SelectField("Tmavý režim", choices=[
-        ("True", "Zapnuto"),
-        ("False", "Vypnuto")
-    ], validators=[DataRequired()])
-    profile_picture = FileField("Profilový obrázek", validators=[
-        Optional(),
-        FileAllowed(["jpg", "png", "jpeg"], "Povolené formáty obrázků: jpg, png, jpeg.")
-    ])
-    submit = SubmitField("Uložit změny")
+    submit = SubmitField('Odstranit účet')
 
-class RegularUserForm(FlaskForm):
+class UserForm(FlaskForm):
     username = StringField("Uživatelské jméno", validators=[
         DataRequired(),
         Length(min=1, max=45, message="Uživatelské jméno musí mít mezi 1 a 45 znaky.")
@@ -94,11 +76,6 @@ class RegularUserForm(FlaskForm):
         FileAllowed(["jpg", "png", "jpeg"], "Povolené formáty obrázků: jpg, png, jpeg.")
     ])
     submit = SubmitField("Uložit změny")
-
-def get_user_form(user):
-    if user.role == "Admin":
-        return AdminUserForm()
-    return RegularUserForm()
 
 class UserSchema(Schema):
     class Meta:

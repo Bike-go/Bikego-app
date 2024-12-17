@@ -1,33 +1,24 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-    <section class="news_page">
-        <div class="title">Novinky</div>
-        <div class="text">
-            <p>Objevte nejnovější informace, aktuality a zajímavosti ze světa BikeGo a našeho bikeparku.</p>
-        </div>
+<section class="news_page">
+    <div class="title">Novinky</div>
+    <div class="text">
+        <p>Objevte nejnovější informace, aktuality a zajímavosti ze světa BikeGo a našeho bikeparku.</p>
+    </div>
 
-        <div class="news_list">
-            <!-- News Item 1 -->
-            <article class="news_item" role="article">
-                <a href="#" class="news_title" title="Otevíráme nové traily!">Otevíráme nové traily!</a>
-                <p class="news_date">1. listopadu 2024</p>
-                <p class="news_excerpt">Připravili jsme pro vás nové trasy plné adrenalinu a úchvatných výhledů.</p>
-            </article>
+    <div class="news_list">
+        {% for news in news_items %}
+        <article class="news_item" role="article">
+            <a href="" class="news_title" title="{{ news.title }}">{{ news.title }}</a>
+            <p class="news_date">{{ news.published_at.strftime('%d. %B %Y') }}</p>
+            <p class="news_excerpt">{{ news.content[:100] }}...</p>
+        </article>
+        {% endfor %}
 
-            <!-- News Item 2 -->
-            <article class="news_item" role="article">
-                <a href="#" class="news_title" title="Soutěž o permanentky">Soutěž o permanentky</a>
-                <p class="news_date">15. října 2024</p>
-                <p class="news_excerpt">Zapojte se do naší soutěže a vyhrajte celoroční přístup do bikeparku!</p>
-            </article>
-
-            <!-- News Item 3 -->
-            <article class="news_item" role="article">
-                <a href="#" class="news_title" title="Nová kolekce kol k zapůjčení">Nová kolekce kol k zapůjčení</a>
-                <p class="news_date">25. září 2024</p>
-                <p class="news_excerpt">Představujeme nejnovější modely horských kol pro sezónu 2025.</p>
-            </article>
-        </div>
-    </section>
+        {% if news_items|length == 0 %}
+        <p class="no_news">Momentálně nejsou k dispozici žádné novinky.</p>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

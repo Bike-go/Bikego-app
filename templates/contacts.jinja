@@ -1,52 +1,86 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-
-<section class="contact_page">
-    <div class="title">Kontakt</div>
-    <div class="text">
-        <p>
-            Máte otázky? Neváhejte nás kontaktovat! Naše zákaznická podpora je zde pro vás.
-            Zeptejte se na naše služby, možnosti výpůjčky kol, nebo si domluvte osobní návštěvu v našem bikeparku.
-        </p>
-    </div>
-
-    <div class="contact_info">
-        <div class="contact_item">
-            <i class="fa-solid fa-location-dot"></i>
-            <span>Adresa:</span>
-            <p>Česká republika, Brno <br>Ulice 180/12</p>
+<section class="contact-page">
+    <div class="contact-container">
+        <div class="contact-title">
+            <h1>Kontakt</h1>
         </div>
-        <div class="contact_item">
-            <i class="fa-solid fa-phone"></i>
-            <span>Telefon:</span>
-            <p><a href="tel:+420123456789">+420 123 456 789</a></p>
-            <p><a href="tel:+280123000258">+280 123 000 258</a></p>
+
+        <div class="contact-description">
+            <p>
+                Máte otázky? Neváhejte nás kontaktovat! Naše zákaznická podpora je zde pro vás.
+                Zeptejte se na naše služby, možnosti výpůjčky kol, nebo si domluvte osobní návštěvu v našem bikeparku.
+            </p>
         </div>
-        <div class="contact_item">
-            <i class="fa-solid fa-envelope"></i>
-            <span>Email:</span>
-            <p><a href="mailto:bikego@email.cz">bikego@email.cz</a></p>
+
+        <div class="contact-info">
+            <div class="contact-info-item">
+                <i class="fa-solid fa-location-dot contact-icon"></i>
+                <div class="info-details">
+                    <h3>Adresa:</h3>
+                    <p>
+                        Česká republika, Brno <br>
+                        Ulice 180/12
+                    </p>
+                </div>
+            </div>
+
+            <div class="contact-info-item">
+                <i class="fa-solid fa-phone contact-icon"></i>
+                <div class="info-details">
+                    <h3>Telefon:</h3>
+                    <p><a href="tel:+420123456789">+420 123 456 789</a></p>
+                    <p><a href="tel:+280123000258">+280 123 000 258</a></p>
+                </div>
+            </div>
+
+            <div class="contact-info-item">
+                <i class="fa-solid fa-envelope contact-icon"></i>
+                <div class="info-details">
+                    <h3>Email:</h3>
+                    <p><a href="mailto:bikego@email.cz">bikego@email.cz</a></p>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="contact_form">
-        <div class="title">Napište nám</div>
-        <form action="{{ url_for('contacts') }}" method="post">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="contact-form-container">
+            <div class="form-title">
+                <h2>Napište nám</h2>
+            </div>
+            <form action="{{ url_for('contacts') }}" method="post" class="contact-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <label for="name">Jméno:</label>
-            <input type="text" id="name" name="name" placeholder="Vaše jméno" required>
+                <div class="form-group">
+                    <label for="name">Jméno:</label>
+                    <input type="text" id="name" name="name" placeholder="Vaše jméno" required>
+                </div>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Váš email" required>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Váš email" required>
+                </div>
 
-            <label for="message">Zpráva:</label>
-            <textarea id="message" name="message" placeholder="Vaše zpráva" rows="5" required></textarea>
+                <div class="form-group">
+                    <label for="message">Zpráva:</label>
+                    <textarea id="message" name="message" placeholder="Vaše zpráva" rows="5" required></textarea>
+                </div>
 
-            <button type="submit" class="send_btn">Odeslat</button>
-        </form>
+                <div class="form-group">
+                    <button type="submit" class="btn send-btn">Odeslat</button>
+                </div>
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class="flashes">
+                    {% for message in messages %}
+                    <li class="alert alert-{{ 'success' if 'success' in message else 'danger' }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+            </form>
+        </div>
     </div>
 </section>
-
 {% endblock %}
