@@ -805,6 +805,7 @@ footer nav {
     justify-content: center;
     padding: 0 80px;
     margin-top: 20px;
+    
 }
 
 .pujcovna_filters {
@@ -836,41 +837,37 @@ footer nav {
     margin: 0;
 }
 
+.filter_section .scnd_btn{
+    width: 100%;
+    border-radius: 8px;
+    
+}
 .pujcovna_filters span {
     font-size: 20px;
 }
 
 .filter_header {
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 5px 0;
     border-bottom: 1px solid #ccc;
-    font-weight: bold;
-    font-size: 14px;
+    font-weight: 600;
+    font-size: 24px;
+    margin: 10px 0;
 }
 
 .subfilters {
     display: flex;
-    flex-direction: column;
-    margin-left: 15px;
-}
-
-.subfilters label {
-    margin-top: 5px;
+    gap: 10px;
+    margin: 10px 15px;
+    font-size: 18px;
 }
 
 .subfilters input[type="checkbox"] {
     transform: scale(1.5);
     margin-right: 10px;
-}
-
-.toggle-btn {
-    background: none;
-    border: none;
-    font-size: 36px;
-    font-weight: 200;
-    cursor: pointer;
 }
 
 .pujcovna_main {
@@ -907,15 +904,27 @@ footer nav {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    gap: 20px;
 
 }
 
+
+
 .bike {
     cursor: pointer;
-    margin: 20px;
     display: flex;
     flex-direction: column;
     gap: 5px;
+    text-decoration: none;
+}
+
+.bike h4{
+    text-decoration: none;
+    color: var(--black);
+    width: auto;
+    font-size: 20px;
+    padding-left: 30px;
+
 }
 
 .bike_img {
@@ -947,14 +956,6 @@ footer nav {
     border-radius: 5px;
 }
 
-.bike h4 {
-    font-weight: 400;
-}
-
-.bike p{
-    color: var(--price);
-    font-size: 24px;
-}
 
 .pages {
     display: flex;
@@ -1084,14 +1085,14 @@ table td {
 .btn {
     padding: 10px 20px;
     color: var(--white);
-    background-color: #007bff;
+    background-color: var(--main_color);
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    background-color: var(--scnd_btn_color);
 }
 
 /* Sekce pro různé uživatele, novinky a bike */
@@ -1428,7 +1429,7 @@ table td {
 }
 
 #bikeReturnForm .btn {
-    background-color: #007bff;
+    background-color: var(--main_color);
     color: white;
     padding: 10px 20px;
     border: none;
@@ -1439,7 +1440,7 @@ table td {
 }
 
 #bikeReturnForm .btn:hover {
-    background-color: #0056b3;
+    background-color: var(--scnd_btn_color);
 }
 
 /* Sekce pro půjčování kol */
@@ -1508,7 +1509,7 @@ table td {
 }
 
 #bikeRentalForm .btn:hover {
-    background-color: #218838;
+    background-color: var(--scnd_btn_color);
 }
 
 
@@ -1577,6 +1578,15 @@ table td {
 }
 
 /*Servis end*/
+
+#cookie-banner p {
+    display: inline;
+    font-size: 14px;
+}
+
+#cookie-banner button:hover {
+    background-color: #45a049;
+}
 
 @media screen and (max-width: 1250px) {
     .pc {
@@ -1891,6 +1901,7 @@ table td {
         padding: 0;
     }
 
+
     .pujcovna_filters {
         display: none;
     }
@@ -2088,13 +2099,5 @@ table td {
     .update-status {
         padding: 6px 12px; /* Menší tlačítko pro mobilní verzi */
     }
-}
 
-#cookie-banner p {
-    display: inline;
-    font-size: 14px;
-}
-
-#cookie-banner button:hover {
-    background-color: #45a049;
 }

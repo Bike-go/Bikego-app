@@ -1,287 +1,195 @@
 {% extends '__main.jinja' %}
 
 {% block content%}
-<main class="pujcovna_full_page">
-    <div class="pujcovna_filters">
-        <div class="filters_item">
-            <form method="get" action="{{ url_for('rentals') }}" class="filter_search_form">
-                <!-- Brand Filter -->
-                <label for="brand">Brand:</label>
-                <select name="brand" id="brand" onchange="this.form.submit()">
-                    <option value="">-- All Brands --</option>
-                    {% for brand in brands %}
-                    <option value="{{ brand }}" {% if selected_filters.brand==brand %}selected{% endif %}>
-                        {{ brand }}
-                    </option>
-                    {% endfor %}
-                </select>
-                <br>
+    <main class="pujcovna_full_page">
+        <div class="pujcovna_filters">
+            <div class="filters_item">
+                <form method="get" action="{{ url_for('rentals') }}" class="filter_search_form">
+                    <!-- Brand Filter -->
+                    <div class="filter_section">
+                        <div class="filter_header" onclick="toggleFilter('brand_filter', this)">Značka: <i class="fa-solid fa-plus"></i></div>
+                        <div id="brand_filter" class="filter_options" style="display: none;">
+                            {% for brand in brands %}
+                            <label class="subfilters">
+                                <input type="checkbox" name="brand" value="{{ brand }}" 
+                                    {% if selected_filters.brand and brand in selected_filters.brand %}checked{% endif %} 
+                                    onchange="this.form.submit()">
+                                {{ brand }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
 
-                <!-- Model Filter -->
-                <label for="model">Model:</label>
-                <select name="model" id="model" onchange="this.form.submit()">
-                    <option value="">-- All Models --</option>
-                    {% for model in models %}
-                    <option value="{{ model }}" {% if selected_filters.model==model %}selected{% endif %}>
-                        {{ model }}
-                    </option>
-                    {% endfor %}
-                </select>
-                <br>
+                    <!-- Model Filter -->
+                    <div class="filter_section">
+                        <div class="filter_header" onclick="toggleFilter('model_filter', this)">Model: <i class="fa-solid fa-plus"></i></div>
+                        <div id="model_filter" class="filter_options" style="display: none;">
+                            {% for model in models %}
+                            <label class="subfilters">
+                                <input type="checkbox" name="model" value="{{ model }}" 
+                                    {% if selected_filters.model and model in selected_filters.model %}checked{% endif %} 
+                                    onchange="this.form.submit()">
+                                {{ model }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
 
-                <!-- Frame Material Filter -->
-                <label for="frame_material">Frame Material:</label>
-                <select name="frame_material" id="frame_material" onchange="this.form.submit()">
-                    <option value="">-- All Materials --</option>
-                    {% for material in frame_materials %}
-                    <option value="{{ material }}" {% if selected_filters.frame_material==material %}selected{% endif
-                        %}>
-                        {{ material }}
-                    </option>
-                    {% endfor %}
-                </select>
-                <br>
+                    <!-- Frame Material Filter -->
+                    <div class="filter_section">
+                        <div class="filter_header" onclick="toggleFilter('frame_material_filter', this)">Materiál rámu: <i class="fa-solid fa-plus"></i></div>
+                        <div id="frame_material_filter" class="filter_options" style="display: none;">
+                            {% for material in frame_materials %}
+                            <label class="subfilters">
+                                <input type="checkbox" name="frame_material" value="{{ material }}" 
+                                    {% if selected_filters.frame_material and material in selected_filters.frame_material %}checked{% endif %} 
+                                    onchange="this.form.submit()">
+                                {{ material }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
 
-                <!-- Brake Type Filter -->
-                <label for="brake_type">Brake Type:</label>
-                <select name="brake_type" id="brake_type" onchange="this.form.submit()">
-                    <option value="">-- All Brake Types --</option>
-                    {% for brake in brake_types %}
-                    <option value="{{ brake }}" {% if selected_filters.brake_type==brake %}selected{% endif %}>
-                        {{ brake }}
-                    </option>
-                    {% endfor %}
-                </select>
-                <br>
+                    <!-- Brake Type Filter -->
+                    <div class="filter_section">
+                        <div class="filter_header" onclick="toggleFilter('brake_type_filter', this)">Typ brzdy: <i class="fa-solid fa-plus"></i></div>
+                        <div id="brake_type_filter" class="filter_options" style="display: none;">
+                            {% for brake in brake_types %}
+                            <label class="subfilters">
+                                <input type="checkbox" name="brake_type" value="{{ brake }}" 
+                                    {% if selected_filters.brake_type and brake in selected_filters.brake_type %}checked{% endif %} 
+                                    onchange="this.form.submit()">
+                                {{ brake }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
 
-                <!-- Size Filter -->
-                <label for="size">Size:</label>
-                <select name="size" id="size" onchange="this.form.submit()">
-                    <option value="">-- All Sizes --</option>
-                    {% for size in sizes %}
-                    <option value="{{ size }}" {% if selected_filters.size==size %}selected{% endif %}>
-                        {{ size }}
-                    </option>
-                    {% endfor %}
-                </select>
-                <br>
+                    <!-- Size Filter -->
+                    <div class="filter_section">
+                        <div class="filter_header" onclick="toggleFilter('size_filter', this)">Velikost: <i class="fa-solid fa-plus"></i></div>
+                        <div id="size_filter" class="filter_options" style="display: none;">
+                            {% for size in sizes %}
+                            <label class="subfilters">
+                                <input type="checkbox" name="size" value="{{ size }}" 
+                                    {% if selected_filters.size and size in selected_filters.size %}checked{% endif %} 
+                                    onchange="this.form.submit()">
+                                {{ size }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
 
-                <!-- Color Filter -->
-                <label for="color">Color:</label>
-                <select name="color" id="color" onchange="this.form.submit()">
-                    <option value="">-- All Colors --</option>
-                    {% for color in colors %}
-                    <option value="{{ color }}" {% if selected_filters.color==color %}selected{% endif %}>
-                        {{ color }}
-                    </option>
-                    {% endfor %}
-                </select>
-                <br>
+                    <!-- Color Filter -->
+                    <div class="filter_section">
+                        <div class="filter_header" onclick="toggleFilter('color_filter', this)">Barva: <i class="fa-solid fa-plus"></i></div>
+                        <div id="color_filter" class="filter_options" style="display: none;">
+                            {% for color in colors %}
+                            <label class="subfilters">
+                                <input type="checkbox" name="color" value="{{ color }}" 
+                                    {% if selected_filters.color and color in selected_filters.color %}checked{% endif %} 
+                                    onchange="this.form.submit()">
+                                {{ color }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
 
-                <!-- Status Filter -->
-                <label for="status">Status:</label>
-                <select name="status" id="status" onchange="this.form.submit()">
-                    <option value="">-- All Statuses --</option>
-                    {% for status in statuses %}
-                    <option value="{{ status }}" {% if selected_filters.status==status %}selected{% endif %}>
-                        {{ status }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </form>
+                    <!-- Status Filter -->
+                    <div class="filter_section">
+                        <div class="filter_header" onclick="toggleFilter('status_filter', this)">Status: <i class="fa-solid fa-plus"></i></div>
+                        <div id="status_filter" class="filter_options" style="display: none;">
+                            {% for status in statuses[:1] %}
+                            <label class="subfilters">
+                                <input type="checkbox" name="status" value="{{ status }}" 
+                                    {% if selected_filters.status and status in selected_filters.status %}checked{% endif %} 
+                                    onchange="this.form.submit()">
+                                {{ status }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Reset Filters Button -->
+                    <div class="filter_section">
+                        <button type="button" onclick="resetFilters()" class="scnd_btn">Resetovat všechny filtry <i class="fa-solid fa-filter-circle-xmark"></i></button>
+                    </div>
 
 
-
-
-
-
-            <div class="filter_header">
-                <span>Kategorie</span>
-                <button class="toggle-btn">−</button>
-            </div>
-
-            <div class="subfilters">
-                <label>
-                    <input type="checkbox">Silniční
-                </label>
-                <label>
-                    <input type="checkbox">Gravel
-                </label>
-
-                <label>
-                    <input type="checkbox">Triation
-                </label>
-
-                <label>
-                    <input type="checkbox">Downhill
-                </label>
-
-                <label>
-                    <input type="checkbox">Trailové
-                </label>
-
-                <label>
-                    <input type="checkbox">Enduro
-                </label>
-
-                <label>
-                    <input type="checkbox">Cross country
-                </label>
-
+                </form>
             </div>
         </div>
 
-        <div class="filters_item">
-            <div class="filter_header">
-                <span>Velikost</span>
-                <button class="toggle-btn">+</button>
+        <section class="pujcovna_main">
+            <div class="pujcovna_search_row">
+                <div class="search_bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input class="text" id="search-input" placeholder="Vyhledavani">
+                </div>
+                <button id="sorting_btn" class="scnd_btn">
+                    Seřadit podle
+                    <i class="fa-solid fa-caret-down"></i>
+                    <ul class="sorting-options" style="display: none;">
+                        <li data-sort="name">Název</li>
+                        <li data-sort="type">Typ</li>
+                        <li data-sort="price">Cena</li>
+                        <li data-sort="availability">Dostupnost</li>
+                    </ul>
+                </button>
             </div>
-            <div class="subfilters" style="display: none;">
-                <label>
-                    <input type="checkbox">XS
-                </label>
-                <label>
-                    <input type="checkbox">S
-                </label>
-                <label>
-                    <input type="checkbox">M
-                </label>
-                <label>
-                    <input type="checkbox">L
-                </label>
-                <label>
-                    <input type="checkbox">XL
-                </label>
 
-            </div>
-        </div>
+            <div class="bike_collection">
+                {% for instance in bike_instances %}
+                    <div class="bike">
+                        <a href="{{ url_for('rentals_detail', bike_instance_id=instance.id) }}" class="bike">
+                        <img class="bike_img"
+                            src="{{ instance.pictures[0].bike_picture_url if instance.pictures else url_for('static', filename='images/example.jpg') }}"
+                            alt="Bike Image">
 
-        <div class="filters_item">
-            <div class="filter_header">
-                <span>Materiál rámu</span>
-                <button class="toggle-btn">+</button>
-            </div>
-            <div class="subfilters" style="display: none;">
-                <label>
-                    <input type="checkbox">Aluminum
-                </label>
-                <label>
-                    <input type="checkbox">Carbon
-                </label>
-                <label>
-                    <input type="checkbox">Steel
-                </label>
-                <label>
-                    <input type="checkbox">Titanium
-                </label>
-            </div>
-        </div>
+                        <div class="bike_labels">
+                            <p><strong style="display: none;">Status:</strong>
+                                {% if instance.status.value == 'Available' %}
+                                    <i class="fa-solid fa-circle-check"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                {% endif %}
+                            </p>
+                            <p class="b_label"><strong style="display: none;">Brand:</strong> {{ instance.bike.brand }}</p>
+                            <p class="b_label"><strong style="display: none;">Size:</strong> {{ instance.size.value }}</p>
+                            <p class="b_label"><strong style="display: none;">Frame Material:</strong> {{ instance.bike.frame_material.value }}</p>
 
-        <div class="filters_item">
-            <div class="filter_header">
-                <span>Typ brzdy</span>
-                <button class="toggle-btn">+</button>
-            </div>
-            <div class="subfilters" style="display: none;">
-                <label>
-                    <input type="checkbox">Disc
-                </label>
-                <label>
-                    <input type="checkbox">Rim
-                </label>
-                <label>
-                    <input type="checkbox">Hydraulic
-                </label>
-            </div>
-        </div>
+                        </div>
+                        <h4>{{ instance.bike.model }}</h4>
+                    </div>
 
-        <div class="filters_item">
-            <div class="filter_header">
-                <span>Značka</span>
-                <button class="toggle-btn">+</button>
-            </div>
-            <div class="subfilters" style="display: none;">
-                <label>
-                    <input type="checkbox">Treck
-                </label>
-                <label>
-                    <input type="checkbox">Santa Cruz
-                </label>
-                <label>
-                    <input type="checkbox">Salsa
-                </label>
-                <label>
-                    <input type="checkbox">Surly
-                </label>
-                <label>
-                    <input type="checkbox">Ibis
-                </label>
-                <label>
-                    <input type="checkbox">Juliana
-                </label>
-            </div>
-        </div>
+                {% endfor %}
 
-        <div class="filters_item">
-            <div class="filter_header">
-                <span>Barva</span>
-                <button class="toggle-btn">+</button>
+                {% if bike_instances|length == 0 %}
+                <p>No bike instances available at the moment.</p>
+                {% endif %}
             </div>
-            <div class="subfilters" style="display: none;">
-                <label>
-                    <input type="checkbox">Černá
-                </label>
-                <label>
-                    <input type="checkbox">Bílá
-                </label>
-                <label>
-                    <input type="checkbox">Žlutá
-                </label>
-                <label>
-                    <input type="checkbox">Zelená
-                </label>
-            </div>
-        </div>
-    </div>
+            <div class="pages" id="pagination"></div>
+        </section>
+    </main>
 
-    <section class="pujcovna_main">
-        <div class="pujcovna_search_row">
-            <div class="search_bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input class="text" id="search-input" placeholder="Vyhledavani">
-            </div>
-            <button id="sorting_btn" class="scnd_btn">
-                Seřadit podle
-                <i class="fa-solid fa-caret-down"></i>
-                <ul class="sorting-options" style="display: none;">
-                    <li data-sort="name">Název</li>
-                    <li data-sort="type">Typ</li>
-                    <li data-sort="price">Cena</li>
-                    <li data-sort="availability">Dostupnost</li>
-                </ul>
-            </button>
-        </div>
+    <script>
+    function toggleFilter(filterId, headerElement) {
+        const filterElement = document.getElementById(filterId);
+        const icon = headerElement.querySelector('i');
 
-        <div class="bike_collection">
-            {% for instance in bike_instances %}
-            <a href="{{ url_for('rentals_detail', bike_instance_id=instance.id) }}" class="bike">
-                <img class="bike_img"
-                    src="{{ instance.pictures[0].bike_picture_url if instance.pictures else url_for('static', filename='images/example.jpg') }}"
-                    alt="Bike Image">
-                <h3>{{ instance.bike.model }}</h3>
-                <p><strong>Brand:</strong> {{ instance.bike.brand }}</p>
-                <p><strong>Size:</strong> {{ instance.size.value }}</p>
-                <p><strong>Frame Material:</strong> {{ instance.bike.frame_material.value }}</p>
-                <p><strong>Status:</strong> {{ instance.status.value }}</p>
-                <a href="{{ url_for('rentals_detail', bike_instance_id=instance.id) }}" class="details_link">View
-                    Details</a>
-            </a>
-            {% endfor %}
-            {% if bike_instances|length == 0 %}
-            <p>No bike instances available at the moment.</p>
-            {% endif %}
-        </div>
-        <div class="pages" id="pagination"></div>
-    </section>
-</main>
+        if (filterElement.style.display === "none") {
+            filterElement.style.display = "block";
+            if (icon) icon.className = "fa-solid fa-minus";
+        } else {
+            filterElement.style.display = "none";
+            if (icon) icon.className = "fa-solid fa-plus";
+        }
+    }
+
+    function resetFilters() {
+        const checkboxes = document.querySelectorAll('.filter_options input[type="checkbox"]');
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+        document.querySelector('.filter_search_form').submit();
+    }
+    </script>
 {% endblock %}

@@ -70,6 +70,10 @@ form.login {
     position: relative;
 }
 
+.input-group .form-label{
+    display: none;
+}
+
 .input-group i,
 .input-group-pass i {
     position: absolute;
