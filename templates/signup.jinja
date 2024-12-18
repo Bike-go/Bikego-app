@@ -1,7 +1,7 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-<main>
+<main class="login-page">
     <div class="user_icon">
         <i class="fa-regular fa-user"></i>
     </div>
@@ -34,7 +34,7 @@
             {% endif %}
         </div>
 
-        <div class="input-group">
+        <div class="input-group-pass">
             <i class="fa-solid fa-lock"></i>
             {{ form.password0(class="form-field", placeholder="Heslo") }}
             <i class="fa-solid fa-eye" id="toggle-password0" style="cursor: pointer;"
@@ -48,7 +48,7 @@
             {% endif %}
         </div>
 
-        <div class="input-group">
+        <div class="input-group-pass">
             <i class="fa-solid fa-lock"></i>
             {{ form.password1(class="form-field", placeholder="Potvrdit heslo") }}
             <i class="fa-solid fa-eye" id="toggle-password1" style="cursor: pointer;"

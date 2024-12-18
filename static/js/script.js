@@ -540,8 +540,6 @@ function closeModal(modalId) {
 }
 
 
-
-
     // Toggle the type attribute
 
     if (passwordField.type === "password") {
@@ -563,3 +561,41 @@ function closeModal(modalId) {
     }
 
 }
+
+/* ========================== 
+   Profile page modalnni okna
+========================== */
+
+// Get modal elements
+const editProfileModal = document.getElementById('editProfileModal');
+const settingsModal = document.getElementById('settingsModal');
+
+// Get buttons
+const editProfileBtn = document.getElementById('editProfileBtn');
+const settingsBtn = document.getElementById('settingsBtn');
+
+// Get close buttons
+const closeButtons = document.querySelectorAll('.modal .close');
+
+// Event listeners to open modals
+editProfileBtn.addEventListener('click', () => {
+    editProfileModal.style.display = 'flex';
+});
+
+settingsBtn.addEventListener('click', () => {
+    settingsModal.style.display = 'flex';
+});
+
+// Event listeners to close modals
+closeButtons.forEach((close) => {
+    close.addEventListener('click', () => {
+        close.closest('.modal').style.display = 'none';
+    });
+});
+
+// Close modals on outside click
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+    }
+});
