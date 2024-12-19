@@ -2,25 +2,31 @@
    Carousel (Přepínání obrázků)
 ========================== */
 
-let currentSlide = 0;
-const slides = document.querySelectorAll('.slide');
-const indicators = document.querySelectorAll('.indicator');
 
-// Funkce pro přepnutí na konkrétní obrázek
-function goToSlide(slideIndex) {
-    slides[currentSlide].classList.remove('active'); // Skrytí aktuálního obrázku
-    indicators[currentSlide].classList.remove('active'); // Skrytí indikátoru aktuálního obrázku
+document.addEventListener('DOMContentLoaded', () => {
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const indicators = document.querySelectorAll('.indicator');
 
-    currentSlide = slideIndex; // Nastavení nového indexu obrázku
-    slides[currentSlide].classList.add('active'); // Zobrazení nového obrázku
-    indicators[currentSlide].classList.add('active'); // Aktivace indikátoru
-}
+    function goToSlide(slideIndex) {
+        slides[currentSlide].classList.remove('active');
+        indicators[currentSlide].classList.remove('active');
 
-// Automatické přepínání obrázků každých 8 sekund
-setInterval(() => {
-    let nextSlide = (currentSlide + 1) % slides.length; // Přepnutí na další obrázek
-    goToSlide(nextSlide);
-}, 8000);
+        currentSlide = slideIndex;
+
+        slides[currentSlide].classList.add('active');
+        indicators[currentSlide].classList.add('active');
+    }
+
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => goToSlide(index));
+    });
+
+    setInterval(() => {
+        let nextSlide = (currentSlide + 1) % slides.length;
+        goToSlide(nextSlide);
+    }, 8000);
+});
 
 
 /* ========================== 
