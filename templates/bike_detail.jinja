@@ -4,21 +4,32 @@
 <main>
     <section class="bike_preview">
         <div class="title_row">
-            <h1>Full title</h1>
-            <div class="avalibality"><i class="fa-solid fa-circle-check"></i> Dostupny</div>
+            <h1>Detail kola</h1>
+            {% if bike_instance.status.value == 'Available' %}
+                <div class="avalibality"><i class="fa-solid fa-circle-check"></i> Dostupné</div>
+            {% else %}
+                <div class="avalibality"><i class="fa-solid fa-circle-xmark"></i> Nedostupné</div>
+            {% endif %}
         </div>
-
         <div class="preview_container">
             <div class="bike_img">
-                <img src="{{url_for('static', filename='images/example.jpg')}}" class="bike_img">
+                {% if bike_instance.pictures %}
+                {% for picture in bike_instance.pictures %}
+                <img src="{{ picture.bike_picture_url }}" alt="{{ picture.description }}" class="bike_img">
+                {% endfor %}
+                {% else %}
+                <img  src="{{ url_for('static', filename='images/example.jpg') }}"
+                    alt="Default Bike Image" class="bike_img">
+                {% endif %}
             </div>
-
             <div class="preview_data">
                 <div class="title_row">
-                    <h3>Kategorie</h3>
+                    <h3>{{ bike_instance.bike.model }}</h3>
                     <span class="stars">⭐⭐⭐⭐⭐</span>
                 </div>
+
                 <div class="title_row">
+<<<<<<< Updated upstream
                     <h3>Velikost: M <!-- {{velikost}} --></h3>
                     <div class="scnd_btn"> <button id="add_review"> Napsat recenzi </button> <i class="fa-solid fa-pen"></i></div>
                 </div>
@@ -28,26 +39,49 @@
                 <p class="title_row price"> 100Kč/den</p>
                 
                 <form class="rental-form" method="POST">
+=======
+                    <h3>Velikost: {{ bike_instance.size.value }}</h3>
+                    <div class="scnd_btn"> <button id="add_review"> Napsat recenzi </button> <i
+                            class="fa-solid fa-pen"></i></div>
+                </div>
+                <div class="title_row description">
+                    Kolo značky {{ bike_instance.bike.brand }} nabízí rám z kvalitního materiálu {{ bike_instance.bike.frame_material.value }}, který zajišťuje ideální kombinaci pevnosti a lehkosti. Díky brzdám typu {{ bike_instance.bike.brake_type.value }} je jízda bezpečná a pohodlná za každých podmínek. <br>
+                    Popis: {{ bike_instance.bike.description }}.
+                </div>
+                <p class="title_row price">{{ bike_instance.bike.price.price_per_hour }} CZK/hodinu</p>
+                <p class="title_row price">{{ bike_instance.bike.price.price_per_day }} CZK/den</p>
+
+                <form action="{{ url_for('rentals_detail', bike_instance_id=bike_instance.id) }}" method="POST" class="rental-form">
+                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+>>>>>>> Stashed changes
                     <div class="title_row">
                         <input type="text" id="rental-datetime" name="rental-datetime" placeholder="Doba zapůjčení kola:" required>
                         <button type="submit">Rezervovat</button>
                     </div>
+<<<<<<< Updated upstream
                     
                     
                 </form>
                 <div id="output"></div>
             
+=======
+                </form>
+                <div id="output"></div>
+>>>>>>> Stashed changes
             </div>
-
         </div>
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
     </section>
 
     <div id="reviewModal" class="modal_recenze" style="display: none;">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Napsat recenzi</h2>
-            <form id="reviewForm">
+            <form action="{{ url_for('submit_review', bike_instance_id=bike_instance.id) }}" method="POST" id="reviewForm">
+                <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
                 <div class="form-group">
                     <label for="rating">Hodnocení:</label>
                     <select id="rating" name="rating" required>
@@ -63,11 +97,13 @@
                     <label for="review">Vaše recenze:</label>
                     <textarea id="review" name="review" placeholder="Napište svou recenzi zde..." required></textarea>
                 </div>
-                <button type="submit">Odeslat</button>
+                <button class="btn" type="submit">Odeslat</button>
             </form>
         </div>
     </div>
 
+    <!--
+    
     <section class="more_bikes">
         <div class="title_row">
             <h1>Další nabídky</h1>
@@ -154,6 +190,7 @@
             </div>
         </div>        
     </section>
+<<<<<<< Updated upstream
     <section class="bike_detail">
     <div class="title">Detail kola</div>
     <div class="bike_detail_card">
@@ -180,6 +217,10 @@
         </div>
     </div>
 </section>
+=======
+
+    -->
+>>>>>>> Stashed changes
 </main>
 
 

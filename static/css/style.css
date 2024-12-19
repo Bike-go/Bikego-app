@@ -1194,7 +1194,6 @@ table td {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--black);
-    height: 40px;
     width: 100%;
 
 }
@@ -1202,10 +1201,9 @@ table td {
 .title_row .avalibality{
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 10px;
     font-size: 24px;
     font-weight: 600;
-    width: 150px;
 }
 
 
@@ -1229,7 +1227,7 @@ table td {
 }
 
 .preview_data .description{
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .preview_data .price{
@@ -1374,10 +1372,9 @@ table td {
 }
 
 .modal_recenze .modal-content {
-    background-color: #fefefe;
+    background-color: var(--white);
     margin: 15% auto;
     padding: 20px;
-    border: 1px solid #888;
     width: 50%;
 }
 
@@ -1392,6 +1389,17 @@ table td {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.modal_recenze textarea {
+    border: 1px solid var(--gray_btn);
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 400px;
 }
 
 /*Bike detail end*/
@@ -2034,7 +2042,6 @@ table td {
 
     .title_row .avalibality{
         font-size: 16px;
-        width: 120px;
     }
 
 
@@ -2112,6 +2119,12 @@ table td {
 
     .user_review .description {
         font-size: 12px;
+    }
+
+    .modal_recenze textarea {
+        font-size: 14px;
+        max-width: 280px;
+        max-height: 200px;
     }
 
     #serviceBikesTable {
