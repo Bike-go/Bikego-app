@@ -178,6 +178,16 @@
             <p><strong>Price per day:</strong> {{ bike_instance.bike.price.price_per_day }} CZK</p>
             <p><strong>Description:</strong> {{ bike_instance.bike.description }}</p>
         </div>
+        <form action="{{ url_for('rentals_detail', bike_instance_id=bike_instance.id) }}" method="POST">
+        <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+    <label for="reservation_start">Start Time:</label>
+    <input type="datetime-local" name="reservation_start" id="reservation_start" required>
+
+    <label for="reservation_end">End Time:</label>
+    <input type="datetime-local" name="reservation_end" id="reservation_end" required>
+
+    <button type="submit">Reserve</button>
+</form>
     </div>
 </section>
 </main>

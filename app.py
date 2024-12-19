@@ -1,6 +1,7 @@
+from datetime import datetime
 import os
 from flask import Flask, flash, jsonify, redirect, render_template, url_for, request
-from flask_jwt_extended import JWTManager, get_jwt_identity, verify_jwt_in_request
+from flask_jwt_extended import JWTManager, get_jwt, get_jwt_identity, jwt_required, verify_jwt_in_request
 from flask_wtf import CSRFProtect
 from sqlalchemy import create_engine, inspect, text
 from config import Config
@@ -10,8 +11,10 @@ from db import db
 from models.bike_model import Bike, BrakeTypeEnum, FrameMaterialEnum
 from models.instance_bike_model import BikeSizeEnum, BikeStatusEnum, InstanceBike
 from models.news_model import News
+from models.reservation_model import Reservation
 from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
 from utils.email_utils import send_contact_form
+from flask_wtf.csrf import generate_csrf
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -161,12 +164,67 @@ def rentals():
         },
     ), 200
 
-@app.route('/rentals-detail/<uuid:bike_instance_id>', methods=['GET'])
+@app.route('/rentals-detail/<uuid:bike_instance_id>', methods=['GET', 'POST'])
+@jwt_required(optional=True)
 def rentals_detail(bike_instance_id):
+    # Retrieve the bike instance and join with Bike data
     bike_instance = InstanceBike.query.filter_by(id=bike_instance_id).join(Bike).first()
+
     if not bike_instance:
         return redirect(url_for("rentals")), 301
-    return render_template("bike_detail.jinja", title="Bike Detail", bike_instance=bike_instance), 200
+
+    # Handle POST request (reservation creation)
+    if request.method == 'POST':
+        try:
+            # Get data from the form
+            reservation_start = request.form.get("reservation_start")
+            reservation_end = request.form.get("reservation_end")
+            ready_to_pickup = request.form.get("ready_to_pickup") == "on"  # Checkbox or boolean
+            
+            verify_jwt_in_request()
+            # Get the current user from JWT token
+            user_id = get_jwt_identity()
+
+            # Parse the dates (make sure they are in the correct format)
+            reservation_start = datetime.strptime(reservation_start, "%Y-%m-%d %H:%M")
+            reservation_end = datetime.strptime(reservation_end, "%Y-%m-%d %H:%M")
+
+            # Create a new reservation
+            new_reservation = Reservation(
+                reservation_start=reservation_start,
+                reservation_end=reservation_end,
+                ready_to_pickup=ready_to_pickup,
+                User_id=user_id,
+                Instance_Bike_id=bike_instance.id
+            )
+
+            # Add the reservation to the database
+            db.session.add(new_reservation)
+            db.session.commit()
+
+            flash("Reservation created successfully!", "success")
+
+            csrf_token=""
+            try:
+                csrf_token=get_jwt()["csrf"]
+            except Exception as e:
+                csrf_token=generate_csrf()
+
+            # Redirect back to rental details page or to another page
+            return redirect(url_for("rentals_detail", bike_instance_id=bike_instance.id, csrf_token=csrf_token)), 301
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error creating reservation: {e}", "error")
+
+    csrf_token=""
+    try:
+        csrf_token=get_jwt()["csrf"]
+    except Exception as e:
+        csrf_token=generate_csrf()
+
+    # For GET request, simply render the bike details page
+    return render_template("bike_detail.jinja", title="Bike Detail", bike_instance=bike_instance, csrf_token=csrf_token), 200
 
 @app.route('/photos', methods=['GET'])
 def photos():
