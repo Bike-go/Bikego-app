@@ -12,6 +12,7 @@ from models.bike_model import Bike, BrakeTypeEnum, FrameMaterialEnum
 from models.inspection_model import Inspection
 from models.instance_bike_model import BikeSizeEnum, BikeStatusEnum, InstanceBike
 from models.news_model import News
+from models.rental_model import Rental
 from models.reservation_model import Reservation
 from models.review_model import Review
 from models.user_model import User
@@ -325,29 +326,48 @@ def servis():
     csrf_token_from_jwt = get_jwt().get("csrf")
 
     if request.method == 'POST':
-        # Get the form data
         inspection_id = request.form.get('inspection_id')
         new_status = request.form.get('status')
 
-        # Validate and update the status of the inspection
         inspection = Inspection.query.get(inspection_id)
         if not inspection:
             flash("Inspection not found.", "error")
             return redirect(url_for("servis"))
 
+        instance_bike = (
+            InstanceBike.query
+            .join(Rental, Rental.Instance_Bike_id == InstanceBike.id)
+            .filter(Rental.id == inspection.Rental_id)
+            .first()
+        )
+
+        if not instance_bike:
+            flash("Associated bike not found.", "error")
+            return redirect(url_for("servis"))
+
+        valid_statuses = [status.value for status in BikeStatusEnum]
+        if new_status not in valid_statuses:
+            flash("Invalid status value.", "error")
+            return redirect(url_for("servis"))
+
         try:
-            # Update status (assuming 'status' is a valid field in the Inspection model)
-            inspection.status = new_status
+            instance_bike.status = new_status
             db.session.commit()
-            flash("Inspection status updated successfully.", "success")
+            flash("Bike status updated successfully.", "success")
         except Exception as e:
             db.session.rollback()
-            flash(f"Error updating status: {e}", "error")
+            flash(f"Error updating bike status: {e}", "error")
 
         return redirect(url_for("servis"))
 
-    # Fetch inspections to display dynamically (example: last 10 inspections)
-    inspections = Inspection.query.order_by(Inspection.inspection_date.desc()).limit(10).all()
+    # Fetch inspections with associated bikes
+    inspections = (
+        Inspection.query
+        .join(Rental, Rental.id == Inspection.Rental_id)
+        .join(InstanceBike, Rental.Instance_Bike_id == InstanceBike.id)
+        .order_by(Inspection.inspection_date.desc())
+        .all()
+    )
 
     # Render the page with inspections data
     return render_template("servis.jinja", title="Servis", page="servis", inspections=inspections, csrf_token=csrf_token_from_jwt), 200
