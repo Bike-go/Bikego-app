@@ -354,7 +354,7 @@ def render_profile_page(user, total_time, favourite_bike, active_sessions, revie
 @jwt_required(refresh=True)
 def refresh_token():
     current_user = get_jwt_identity()
-    access_token = create_access_token(identity=current_user)
+    access_token = create_access_token(identity=current_user, additional_claims={"csrf": generate_csrf()})
     response = jsonify({'refresh': True})
     set_access_cookies(response, access_token)
     next_url = request.args.get('next')

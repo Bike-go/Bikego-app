@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS "Rental" (
   "end_time" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "total_price" INTEGER NOT NULL,
   "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Payment_id" INTEGER NOT NULL REFERENCES "Payment"("id") ON DELETE SET NULL,
+  "Payment_id" INTEGER REFERENCES "Payment"("id") ON DELETE SET NULL,
   "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
 );
 

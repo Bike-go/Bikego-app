@@ -21,21 +21,18 @@
                 <td>{{ inspection.inspection_date }}</td>
                 <td>{{ inspection.comments }}</td>
                 <td>{{ inspection.rental.instance_bike.id }}</td>
-                <td>{{ inspection.rental.instance_bike.status }}</td>
+                <td>{{ inspection.rental.instance_bike.status.value }}</td>
                 <td>
                     <form method="POST" action="{{ url_for('servis') }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <input type="hidden" name="inspection_id" value="{{ inspection.id }}">
                         <select name="status">
-                            <option value="Available" {% if inspection.rental.instance_bike.status=='Available'
-                                %}selected{% endif %}>Available</option>
-                            <option value="Rented" {% if inspection.rental.instance_bike.status=='Rented' %}selected{%
-                                endif %}>Rented</option>
-                            <option value="Under_Repair" {% if inspection.rental.instance_bike.status=='Under_Repair'
-                                %}selected{% endif %}>Under Repair</option>
-                            <option value="Out_of_Service" {% if
-                                inspection.rental.instance_bike.status=='Out_of_Service' %}selected{% endif %}>Out of
-                                Service</option>
+                            {% for status in statuses %}
+                            <option value="{{ status }}" {% if inspection.rental.instance_bike.status==status
+                                %}selected{% endif %}>
+                                {{ status.value }}
+                            </option>
+                            {% endfor %}
                         </select>
                         <button type="submit" class="btn btn-primary">Update Status</button>
                     </form>

@@ -13,7 +13,7 @@ class Rental(db.Model):
     end_time = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
     total_price = Column(Integer, nullable=False)
     User_id = Column(UUID, ForeignKey(f'{Config.POSTGRES_SCHEMA}.user.id'), nullable=False)
-    Payment_id = Column(Integer, ForeignKey(f'{Config.POSTGRES_SCHEMA}.payment.id'), nullable=False)
+    Payment_id = Column(Integer, ForeignKey(f'{Config.POSTGRES_SCHEMA}.payment.id'))
     Instance_Bike_id = Column(UUID, ForeignKey(f'{Config.POSTGRES_SCHEMA}.instance_Bike.id'), nullable=False)
 
     user = relationship("User", back_populates="rentals")

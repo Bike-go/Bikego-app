@@ -1,75 +1,77 @@
 {% extends '__main.jinja' %}
 
 {% block content%}
-    <div class="rent_back">
-        <!-- Sekce: Vrácení kol -->
-        <section>
-            <h2 class="title">Vrácení kol</h2>
-            <table id="rentedBikesTable" class="table-responsive">
-                <thead>
-                    <tr>
-                        <th>ID kola</th>
-                        <th>Uživatel</th>
-                        <th>Čas</th>
-                        <th>Cena</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="4">Načítání dat...</td></tr>
-                </tbody>
-            </table>
+<div class="rent_back">
+    <!-- Sekce: Vrácení kol -->
+    <section>
+        <h2 class="title">Vrácení kol</h2>
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <div>
+                <label for="rental_id">Select Rental</label>
+                <select id="rental_id" name="rental_id" required>
+                    {% for rental in rentals_to_update %}
+                    <option value="{{ rental.id }}">
+                        {{ rental.instance_bike.color }} - {{ rental.user.username }} ({{ rental.start_time }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            <form id="bikeReturnForm" class="form-group">
-                <div class="form-control">
-                    <label for="returnBikeId">ID kola</label>
-                    <select id="returnBikeId" name="returnBikeId" required></select>
-                </div>
-                <div class="form-control">
-                    <label for="bikeCondition">Stav kola</label>
-                    <select id="bikeCondition" name="bikeCondition" required>
-                        <option value="">Vyberte stav</option>
-                        <option value="excellent">Výborný</option>
-                        <option value="good">Dobrý</option>
-                        <option value="damaged">Poškozený</option>
-                        <option value="unusable">Nezpůsobilý</option>
-                    </select>
-                </div>
-                <div class="form-control">
-                    <label for="damageDetails">Podrobnosti o poškození (volitelné)</label>
-                    <textarea id="damageDetails" name="damageDetails" rows="4" placeholder="Popište poškození kola..."></textarea>
-                </div>
-                <button type="submit" class="btn">Uložit záznam vrácení</button>
-            </form>
-        </section>
+            <div>
+                <label for="end_time">End Time (YYYY-MM-DD HH:MM:SS)</label>
+                <input type="text" id="end_time" name="end_time" required>
+            </div>
 
-        <!-- Sekce: Půjčování kol -->
-        <section>
-            <h2 class="title">Půjčování kol</h2>
-            <table id="orderedBikesTable" class="table-responsive">
-                <thead>
-                    <tr>
-                        <th>ID kola</th>
-                        <th>Uživatel</th>
-                        <th>Datum</th>
-                        <th>Čas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="4">Načítání dat...</td></tr>
-                </tbody>
-            </table>
+            <div>
+                <label for="comments">Inspection Comments (Optional)</label>
+                <textarea id="comments" name="comments" rows="4"
+                    placeholder="Enter any comments about the bike or the rental process."></textarea>
+            </div>
 
-            <form id="bikeRentalForm" class="form-group">
-                <div class="form-control">
-                    <label for="rentalBikeId">ID kola</label>
-                    <select id="rentalBikeId" name="rentalBikeId" required></select>
-                </div>
-                <div class="form-control">
-                    <label for="customerName">Jméno zákazníka</label>
-                    <input type="text" id="customerName" name="customerName" placeholder="Zadejte jméno zákazníka" required>
-                </div>
-                <button type="submit" class="btn">Uložit záznam půjčení</button>
-            </form>
-        </section>
-    </div>
+            <button type="submit">Update Rental</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </section>
+
+    <!-- Sekce: Půjčování kol -->
+    <section>
+        <h2 class="title">Půjčování kol</h2>
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <div>
+                <label for="reservation_id">Select Reservation</label>
+                <select id="reservation_id" name="reservation_id" required>
+                    {% for reservation in reservations %}
+                    <option value="{{ reservation.id }}">
+                        {{ reservation.user.username }} - {{ reservation.instance_bike.color }} ({{
+                        reservation.instance_bike.size.value }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit">Create Rental</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </section>
+</div>
 {% endblock %}
