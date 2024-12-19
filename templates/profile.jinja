@@ -93,13 +93,14 @@
             </section>
         </div>
 
-        {% if user.role == 'Admin' %}
-        <div class="admin_panel">
-            <a href="{{ url_for('home') }}">Admin panel</a>
-        </div>
-        {% endif %}
-
         <div class="user_row">
+
+            {% if user.role == 'Admin' %}
+            <div class="admin_panel">
+                <a href="{{ url_for('home') }}">Admin panel</a>
+            </div>
+            {% endif %}
+            
             <div class="scnd_btn">
                 <form method="POST" class="login" action="{{ url_for('user_bp.forgot_password') }}">
                     <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
