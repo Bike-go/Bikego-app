@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-from flask import Flask, abort, flash, jsonify, redirect, render_template, url_for, request
+from flask import Flask, request, flash, jsonify, redirect, render_template, url_for
 from flask_jwt_extended import JWTManager, get_jwt, get_jwt_identity, jwt_required, verify_jwt_in_request
 from flask_wtf import CSRFProtect
 from sqlalchemy import create_engine, inspect, text
@@ -17,7 +17,7 @@ from models.rental_model import Rental
 from models.reservation_model import Reservation
 from models.review_model import Review
 from models.user_model import User
-from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
+from routes import user_bp
 from utils.email_utils import send_contact_form
 from flask_wtf.csrf import generate_csrf
 
@@ -98,7 +98,6 @@ def news():
 
 @app.route('/rentals', methods=['GET'])
 def rentals():
-    # Fetch query parameters for all filters
     brand_filter = request.args.getlist('brand')
     model_filter = request.args.getlist('model')
     frame_material_filter = request.args.getlist('frame_material')
@@ -107,11 +106,9 @@ def rentals():
     color_filter = request.args.getlist('color')
     status_filter = request.args.getlist('status')
     search_query = request.args.get('search', None)
-
-    # Base query to fetch bike instances joined with Bike
+    
     query = InstanceBike.query.join(Bike)
-
-    # Apply filters dynamically (use IN for multiple selections)
+    
     if brand_filter:
         query = query.filter(Bike.brand.in_(brand_filter))
     if model_filter:
@@ -131,11 +128,9 @@ def rentals():
             (Bike.model.ilike(f"%{search_query}%")) | 
             (Bike.description.ilike(f"%{search_query}%"))
         )
-
-    # Execute the query
+    
     bike_instances = query.all()
-
-    # Fetch distinct options dynamically for dropdowns
+    
     brands = db.session.query(Bike.brand).distinct().all()
     brands = [brand[0] for brand in brands]
 
@@ -176,29 +171,23 @@ def rentals():
 @app.route('/rentals-detail/<uuid:bike_instance_id>', methods=['GET', 'POST'])
 @jwt_required(optional=True)
 def rentals_detail(bike_instance_id):
-    # Retrieve the bike instance and join with Bike data
     bike_instance = InstanceBike.query.filter_by(id=bike_instance_id).join(Bike).first()
 
     if not bike_instance:
         return redirect(url_for("rentals")), 301
-
-    # Handle POST request (reservation creation)
+    
     if request.method == 'POST':
         try:
-            # Get data from the form
             reservation_start = request.form.get("reservation_start")
             reservation_end = request.form.get("reservation_end")
-            ready_to_pickup = request.form.get("ready_to_pickup") == "on"  # Checkbox or boolean
-            
-            verify_jwt_in_request()
-            # Get the current user from JWT token
-            user_id = get_jwt_identity()
+            ready_to_pickup = request.form.get("ready_to_pickup") == "on" 
 
-            # Parse the dates (make sure they are in the correct format)
+            verify_jwt_in_request()
+            user_id = get_jwt_identity()
+            
             reservation_start = datetime.strptime(reservation_start, "%Y-%m-%d %H:%M")
             reservation_end = datetime.strptime(reservation_end, "%Y-%m-%d %H:%M")
-
-            # Create a new reservation
+            
             new_reservation = Reservation(
                 reservation_start=reservation_start,
                 reservation_end=reservation_end,
@@ -206,42 +195,35 @@ def rentals_detail(bike_instance_id):
                 User_id=user_id,
                 Instance_Bike_id=bike_instance.id
             )
-
-            # Add the reservation to the database
+            
             db.session.add(new_reservation)
             db.session.commit()
 
             flash("Reservation created successfully!", "success")
 
-            csrf_token=""
             try:
-                csrf_token=get_jwt()["csrf"]
+                csrf_token = get_jwt()["csrf"]
             except Exception as e:
-                csrf_token=generate_csrf()
-
-            # Redirect back to rental details page or to another page
+                csrf_token = generate_csrf()
+            
             return redirect(url_for("rentals_detail", bike_instance_id=bike_instance.id, csrf_token=csrf_token)), 301
 
         except Exception as e:
             db.session.rollback()
             flash(f"Error creating reservation: {e}", "error")
 
-    csrf_token=""
     try:
-        csrf_token=get_jwt()["csrf"]
+        csrf_token = get_jwt()["csrf"]
     except Exception as e:
-        csrf_token=generate_csrf()
-
-    # For GET request, simply render the bike details page
+        csrf_token = generate_csrf()
+    
     return render_template("bike_detail.jinja", title="Bike Detail", bike_instance=bike_instance, csrf_token=csrf_token), 200
 
 @app.route("/submit-review/<uuid:bike_instance_id>", methods=["POST"])
 @jwt_required()
 def submit_review(bike_instance_id):
-    # Get the current user from JWT token
     user_id = get_jwt_identity()
-
-    # Get the bike instance from the database
+    
     bike_instance = InstanceBike.query.get(bike_instance_id)
 
     if not bike_instance:
@@ -249,24 +231,21 @@ def submit_review(bike_instance_id):
         return redirect(url_for("rentals"))
 
     try:
-        # Get review data from the form
+        
         rating = request.form.get("rating")
         comment = request.form.get("comment")
-
-        # Validate the rating (should be between 1 and 5)
+        
         if not rating or not (1 <= int(rating) <= 5):
             flash("Rating must be between 1 and 5.", "error")
             return redirect(url_for("rentals_detail", bike_instance_id=bike_instance_id))
-
-        # Create a new Review instance
+        
         new_review = Review(
             rating=int(rating),
             comment=comment,
             created_at=datetime.utcnow(),
             User_id=user_id
         )
-
-        # Save the review to the database
+        
         db.session.add(new_review)
         db.session.commit()
 
@@ -307,18 +286,9 @@ def bike_view():
 def admin():
     return render_template("admin_page.jinja", title="Admin", page="admin"), 200
 
-from flask import request, render_template, flash, redirect, url_for, abort
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from datetime import datetime
-from db import db
-from models import Reservation, Rental, InstanceBike, User
-from config import Config
-
-# Route to view reservations that are ready to be picked up
 @app.route('/rental', methods=['GET', 'POST'])
 @jwt_required()
 def rent_checkout():
-    # Check if the user is Admin or Employee
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     
@@ -327,11 +297,9 @@ def rent_checkout():
     
     csrf_token_from_jwt = get_jwt().get("csrf")
 
-    # GET request - Display reservations that are ready for pickup
     if request.method == 'GET':
         reservations = Reservation.query.filter_by(ready_to_pickup=True).all()
-
-        # Query rentals that are created but missing end_time and total_price
+        
         rentals_to_update = Rental.query.filter(Rental.end_time == Rental.start_time).all()
 
         return render_template("rent_back_bike.jinja", 
@@ -339,8 +307,7 @@ def rent_checkout():
                                reservations=reservations, 
                                rentals_to_update=rentals_to_update,
                                csrf_token=csrf_token_from_jwt), 200
-
-    # POST request - Create a rental from a reservation
+    
     if request.method == 'POST' and 'reservation_id' in request.form:
         reservation_id = request.form.get('reservation_id')
         reservation = Reservation.query.get(reservation_id)
@@ -348,20 +315,17 @@ def rent_checkout():
         if not reservation or not reservation.ready_to_pickup:
             flash("Reservation not found or not ready for pickup.", "error")
             return redirect(url_for('rent_checkout'))
-
-        # Create rental record
+        
         rental = Rental(
             User_id=reservation.User_id,
             Instance_Bike_id=reservation.Instance_Bike_id,
             start_time=datetime.utcnow(),
-            end_time=datetime.utcnow(),  # Can be updated later
-            total_price=0  # Initially set to 0, can be updated later
+            end_time=datetime.utcnow(),  
+            total_price=0  
         )
 
         try:
-            # Add rental to the session
             db.session.add(rental)
-            # Update the bike status to rented
             instance_bike = InstanceBike.query.get(reservation.Instance_Bike_id)
             instance_bike.status = BikeStatusEnum.Rented
             db.session.commit()
@@ -369,51 +333,42 @@ def rent_checkout():
         except Exception as e:
             db.session.rollback()
             flash(f"Error creating rental: {str(e)}", "error")
-
-        # Redirect to checkout after successful rental creation
+        
         return redirect(url_for('rent_checkout'))
-
-    # POST request - Update rental end time, calculate total price, and create Inspection if comments provided
+    
     if request.method == 'POST' and 'rental_id' in request.form:
         rental_id = request.form.get('rental_id')
         end_time = request.form.get('end_time')
-        comments = request.form.get('comments')  # New field for comments
+        comments = request.form.get('comments')  
         rental = Rental.query.get(rental_id)
 
         if not rental:
             flash("Rental not found.", "error")
             return redirect(url_for('rent_checkout'))
-
-        # Convert the end_time string to datetime
+        
         try:
             end_time = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
         except ValueError:
             flash("Invalid date format for end_time. Use YYYY-MM-DD HH:MM:SS.", "error")
             return redirect(url_for('rent_checkout'))
-
-        # Calculate the duration in hours
+        
         duration = (end_time - rental.start_time).total_seconds() / 3600
 
-        # Retrieve the bike's price per hour or day
-        price = Price.query.first()  # Assuming a single price entry, can be customized if needed
+        price = Price.query.first()  
 
         if not price:
             flash("Price not found.", "error")
             return redirect(url_for('rent_checkout'))
 
-        # Price calculation based on duration
         if duration < 24:
-            # Hourly price
             total_price = round(duration * price.price_per_hour)
         else:
-            # Daily price
             total_price = round((duration / 24) * price.price_per_day)
 
         rental.end_time = end_time
         rental.total_price = total_price
 
         try:
-            # If comments are provided, create an inspection
             if comments:
                 inspection = Inspection(
                     rental_id=rental.id,
@@ -421,8 +376,7 @@ def rent_checkout():
                     comments=comments
                 )
                 db.session.add(inspection)
-
-            # Commit the updates to the rental and inspection (if created)
+            
             db.session.commit()
             flash("Rental updated successfully!", "success")
         except Exception as e:
@@ -434,13 +388,10 @@ def rent_checkout():
 @app.route('/servis', methods=['GET', 'POST'])
 @jwt_required()
 def servis():
-    # Get the current user's ID from the JWT token
     user_id = get_jwt_identity()
 
-    # Query the database to retrieve the user
     user = User.query.get(user_id)
-
-    # Ensure the user exists and has the required role
+    
     if not user or user.role.value not in ['Admin', 'Service']:
         return redirect(url_for("home"))
     
@@ -481,7 +432,6 @@ def servis():
 
         return redirect(url_for("servis"))
 
-    # Fetch inspections with associated bikes
     inspections = (
         Inspection.query
         .join(Rental, Rental.id == Inspection.Rental_id)
@@ -491,8 +441,7 @@ def servis():
     )
 
     valid_statuses = [status.value for status in BikeStatusEnum]
-
-    # Render the page with inspections data
+    
     return render_template("servis.jinja", title="Servis", page="servis", inspections=inspections, statuses=valid_statuses, csrf_token=csrf_token_from_jwt), 200
 
 @app.route('/tos', methods=['GET'])
@@ -507,19 +456,6 @@ def privacy():
 def cookies():
     return render_template("cookies_policy.jinja", title="Cookies Policy", page="cookies"), 200
 
-app.register_blueprint(bike_bp, url_prefix='/bikes')
-app.register_blueprint(category_bp, url_prefix='/categories')
-app.register_blueprint(inspection_bp, url_prefix='/inspections')
-app.register_blueprint(instance_bike_bp, url_prefix='/instance_bike')
-app.register_blueprint(maintenance_bp, url_prefix='/maintenance')
-app.register_blueprint(news_bp, url_prefix='/news')
-app.register_blueprint(payment_bp, url_prefix='/payments')
-app.register_blueprint(picture_bp, url_prefix='/pictures')
-app.register_blueprint(price_bp, url_prefix='/prices')
-app.register_blueprint(rental_bp, url_prefix='/rentals')
-app.register_blueprint(repair_bp, url_prefix='/repairs')
-app.register_blueprint(reservation_bp, url_prefix='/reservation')
-app.register_blueprint(review_bp, url_prefix='/reviews')
 app.register_blueprint(user_bp, url_prefix='/')
 
 @jwt.expired_token_loader
