@@ -29,17 +29,6 @@
                 </div>
 
                 <div class="title_row">
-<<<<<<< Updated upstream
-                    <h3>Velikost: M <!-- {{velikost}} --></h3>
-                    <div class="scnd_btn"> <button id="add_review"> Napsat recenzi </button> <i class="fa-solid fa-pen"></i></div>
-                </div>
-                
-                <p class="title_row description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna in magna gravida vehicula. </p>
-
-                <p class="title_row price"> 100Kč/den</p>
-                
-                <form class="rental-form" method="POST">
-=======
                     <h3>Velikost: {{ bike_instance.size.value }}</h3>
                     <div class="scnd_btn"> <button id="add_review"> Napsat recenzi </button> <i
                             class="fa-solid fa-pen"></i></div>
@@ -53,27 +42,16 @@
 
                 <form action="{{ url_for('rentals_detail', bike_instance_id=bike_instance.id) }}" method="POST" class="rental-form">
                     <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
->>>>>>> Stashed changes
                     <div class="title_row">
                         <input type="text" id="rental-datetime" name="rental-datetime" placeholder="Doba zapůjčení kola:" required>
                         <button type="submit">Rezervovat</button>
-                    </div>
-<<<<<<< Updated upstream
-                    
-                    
+                    </div>                 
                 </form>
+
                 <div id="output"></div>
             
-=======
-                </form>
-                <div id="output"></div>
->>>>>>> Stashed changes
             </div>
         </div>
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
     </section>
 
     <div id="reviewModal" class="modal_recenze" style="display: none;">
@@ -103,7 +81,6 @@
     </div>
 
     <!--
-    
     <section class="more_bikes">
         <div class="title_row">
             <h1>Další nabídky</h1>
@@ -190,37 +167,8 @@
             </div>
         </div>        
     </section>
-<<<<<<< Updated upstream
-    <section class="bike_detail">
-    <div class="title">Detail kola</div>
-    <div class="bike_detail_card">
-        <div class="bike_images">
-            {% if bike_instance.pictures %}
-            {% for picture in bike_instance.pictures %}
-            <img src="{{ picture.bike_picture_url }}" alt="{{ picture.description }}">
-            {% endfor %}
-            {% else %}
-            <img style="width: 10%;" src="{{ url_for('static', filename='images/example.jpg') }}" alt="Default Bike Image">
-            {% endif %}
-        </div>
-        <div class="bike_info">
-            <h2>{{ bike_instance.bike.model }}</h2>
-            <p><strong>Brand:</strong> {{ bike_instance.bike.brand }}</p>
-            <p><strong>Frame Material:</strong> {{ bike_instance.bike.frame_material.value }}</p>
-            <p><strong>Brake Type:</strong> {{ bike_instance.bike.brake_type.value }}</p>
-            <p><strong>Size:</strong> {{ bike_instance.size.value }}</p>
-            <p><strong>Color:</strong> {{ bike_instance.color }}</p>
-            <p><strong>Status:</strong> {{ bike_instance.status.value }}</p>
-            <p><strong>Price per hour:</strong> {{ bike_instance.bike.price.price_per_hour }} CZK</p>
-            <p><strong>Price per day:</strong> {{ bike_instance.bike.price.price_per_day }} CZK</p>
-            <p><strong>Description:</strong> {{ bike_instance.bike.description }}</p>
-        </div>
-    </div>
-</section>
-=======
-
     -->
->>>>>>> Stashed changes
+
 </main>
 
 
