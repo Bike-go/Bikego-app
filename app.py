@@ -84,38 +84,36 @@ def news():
     news_items = News.query.filter(News.published_at != None).order_by(News.published_at.desc()).all()
     return render_template("news.jinja", title="News", page="news", news_items=news_items), 200
 
-from flask import request
-
 @app.route('/rentals', methods=['GET'])
 def rentals():
     # Fetch query parameters for all filters
-    brand_filter = request.args.get('brand', None)
-    model_filter = request.args.get('model', None)
-    frame_material_filter = request.args.get('frame_material', None)
-    brake_type_filter = request.args.get('brake_type', None)
-    size_filter = request.args.get('size', None)
-    color_filter = request.args.get('color', None)
-    status_filter = request.args.get('status', None)
+    brand_filter = request.args.getlist('brand')
+    model_filter = request.args.getlist('model')
+    frame_material_filter = request.args.getlist('frame_material')
+    brake_type_filter = request.args.getlist('brake_type')
+    size_filter = request.args.getlist('size')
+    color_filter = request.args.getlist('color')
+    status_filter = request.args.getlist('status')
     search_query = request.args.get('search', None)
 
     # Base query to fetch bike instances joined with Bike
     query = InstanceBike.query.join(Bike)
 
-    # Apply filters dynamically
+    # Apply filters dynamically (use IN for multiple selections)
     if brand_filter:
-        query = query.filter(Bike.brand == brand_filter)
+        query = query.filter(Bike.brand.in_(brand_filter))
     if model_filter:
-        query = query.filter(Bike.model == model_filter)
+        query = query.filter(Bike.model.in_(model_filter))
     if frame_material_filter:
-        query = query.filter(Bike.frame_material == frame_material_filter)
+        query = query.filter(Bike.frame_material.in_(frame_material_filter))
     if brake_type_filter:
-        query = query.filter(Bike.brake_type == brake_type_filter)
+        query = query.filter(Bike.brake_type.in_(brake_type_filter))
     if size_filter:
-        query = query.filter(InstanceBike.size == size_filter)
+        query = query.filter(InstanceBike.size.in_(size_filter))
     if color_filter:
-        query = query.filter(InstanceBike.color.ilike(f"%{color_filter}%"))
+        query = query.filter(InstanceBike.color.in_(color_filter))
     if status_filter:
-        query = query.filter(InstanceBike.status == status_filter)
+        query = query.filter(InstanceBike.status.in_(status_filter))
     if search_query:
         query = query.filter(
             (Bike.model.ilike(f"%{search_query}%")) | 

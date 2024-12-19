@@ -6,88 +6,89 @@
         <div class="filters_item">
             <form method="get" action="{{ url_for('rentals') }}" class="filter_search_form">
                 <!-- Brand Filter -->
-                <label for="brand">Brand:</label>
-                <select name="brand" id="brand" onchange="this.form.submit()">
-                    <option value="">-- All Brands --</option>
+                <fieldset>
+                    <legend>Brand</legend>
                     {% for brand in brands %}
-                    <option value="{{ brand }}" {% if selected_filters.brand==brand %}selected{% endif %}>
+                    <label>
+                        <input type="checkbox" name="brand" value="{{ brand }}" {% if brand in selected_filters.brand
+                            %}checked{% endif %}>
                         {{ brand }}
-                    </option>
+                    </label>
                     {% endfor %}
-                </select>
-                <br>
+                </fieldset>
 
                 <!-- Model Filter -->
-                <label for="model">Model:</label>
-                <select name="model" id="model" onchange="this.form.submit()">
-                    <option value="">-- All Models --</option>
+                <fieldset>
+                    <legend>Model</legend>
                     {% for model in models %}
-                    <option value="{{ model }}" {% if selected_filters.model==model %}selected{% endif %}>
+                    <label>
+                        <input type="checkbox" name="model" value="{{ model }}" {% if model in selected_filters.model
+                            %}checked{% endif %}>
                         {{ model }}
-                    </option>
+                    </label>
                     {% endfor %}
-                </select>
-                <br>
+                </fieldset>
 
                 <!-- Frame Material Filter -->
-                <label for="frame_material">Frame Material:</label>
-                <select name="frame_material" id="frame_material" onchange="this.form.submit()">
-                    <option value="">-- All Materials --</option>
+                <fieldset>
+                    <legend>Frame Material</legend>
                     {% for material in frame_materials %}
-                    <option value="{{ material }}" {% if selected_filters.frame_material==material %}selected{% endif
-                        %}>
+                    <label>
+                        <input type="checkbox" name="frame_material" value="{{ material }}" {% if material in
+                            selected_filters.frame_material %}checked{% endif %}>
                         {{ material }}
-                    </option>
+                    </label>
                     {% endfor %}
-                </select>
-                <br>
+                </fieldset>
 
                 <!-- Brake Type Filter -->
-                <label for="brake_type">Brake Type:</label>
-                <select name="brake_type" id="brake_type" onchange="this.form.submit()">
-                    <option value="">-- All Brake Types --</option>
+                <fieldset>
+                    <legend>Brake Type</legend>
                     {% for brake in brake_types %}
-                    <option value="{{ brake }}" {% if selected_filters.brake_type==brake %}selected{% endif %}>
+                    <label>
+                        <input type="checkbox" name="brake_type" value="{{ brake }}" {% if brake in
+                            selected_filters.brake_type %}checked{% endif %}>
                         {{ brake }}
-                    </option>
+                    </label>
                     {% endfor %}
-                </select>
-                <br>
+                </fieldset>
 
                 <!-- Size Filter -->
-                <label for="size">Size:</label>
-                <select name="size" id="size" onchange="this.form.submit()">
-                    <option value="">-- All Sizes --</option>
+                <fieldset>
+                    <legend>Size</legend>
                     {% for size in sizes %}
-                    <option value="{{ size }}" {% if selected_filters.size==size %}selected{% endif %}>
+                    <label>
+                        <input type="checkbox" name="size" value="{{ size }}" {% if size in selected_filters.size
+                            %}checked{% endif %}>
                         {{ size }}
-                    </option>
+                    </label>
                     {% endfor %}
-                </select>
-                <br>
+                </fieldset>
 
                 <!-- Color Filter -->
-                <label for="color">Color:</label>
-                <select name="color" id="color" onchange="this.form.submit()">
-                    <option value="">-- All Colors --</option>
+                <fieldset>
+                    <legend>Color</legend>
                     {% for color in colors %}
-                    <option value="{{ color }}" {% if selected_filters.color==color %}selected{% endif %}>
+                    <label>
+                        <input type="checkbox" name="color" value="{{ color }}" {% if color in selected_filters.color
+                            %}checked{% endif %}>
                         {{ color }}
-                    </option>
+                    </label>
                     {% endfor %}
-                </select>
-                <br>
+                </fieldset>
 
                 <!-- Status Filter -->
-                <label for="status">Status:</label>
-                <select name="status" id="status" onchange="this.form.submit()">
-                    <option value="">-- All Statuses --</option>
+                <fieldset>
+                    <legend>Status</legend>
                     {% for status in statuses %}
-                    <option value="{{ status }}" {% if selected_filters.status==status %}selected{% endif %}>
+                    <label>
+                        <input type="checkbox" name="status" value="{{ status }}" {% if status in
+                            selected_filters.status %}checked{% endif %}>
                         {{ status }}
-                    </option>
+                    </label>
                     {% endfor %}
-                </select>
+                </fieldset>
+                <button type="submit" class="search_btn">Search</button>
             </form>
 
 
