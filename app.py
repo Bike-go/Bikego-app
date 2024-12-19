@@ -1,6 +1,7 @@
+from datetime import datetime
 import os
-from flask import Flask, flash, jsonify, redirect, render_template, url_for, request
-from flask_jwt_extended import JWTManager, get_jwt_identity, verify_jwt_in_request
+from flask import Flask, abort, flash, jsonify, redirect, render_template, url_for, request
+from flask_jwt_extended import JWTManager, get_jwt, get_jwt_identity, jwt_required, verify_jwt_in_request
 from flask_wtf import CSRFProtect
 from sqlalchemy import create_engine, inspect, text
 from config import Config
@@ -8,10 +9,16 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
 from db import db
 from models.bike_model import Bike, BrakeTypeEnum, FrameMaterialEnum
+from models.inspection_model import Inspection
 from models.instance_bike_model import BikeSizeEnum, BikeStatusEnum, InstanceBike
 from models.news_model import News
+from models.rental_model import Rental
+from models.reservation_model import Reservation
+from models.review_model import Review
+from models.user_model import User
 from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
 from utils.email_utils import send_contact_form
+from flask_wtf.csrf import generate_csrf
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -70,6 +77,10 @@ def check_and_upload_schema(schema_name: str):
             print(f"Error while inspecting or updating the database: {e}")
         finally:
             engine.dispose()
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return redirect(url_for("home")), 301
 
 @app.route('/', methods=['GET'])
 def root():
@@ -161,12 +172,110 @@ def rentals():
         },
     ), 200
 
-@app.route('/rentals-detail/<uuid:bike_instance_id>', methods=['GET'])
+@app.route('/rentals-detail/<uuid:bike_instance_id>', methods=['GET', 'POST'])
+@jwt_required(optional=True)
 def rentals_detail(bike_instance_id):
+    # Retrieve the bike instance and join with Bike data
     bike_instance = InstanceBike.query.filter_by(id=bike_instance_id).join(Bike).first()
+
     if not bike_instance:
         return redirect(url_for("rentals")), 301
-    return render_template("bike_detail.jinja", title="Bike Detail", bike_instance=bike_instance), 200
+
+    # Handle POST request (reservation creation)
+    if request.method == 'POST':
+        try:
+            # Get data from the form
+            reservation_start = request.form.get("reservation_start")
+            reservation_end = request.form.get("reservation_end")
+            ready_to_pickup = request.form.get("ready_to_pickup") == "on"  # Checkbox or boolean
+            
+            verify_jwt_in_request()
+            # Get the current user from JWT token
+            user_id = get_jwt_identity()
+
+            # Parse the dates (make sure they are in the correct format)
+            reservation_start = datetime.strptime(reservation_start, "%Y-%m-%d %H:%M")
+            reservation_end = datetime.strptime(reservation_end, "%Y-%m-%d %H:%M")
+
+            # Create a new reservation
+            new_reservation = Reservation(
+                reservation_start=reservation_start,
+                reservation_end=reservation_end,
+                ready_to_pickup=ready_to_pickup,
+                User_id=user_id,
+                Instance_Bike_id=bike_instance.id
+            )
+
+            # Add the reservation to the database
+            db.session.add(new_reservation)
+            db.session.commit()
+
+            flash("Reservation created successfully!", "success")
+
+            csrf_token=""
+            try:
+                csrf_token=get_jwt()["csrf"]
+            except Exception as e:
+                csrf_token=generate_csrf()
+
+            # Redirect back to rental details page or to another page
+            return redirect(url_for("rentals_detail", bike_instance_id=bike_instance.id, csrf_token=csrf_token)), 301
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error creating reservation: {e}", "error")
+
+    csrf_token=""
+    try:
+        csrf_token=get_jwt()["csrf"]
+    except Exception as e:
+        csrf_token=generate_csrf()
+
+    # For GET request, simply render the bike details page
+    return render_template("bike_detail.jinja", title="Bike Detail", bike_instance=bike_instance, csrf_token=csrf_token), 200
+
+@app.route("/submit-review/<uuid:bike_instance_id>", methods=["POST"])
+@jwt_required()
+def submit_review(bike_instance_id):
+    # Get the current user from JWT token
+    user_id = get_jwt_identity()
+
+    # Get the bike instance from the database
+    bike_instance = InstanceBike.query.get(bike_instance_id)
+
+    if not bike_instance:
+        flash("Bike instance not found.", "error")
+        return redirect(url_for("rentals"))
+
+    try:
+        # Get review data from the form
+        rating = request.form.get("rating")
+        comment = request.form.get("comment")
+
+        # Validate the rating (should be between 1 and 5)
+        if not rating or not (1 <= int(rating) <= 5):
+            flash("Rating must be between 1 and 5.", "error")
+            return redirect(url_for("rentals_detail", bike_instance_id=bike_instance_id))
+
+        # Create a new Review instance
+        new_review = Review(
+            rating=int(rating),
+            comment=comment,
+            created_at=datetime.utcnow(),
+            User_id=user_id
+        )
+
+        # Save the review to the database
+        db.session.add(new_review)
+        db.session.commit()
+
+        flash("Review submitted successfully!", "success")
+        return redirect(url_for("rentals_detail", bike_instance_id=bike_instance_id))
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error submitting review: {e}", "error")
+        return redirect(url_for("rentals_detail", bike_instance_id=bike_instance_id))
 
 @app.route('/photos', methods=['GET'])
 def photos():
@@ -201,9 +310,67 @@ def admin():
 def rent():
     return render_template("rent_back_bike.jinja", title="rent", page="rent"), 200
 
-@app.route('/servis', methods=['GET'])
+@app.route('/servis', methods=['GET', 'POST'])
+@jwt_required()
 def servis():
-    return render_template("servis.jinja", title="servis", page="servis"), 200
+    # Get the current user's ID from the JWT token
+    user_id = get_jwt_identity()
+
+    # Query the database to retrieve the user
+    user = User.query.get(user_id)
+
+    # Ensure the user exists and has the required role
+    if not user or user.role.value not in ['Admin', 'Service']:
+        return redirect(url_for("home"))
+    
+    csrf_token_from_jwt = get_jwt().get("csrf")
+
+    if request.method == 'POST':
+        inspection_id = request.form.get('inspection_id')
+        new_status = request.form.get('status')
+
+        inspection = Inspection.query.get(inspection_id)
+        if not inspection:
+            flash("Inspection not found.", "error")
+            return redirect(url_for("servis"))
+
+        instance_bike = (
+            InstanceBike.query
+            .join(Rental, Rental.Instance_Bike_id == InstanceBike.id)
+            .filter(Rental.id == inspection.Rental_id)
+            .first()
+        )
+
+        if not instance_bike:
+            flash("Associated bike not found.", "error")
+            return redirect(url_for("servis"))
+
+        valid_statuses = [status.value for status in BikeStatusEnum]
+        if new_status not in valid_statuses:
+            flash("Invalid status value.", "error")
+            return redirect(url_for("servis"))
+
+        try:
+            instance_bike.status = new_status
+            db.session.commit()
+            flash("Bike status updated successfully.", "success")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error updating bike status: {e}", "error")
+
+        return redirect(url_for("servis"))
+
+    # Fetch inspections with associated bikes
+    inspections = (
+        Inspection.query
+        .join(Rental, Rental.id == Inspection.Rental_id)
+        .join(InstanceBike, Rental.Instance_Bike_id == InstanceBike.id)
+        .order_by(Inspection.inspection_date.desc())
+        .all()
+    )
+
+    # Render the page with inspections data
+    return render_template("servis.jinja", title="Servis", page="servis", inspections=inspections, csrf_token=csrf_token_from_jwt), 200
 
 @app.route('/tos', methods=['GET'])
 def tos():
@@ -246,6 +413,8 @@ def invalid_token_callback(error):
 
 @jwt.unauthorized_loader
 def missing_token_error(error):
+    if (error.startswith("Missing")):
+        return redirect(url_for('user_bp.login', next=request.url, _external=True), 307)
     return jsonify({"message": error}), 401
 
 @app.context_processor

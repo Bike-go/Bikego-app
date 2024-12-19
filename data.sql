@@ -1,9 +1,9 @@
 -- Sample Data for Role Enum
 INSERT INTO bikego."user" ("id", "username", "password_hash", "email", "phone_number", "created_at", "last_login", "profile_picture_url", "picture_delete_hash", "email_verified", "darkmode", "role")
 VALUES
-  ('c9a1d5d3-1111-4c65-8355-9d54c7e34321', 'admin_user', 'hash123', 'admin@example.com', '+1234567890', NOW(), NOW(), NULL, NULL, TRUE, FALSE, 'Admin'),
-  ('c9a1d5d3-2222-4c65-8355-9d54c7e34321', 'employee_user', 'hash456', 'employee@example.com', '+1234567891', NOW(), NULL, NULL, NULL, TRUE, TRUE, 'Employee'),
-  ('c9a1d5d3-3333-4c65-8355-9d54c7e34321', 'customer_user', 'hash789', 'customer@example.com', '+1234567892', NOW(), NULL, NULL, NULL, TRUE, FALSE, 'Customer');
+  ('c9a1d5d3-1111-4c65-8355-9d54c7e34321', 'admin_user', 'scrypt:32768:8:1$omao1ZekoCsmuR1x$a6e176f471174109b2b7289c8cdabb6f29e42cd98ebe74c4ad94a3f32171026dbfc53c25e178dde5a3c964cbb9c09d696005660c239a3df3a003de198ed68db2', 'admin@example.com', '+1234567890', NOW(), NOW(), NULL, NULL, TRUE, FALSE, 'Admin'),
+  ('c9a1d5d3-2222-4c65-8355-9d54c7e34321', 'employee_user', 'scrypt:32768:8:1$omao1ZekoCsmuR1x$a6e176f471174109b2b7289c8cdabb6f29e42cd98ebe74c4ad94a3f32171026dbfc53c25e178dde5a3c964cbb9c09d696005660c239a3df3a003de198ed68db2', 'employee@example.com', '+1234567891', NOW(), NULL, NULL, NULL, TRUE, TRUE, 'Employee'),
+  ('c9a1d5d3-3333-4c65-8355-9d54c7e34321', 'customer_user', 'scrypt:32768:8:1$omao1ZekoCsmuR1x$a6e176f471174109b2b7289c8cdabb6f29e42cd98ebe74c4ad94a3f32171026dbfc53c25e178dde5a3c964cbb9c09d696005660c239a3df3a003de198ed68db2', 'customer@example.com', '+1234567892', NOW(), NULL, NULL, NULL, TRUE, FALSE, 'Customer');
 
 -- Sample Data for News
 INSERT INTO bikego."news" ("title", "content", "created_at", "published_at", "author_id")
@@ -64,3 +64,8 @@ VALUES
 INSERT INTO bikego."rental" ("start_time", "end_time", "total_price", "User_id", "Payment_id", "Instance_Bike_id")
 VALUES
   (NOW(), NOW() + INTERVAL '2 hours', 30, 'c9a1d5d3-3333-4c65-8355-9d54c7e34321', 1, '7a83d8b3-7777-4d8a-9bfc-6b8c98d5e123');
+
+-- Sample Data for Inspection
+INSERT INTO bikego."inspection" ("inspection_date", "comments", "User_id", "Rental_id")
+VALUES
+  (NOW(), 'Bike in good condition.', 'c9a1d5d3-1111-4c65-8355-9d54c7e34321', 1);

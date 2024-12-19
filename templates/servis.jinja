@@ -1,65 +1,48 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-    <div class="service_page">
-        <h2 class="title">Přehled kol na servis</h2>
-        
-        <!-- Tabulka s koly, které potřebují servis -->
-        <table id="serviceBikesTable" class="table-responsive">
-            <thead>
-                <tr>
-                    <th>ID kola</th>
-                    <th>Popis poškození</th>
-                    <th>Status</th>
-                    <th>Akce</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Statická data pro 3 kola -->
-                <tr>
-                    <td>001</td>
-                    <td>Poškozený rám</td>
-                    <td>
-                        <select class="bike-status" data-bike-id="001">
-                            <option value="waiting" selected>Čekání</option>
-                            <option value="in_repair">Opravuji se</option>
-                            <option value="repaired">Opraveno</option>
+<div class="service_page">
+    <h2 class="title">Přehled kol na servis</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Inspection ID</th>
+                <th>Inspection Date</th>
+                <th>Comments</th>
+                <th>Bike ID</th>
+                <th>Current Status</th>
+                <th>Change Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inspection in inspections %}
+            <tr>
+                <td>{{ inspection.id }}</td>
+                <td>{{ inspection.inspection_date }}</td>
+                <td>{{ inspection.comments }}</td>
+                <td>{{ inspection.rental.instance_bike.id }}</td>
+                <td>{{ inspection.rental.instance_bike.status }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('servis') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="inspection_id" value="{{ inspection.id }}">
+                        <select name="status">
+                            <option value="Available" {% if inspection.rental.instance_bike.status=='Available'
+                                %}selected{% endif %}>Available</option>
+                            <option value="Rented" {% if inspection.rental.instance_bike.status=='Rented' %}selected{%
+                                endif %}>Rented</option>
+                            <option value="Under_Repair" {% if inspection.rental.instance_bike.status=='Under_Repair'
+                                %}selected{% endif %}>Under Repair</option>
+                            <option value="Out_of_Service" {% if
+                                inspection.rental.instance_bike.status=='Out_of_Service' %}selected{% endif %}>Out of
+                                Service</option>
                         </select>
-                    </td>
-                    <td>
-                        <button class="btn update-status" data-bike-id="001">Uložit</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>002</td>
-                    <td>Poškozené kolo</td>
-                    <td>
-                        <select class="bike-status" data-bike-id="002">
-                            <option value="waiting">Čekání</option>
-                            <option value="in_repair" selected>Opravuji se</option>
-                            <option value="repaired">Opraveno</option>
-                        </select>
-                    </td>
-                    <td>
-                        <button class="btn update-status" data-bike-id="002">Uložit</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>003</td>
-                    <td>Poškozená brzda</td>
-                    <td>
-                        <select class="bike-status" data-bike-id="003">
-                            <option value="waiting">Čekání</option>
-                            <option value="in_repair">Opravuji se</option>
-                            <option value="repaired" selected>Opraveno</option>
-                        </select>
-                    </td>
-                    <td>
-                        <button class="btn update-status" data-bike-id="003">Uložit</button>
-                    </td>
-                </tr>
-                <!-- Konec statických dat -->
-            </tbody>
-        </table>
-    </div>
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
