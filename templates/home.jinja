@@ -1,17 +1,6 @@
 {% extends '__main.jinja' %}
 
 {% block content %}
-<!-- Search Bar -->
-<div class="search_bar">
-    <form action="#" method="get">
-        <label for="search" class="sr-only">Search</label>
-        <input type="search" id="search" name="search" placeholder="Search...">
-        <button type="submit" id="btn_search" aria-label="Search">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-    </form>
-</div>
-
 <!-- Image Roll / Slider -->
 <section class="image_roll">
     <img src="{{ url_for('static', filename='images/bike1.jpg') }}" alt="Bike 1" class="slide active">
@@ -19,11 +8,12 @@
     <img src="{{ url_for('static', filename='images/bike3.jpg') }}" alt="Bike 3" class="slide">
 
     <div class="indicator-container">
-        <div class="indicator active" onclick="goToSlide(0)"></div>
-        <div class="indicator" onclick="goToSlide(1)"></div>
-        <div class="indicator" onclick="goToSlide(2)"></div>
+        <div class="indicator active"></div>
+        <div class="indicator"></div>
+        <div class="indicator"></div>
     </div>
 </section>
+
 
 <!-- "O nás" Section -->
 <section>
