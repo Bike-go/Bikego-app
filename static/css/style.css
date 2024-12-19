@@ -634,7 +634,7 @@ footer nav {
     display: flex;
     flex-direction: column;
     padding: 0;
-    margin: 0;
+    margin: 10px 0;
 }
 
 .left_container .user_row .scnd_btn{
@@ -1087,13 +1087,24 @@ table td {
     margin: auto;
 }
 
-.btn {
+.btn, .admin_panel {
     padding: 10px 20px;
     color: var(--white);
     background-color: var(--main_color);
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+.admin_panel {
+    padding: 18px 28px;
+    border-radius: 8px;
+}
+
+.admin_panel a{
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
 }
 
 .btn:hover {
@@ -1877,7 +1888,6 @@ table td {
     .left_container .user_row {
         flex-direction: column;
         align-items: center;
-        margin-bottom: 10px;
     }
 
     .left_container .user_row .flag {
