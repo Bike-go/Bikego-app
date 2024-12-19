@@ -41,7 +41,7 @@
     </div>
 
     <!-- Account Button -->
-    <a href="{{ url_for('user_bp.login') }}" class="acc_btn">
+    <a href="{{ url_for('user_bp.profile') if is_logged_in else url_for('user_bp.login') }}" class="acc_btn">
         <i class="fa-regular fa-user"></i>
     </a>
 </header>

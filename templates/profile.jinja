@@ -17,7 +17,6 @@
 
                     <div class="input-group">
                         <label for="{{ form.username.id }}" class="form-label">{{ form.username.label }}</label>
-                        <i class="fa-solid fa-user"></i>
                         {{ form.username(class="form-field", placeholder="Uživatelské jméno") }}
                         {% if form.username.errors %}
                         <ul class="errors">
@@ -30,7 +29,6 @@
 
                     <div class="input-group">
                         <label for="{{ form.email.id }}" class="form-label">{{ form.email.label }}</label>
-                        <i class="fa-solid fa-envelope"></i>
                         {{ form.email(class="form-field", placeholder="Email") }}
                         {% if form.email.errors %}
                         <ul class="errors">
@@ -43,7 +41,6 @@
 
                     <div class="input-group">
                         <label for="{{ form.phone_number.id }}" class="form-label">{{ form.phone_number.label }}</label>
-                        <i class="fa-solid fa-phone"></i>
                         {{ form.phone_number(class="form-field", placeholder="Telefonní číslo") }}
                         {% if form.phone_number.errors %}
                         <ul class="errors">
@@ -56,7 +53,6 @@
 
                     <div class="input-group">
                         <label for="{{ form.darkmode.id }}" class="form-label">{{ form.darkmode.label }}</label>
-                        <i class="fa-solid fa-moon"></i>
                         {{ form.darkmode(class="form-field") }}
                         {% if form.darkmode.errors %}
                         <ul class="errors">
@@ -67,10 +63,9 @@
                         {% endif %}
                     </div>
 
-                    <div class="input-group">
+                    <div class="input-group-image">
                         <label for="{{ form.profile_picture.id }}" class="form-label">{{ form.profile_picture.label
                             }}</label>
-                        <i class="fa-solid fa-image"></i>
                         {{ form.profile_picture(class="form-field") }}
                         {% if form.profile_picture.errors %}
                         <ul class="errors">
@@ -120,10 +115,9 @@
                 </form>
             </div>
 
-            <div class="scnd_btn">
+            <div class="delete_profile">
                 <form method="POST" class="login" action="{{ url_for('user_bp.delete_user') }}">
                     <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
-                    <label for="password" class="form-label">Heslo</label>
                     <input type="password" name="password" class="form-control" placeholder="Zadejte své heslo"
                         required />
                     <button type="submit" class="btn">Smazat profil</button>

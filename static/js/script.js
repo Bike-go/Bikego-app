@@ -113,123 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /* ========================== 
-   Řazení položek (Podle různých kritérií)
-========================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-    const sortingButton = document.getElementById("sorting_btn");
-    const sortingOptions = sortingButton.querySelector(".sorting-options");
-    const bikes = document.querySelectorAll(".bike");
-
-    // Otevření/zakrytí seznamu možností pro řazení
-    sortingButton.addEventListener("click", (e) => {
-        e.stopPropagation();
-        sortingOptions.style.display = sortingOptions.style.display === "none" ? "block" : "none";
-    });
-
-    // Zavření dropdownu při kliknutí mimo něj
-    document.addEventListener("click", () => {
-        sortingOptions.style.display = "none";
-    });
-
-    // Funkce pro řazení položek podle vybraného kritéria
-    const sortBikes = (criteria) => {
-        const bikesContainer = document.querySelector(".bike_collection");
-        const bikesArray = Array.from(bikes);
-
-        bikesArray.sort((a, b) => {
-            if (criteria === "name") {
-                return a.querySelector("h2").textContent.localeCompare(b.querySelector("h2").textContent); // Řazení podle názvu
-            } else if (criteria === "type") {
-                return a.querySelector("h4").textContent.localeCompare(b.querySelector("h4").textContent); // Řazení podle typu
-            } else if (criteria === "price") {
-                return parseInt(a.querySelector("p").textContent) - parseInt(b.querySelector("p").textContent); // Řazení podle ceny
-            } else if (criteria === "availability") {
-                return (b.querySelector(".fa-circle-check") ? 1 : 0) - (a.querySelector(".fa-circle-check") ? 1 : 0); // Řazení podle dostupnosti
-            }
-        });
-
-        // Vyčištění a přeuspořádání položek
-        bikesContainer.innerHTML = "";
-        bikesArray.forEach(bike => bikesContainer.appendChild(bike)); // Zobrazení přeuspořádaných kol
-    };
-
-    // Posluchač pro výběr kritéria řazení
-    sortingOptions.addEventListener("click", (e) => {
-        if (e.target.tagName === "LI") {
-            sortBikes(e.target.getAttribute("data-sort"));
-            sortingOptions.style.display = "none"; // Skrytí seznamu po výběru
-        }
-    });
-});
-
-
-/* ========================== 
-   Filtrování položek (Podle zvolených filtrů)
-========================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-    const filterInputs = document.querySelectorAll(".subfilters input[type='checkbox']");
-    const bikes = document.querySelectorAll(".bike");
-
-    // Funkce pro aplikování filtrů
-    const filterBikes = () => {
-        const filters = {};
-
-        // Uložení aktivních filtrů
-        document.querySelectorAll(".filters_item").forEach(filterGroup => {
-            const category = filterGroup.querySelector(".filter_header span").textContent.toLowerCase();
-            const checkedValues = Array.from(filterGroup.querySelectorAll("input[type='checkbox']:checked"))
-                .map(input => input.parentElement.textContent.trim().toLowerCase());
-
-            if (checkedValues.length) {
-                filters[category] = checkedValues; // Uložení filtrovaných hodnot
-            }
-        });
-
-        // Aplikování filtrů na zobrazené položky
-        bikes.forEach(bike => {
-            const matches = Object.entries(filters).every(([category, values]) => {
-                const bikeCategoryValue = bike.dataset[category] ? bike.dataset[category].toLowerCase() : ""; 
-
-                // Filtrování podle každé kategorie
-                if (category === "kategorie") {
-                    return values.includes(bikeCategoryValue); // Filtrování podle kategorie
-                }
-                if (category === "velikost") {
-                    return values.includes(bikeCategoryValue); // Filtrování podle velikosti
-                }
-                if (category === "material rámu") {
-                    return values.includes(bikeCategoryValue); // Filtrování podle materiálu rámu
-                }
-                if (category === "typ brzdy") {
-                    return values.includes(bikeCategoryValue); // Filtrování podle typu brzdy
-                }
-                if (category === "znacka") {
-                    return values.includes(bikeCategoryValue); // Filtrování podle značky
-                }
-                if (category === "barva") {
-                    return values.includes(bikeCategoryValue); // Filtrování podle barvy
-                }
-
-                return true; // Pokud není žádný filtr pro tuto kategorii
-            });
-
-            bike.style.display = matches ? "flex" : "none"; // Zobrazení/skrytí kola podle filtru
-        });
-    };
-
-    // Aplikování filtrů hned po změně checkboxu
-    filterInputs.forEach(input => {
-        input.addEventListener("change", filterBikes);
-    });
-
-    // Inicializace filtrů při načtení stránky
-    filterBikes();
-});
-
-
-/* ========================== 
    Admin menu script
 ========================== */
 
@@ -306,38 +189,6 @@ function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
 }
 
-
-/* výběr období pronájmu kola */
-flatpickr("#rental-datetime", {
-    mode: "range",
-    enableTime: true,
-    dateFormat: "d.m.Y H:i", 
-    time_24hr: true,         
-    locale: "cs"      
-});
-
-document.querySelector('.rental-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Zabráníme výchozímu odeslání formuláře
-
-    const rentalDatetime = document.getElementById('rental-datetime').value;
-    const output = document.getElementById('output');
-
-    if (!rentalDatetime) {
-        alert('Prosím, vyberte období pronájmu.');
-        return;
-    }
-
-    const [start, end] = rentalDatetime.split(" až ");
-    if (!end) {
-        alert('Prosím, vyberte konec období.');
-        return;
-    }
-
-    output.innerHTML = `
-        <strong>Vybrané období:</strong><br>
-        Od ${start} do ${end}
-    `;
-});
 
 
 
@@ -540,8 +391,6 @@ function closeModal(modalId) {
 }
 
 
-
-
     // Toggle the type attribute
 
     if (passwordField.type === "password") {
@@ -563,3 +412,41 @@ function closeModal(modalId) {
     }
 
 }
+
+/* ========================== 
+   Profile page modalnni okna
+========================== */
+
+// Get modal elements
+const editProfileModal = document.getElementById('editProfileModal');
+const settingsModal = document.getElementById('settingsModal');
+
+// Get buttons
+const editProfileBtn = document.getElementById('editProfileBtn');
+const settingsBtn = document.getElementById('settingsBtn');
+
+// Get close buttons
+const closeButtons = document.querySelectorAll('.modal .close');
+
+// Event listeners to open modals
+editProfileBtn.addEventListener('click', () => {
+    editProfileModal.style.display = 'flex';
+});
+
+settingsBtn.addEventListener('click', () => {
+    settingsModal.style.display = 'flex';
+});
+
+// Event listeners to close modals
+closeButtons.forEach((close) => {
+    close.addEventListener('click', () => {
+        close.closest('.modal').style.display = 'none';
+    });
+});
+
+// Close modals on outside click
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+    }
+});
