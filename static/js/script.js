@@ -190,38 +190,6 @@ function closeModal(modalId) {
 }
 
 
-/* výběr období pronájmu kola */
-flatpickr("#rental-datetime", {
-    mode: "range",
-    enableTime: true,
-    dateFormat: "d.m.Y H:i", 
-    time_24hr: true,         
-    locale: "cs"      
-});
-
-document.querySelector('.rental-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Zabráníme výchozímu odeslání formuláře
-
-    const rentalDatetime = document.getElementById('rental-datetime').value;
-    const output = document.getElementById('output');
-
-    if (!rentalDatetime) {
-        alert('Prosím, vyberte období pronájmu.');
-        return;
-    }
-
-    const [start, end] = rentalDatetime.split(" až ");
-    if (!end) {
-        alert('Prosím, vyberte konec období.');
-        return;
-    }
-
-    output.innerHTML = `
-        <strong>Vybrané období:</strong><br>
-        Od ${start} do ${end}
-    `;
-});
-
 
 
 /* ========================== 

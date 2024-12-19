@@ -43,6 +43,31 @@
     
     </section>
 
+    <div id="reviewModal" class="modal_recenze" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Napsat recenzi</h2>
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label for="rating">Hodnocení:</label>
+                    <select id="rating" name="rating" required>
+                        <option value="">Vyberte</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="review">Vaše recenze:</label>
+                    <textarea id="review" name="review" placeholder="Napište svou recenzi zde..." required></textarea>
+                </div>
+                <button type="submit">Odeslat</button>
+            </form>
+        </div>
+    </div>
+
     <section class="more_bikes">
         <div class="title_row">
             <h1>Další nabídky</h1>
@@ -156,4 +181,75 @@
     </div>
 </section>
 </main>
+
+
+<script>
+    /* výběr období pronájmu kola */
+    flatpickr("#rental-datetime", {
+        mode: "range",
+        enableTime: true,
+        dateFormat: "d.m.Y H:i", 
+        time_24hr: true,         
+        locale: "cs"      
+    });
+
+    document.querySelector('.rental-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Zabráníme výchozímu odeslání formuláře
+
+        const rentalDatetime = document.getElementById('rental-datetime').value;
+        const output = document.getElementById('output');
+
+        if (!rentalDatetime) {
+            alert('Prosím, vyberte období pronájmu.');
+            return;
+        }
+
+        const [start, end] = rentalDatetime.split(" do ");
+        if (!end) {
+            alert('Prosím, vyberte konec období.');
+            return;
+        }
+
+        output.innerHTML = `
+            <strong>Vybrané období:</strong><br>
+            Od ${start} do ${end}
+        `;
+    });
+
+    // Handle modal display
+    const modal = document.getElementById("reviewModal");
+    const btn = document.getElementById("add_review");
+    const span = document.querySelector(".modal_recenze .close");
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Handle form submission
+    document.getElementById("reviewForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const rating = document.getElementById("rating").value;
+        const reviewText = document.getElementById("review").value;
+        const output = document.getElementById("output");
+
+        if (!rating || !reviewText) {
+            alert("Prosím, vyplňte všechna pole.");
+            return;
+        }
+
+        output.innerHTML = `<strong>Děkujeme za recenzi!</strong><br>Hodnocení: ${rating}<br>Recenze: ${reviewText}`;
+        modal.style.display = "none";
+    });
+</script>
 {% endblock %}
