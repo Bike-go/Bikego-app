@@ -12,6 +12,7 @@ from models.bike_model import Bike, BrakeTypeEnum, FrameMaterialEnum
 from models.instance_bike_model import BikeSizeEnum, BikeStatusEnum, InstanceBike
 from models.news_model import News
 from models.reservation_model import Reservation
+from models.review_model import Review
 from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
 from utils.email_utils import send_contact_form
 from flask_wtf.csrf import generate_csrf
@@ -225,6 +226,49 @@ def rentals_detail(bike_instance_id):
 
     # For GET request, simply render the bike details page
     return render_template("bike_detail.jinja", title="Bike Detail", bike_instance=bike_instance, csrf_token=csrf_token), 200
+
+@app.route("/submit-review/<uuid:bike_instance_id>", methods=["POST"])
+@jwt_required()
+def submit_review(bike_instance_id):
+    # Get the current user from JWT token
+    user_id = get_jwt_identity()
+
+    # Get the bike instance from the database
+    bike_instance = InstanceBike.query.get(bike_instance_id)
+
+    if not bike_instance:
+        flash("Bike instance not found.", "error")
+        return redirect(url_for("rentals"))
+
+    try:
+        # Get review data from the form
+        rating = request.form.get("rating")
+        comment = request.form.get("comment")
+
+        # Validate the rating (should be between 1 and 5)
+        if not rating or not (1 <= int(rating) <= 5):
+            flash("Rating must be between 1 and 5.", "error")
+            return redirect(url_for("rentals_detail", bike_instance_id=bike_instance_id))
+
+        # Create a new Review instance
+        new_review = Review(
+            rating=int(rating),
+            comment=comment,
+            created_at=datetime.utcnow(),
+            User_id=user_id
+        )
+
+        # Save the review to the database
+        db.session.add(new_review)
+        db.session.commit()
+
+        flash("Review submitted successfully!", "success")
+        return redirect(url_for("rentals_detail", bike_instance_id=bike_instance_id))
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error submitting review: {e}", "error")
+        return redirect(url_for("rentals_detail", bike_instance_id=bike_instance_id))
 
 @app.route('/photos', methods=['GET'])
 def photos():
