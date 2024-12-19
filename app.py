@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-from flask import Flask, flash, jsonify, redirect, render_template, url_for, request
+from flask import Flask, abort, flash, jsonify, redirect, render_template, url_for, request
 from flask_jwt_extended import JWTManager, get_jwt, get_jwt_identity, jwt_required, verify_jwt_in_request
 from flask_wtf import CSRFProtect
 from sqlalchemy import create_engine, inspect, text
@@ -9,10 +9,12 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
 from db import db
 from models.bike_model import Bike, BrakeTypeEnum, FrameMaterialEnum
+from models.inspection_model import Inspection
 from models.instance_bike_model import BikeSizeEnum, BikeStatusEnum, InstanceBike
 from models.news_model import News
 from models.reservation_model import Reservation
 from models.review_model import Review
+from models.user_model import User
 from routes import bike_bp, category_bp, inspection_bp, instance_bike_bp, maintenance_bp, news_bp, payment_bp, picture_bp, price_bp, rental_bp, repair_bp, reservation_bp, review_bp, user_bp
 from utils.email_utils import send_contact_form
 from flask_wtf.csrf import generate_csrf
@@ -74,6 +76,10 @@ def check_and_upload_schema(schema_name: str):
             print(f"Error while inspecting or updating the database: {e}")
         finally:
             engine.dispose()
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return redirect(url_for("home")), 301
 
 @app.route('/', methods=['GET'])
 def root():
@@ -303,9 +309,48 @@ def admin():
 def rent():
     return render_template("rent_back_bike.jinja", title="rent", page="rent"), 200
 
-@app.route('/servis', methods=['GET'])
+@app.route('/servis', methods=['GET', 'POST'])
+@jwt_required()
 def servis():
-    return render_template("servis.jinja", title="servis", page="servis"), 200
+    # Get the current user's ID from the JWT token
+    user_id = get_jwt_identity()
+
+    # Query the database to retrieve the user
+    user = User.query.get(user_id)
+
+    # Ensure the user exists and has the required role
+    if not user or user.role.value not in ['Admin', 'Service']:
+        return redirect(url_for("home"))
+    
+    csrf_token_from_jwt = get_jwt().get("csrf")
+
+    if request.method == 'POST':
+        # Get the form data
+        inspection_id = request.form.get('inspection_id')
+        new_status = request.form.get('status')
+
+        # Validate and update the status of the inspection
+        inspection = Inspection.query.get(inspection_id)
+        if not inspection:
+            flash("Inspection not found.", "error")
+            return redirect(url_for("servis"))
+
+        try:
+            # Update status (assuming 'status' is a valid field in the Inspection model)
+            inspection.status = new_status
+            db.session.commit()
+            flash("Inspection status updated successfully.", "success")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error updating status: {e}", "error")
+
+        return redirect(url_for("servis"))
+
+    # Fetch inspections to display dynamically (example: last 10 inspections)
+    inspections = Inspection.query.order_by(Inspection.inspection_date.desc()).limit(10).all()
+
+    # Render the page with inspections data
+    return render_template("servis.jinja", title="Servis", page="servis", inspections=inspections, csrf_token=csrf_token_from_jwt), 200
 
 @app.route('/tos', methods=['GET'])
 def tos():
@@ -348,6 +393,8 @@ def invalid_token_callback(error):
 
 @jwt.unauthorized_loader
 def missing_token_error(error):
+    if (error.startswith("Missing")):
+        return redirect(url_for('user_bp.login', next=request.url, _external=True), 307)
     return jsonify({"message": error}), 401
 
 @app.context_processor
