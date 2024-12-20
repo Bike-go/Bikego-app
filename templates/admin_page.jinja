@@ -30,16 +30,18 @@
                                 <td><input type="email" name="email" value="{{ user.email }}"></td>
                                 <td><input type="text" name="phone_number" value="{{ user.phone_number }}"></td>
                                 <td>
+                                    {{ user.role.value }}
                                     <select name="role">
                                         {% for role in ['Admin', 'Employee', 'Customer', 'Service'] %}
-                                        <option value="{{ role }}" {% if user.role==role %}selected{% endif %}>{{ role
-                                            }}</option>
+
+                                        <option value="{{ role }}" {% if user.role.value==role %}selected{% endif %}>
+                                            {{ role }}</option>
                                         {% endfor %}
                                     </select>
                                 </td>
                                 <td>
-                                    <button type="submit" name="action" value="edit">Save</button>
-                                    <button type="submit" name="action" value="delete"
+                                    <button type="submit" name="action" value="edit" class="btn">Save</button>
+                                    <button type="submit" name="action" value="delete" class="btn"
                                         onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
                                 </td>
                             </form>
@@ -58,56 +60,40 @@
                 <button class="btn" onclick="openNewsModal()">Přidat novinku</button>
             </div>
 
-            <h2>Create News</h2>
-            <form action="{{ url_for('manage_news') }}" method="POST">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <input type="hidden" name="action" value="create">
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
-                <br>
-                <label for="content">Content:</label>
-                <textarea id="content" name="content" required></textarea>
-                <br>
-                <button type="submit">Create News</button>
-            </form>
-
             <!-- Existing News -->
-            <h2>Existing News</h2>
             {% if news_items %}
             <table border="1">
                 <thead>
                     <tr>
                         <th>Title</th>
                         <th>Content</th>
-                        <th>Actions</th>
+                        <th>Save</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for news in news_items %}
                     <tr>
-                        <td>{{ news.title }}</td>
-                        <td>{{ news.content }}</td>
-                        <td>
-                            <!-- Form to Edit News -->
-                            <form action="{{ url_for('manage_news') }}" method="POST" style="display:inline-block;">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                <input type="hidden" name="action" value="edit">
-                                <input type="hidden" name="news_id" value="{{ news.id }}">
-                                <label for="edit_title_{{ news.id }}">Title:</label>
-                                <input type="text" id="edit_title_{{ news.id }}" name="title" value="{{ news.title }}">
-                                <br>
-                                <label for="edit_content_{{ news.id }}">Content:</label>
-                                <textarea id="edit_content_{{ news.id }}" name="content">{{ news.content }}</textarea>
-                                <br>
-                                <button type="submit">Edit</button>
-                            </form>
+                        <form action="{{ url_for('manage_news') }}" method="POST" style="display:inline-block;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="action" value="edit">
+                            <input type="hidden" name="news_id" value="{{ news.id }}">
+                            <label type="hidden" for="edit_title_{{ news.id }}"></label>
+                            <td><input type="text" id="edit_title_{{ news.id }}" name="title" value="{{ news.title }}"></td>
+                            <br>
+                            <label for="edit_content_{{ news.id }}"></label>
+                            <td><textarea id="edit_content_{{ news.id }}" name="content">{{ news.content }}</textarea></td>
+                            <br>
+                            <td><button type="submit" class="btn">Edit</button></td>
+                        </form>
 
+                        <td>
                             <!-- Form to Delete News -->
                             <form action="{{ url_for('manage_news') }}" method="POST" style="display:inline-block;">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="news_id" value="{{ news.id }}">
-                                <button type="submit"
+                                <button type="submit" class="btn"
                                     onclick="return confirm('Are you sure you want to delete this news?');">Delete</button>
                             </form>
                         </td>
@@ -123,17 +109,14 @@
 
     <!-- Správa biků -->
     <section>
-        <div class="card">
-            <div class="card-header">Seznam kol
-                <button class="btn" onclick="openBikeModal()">Přidat bike</button>
-            </div>
+        <div class="card-bikes">
 
             <div class="card-body table-responsive">
-                <form action="{{ url_for('manage_bikes') }}" method="POST">
+                <form action="{{ url_for('manage_bikes') }}" method="POST" class="form-group">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="hidden" name="action" value="create">
                     <label for="model">Model:</label>
-                    <input type="text" id="model" name="model" required>
+                    <input type="text" id="model" name="model" required class="form-control">
                     <br>
                     <label for="frame_material">Frame Material:</label>
                     <select id="frame_material" name="frame_material">
@@ -151,18 +134,18 @@
                     </select>
                     <br>
                     <label for="brand">Brand:</label>
-                    <input type="text" id="brand" name="brand" required>
+                    <input type="text" id="brand" name="brand" required class="form-control">
                     <br>
                     <label for="description">Description:</label>
-                    <textarea id="description" name="description"></textarea>
+                    <textarea id="description" name="description" class="form-control"></textarea>
                     <br>
                     <label for="category_id">Category ID:</label>
-                    <input type="text" id="category_id" name="category_id" required>
+                    <input type="text" id="category_id" name="category_id" required class="form-control">
                     <br>
                     <label for="price_id">Price ID:</label>
-                    <input type="text" id="price_id" name="price_id" required>
+                    <input type="text" id="price_id" name="price_id" required class="form-control">
                     <br>
-                    <button type="submit">Create Bike</button>
+                    <button type="submit" class="btn">Create Bike</button>
                 </form>
 
                 <h2>Existing Bikes</h2>
@@ -190,15 +173,15 @@
                                 Titanium</option>
                         </select>
                         <br>
-                        <button type="submit">Edit</button>
+                        <button type="submit" class="btn">Edit</button>
                     </form>
                     <!-- Delete Bike Form -->
                     <form action="{{ url_for('manage_bikes') }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="bike_id" value="{{ bike.id }}">
-                        <button type="submit"
-                            onclick="return confirm('Are you sure you want to delete this bike?');">Delete</button>
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this bike?');"
+                            class="btn">Delete</button>
                     </form>
                 </div>
                 {% endfor %}
@@ -206,193 +189,25 @@
         </div>
     </section>
 
-    <!-- Modal pro editaci uživatele -->
-    <div id="editUserModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeEditModal()">&times;</span>
-            <h2>Editovat uživatele</h2>
-            <div class="form-group">
-                <label for="editUsername">Username</label>
-                <input type="text" id="editUsername" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="editEmail">Email</label>
-                <input type="email" id="editEmail" class="form-control">
-            </div>
-            <button class="btn">Uložit změny</button>
-        </div>
-    </div>
-
-    <!-- Modal pro editaci novinek -->
-    <div id="editNewsModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeEditModal()">&times;</span>
-            <h2>Editovat novinku</h2>
-            <div class="form-group">
-                <label for="editTitle">Titul</label>
-                <input type="text" id="editTitle" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="editContent">Obsah</label>
-                <textarea id="editContent" class="form-control" rows="4"></textarea>
-            </div>
-            <button class="btn">Uložit změny</button>
-        </div>
-    </div>
-
-    <!-- Modal pro editaci biků -->
-    <div id="editBikeModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeEditModal()">&times;</span>
-            <h2>Editovat bike</h2>
-            <div class="form-group">
-                <label for="editBikeTitle">Název</label>
-                <input type="text" id="editBikeTitle" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="editCategory">Kategorie</label>
-                <select id="editCategory" class="form-control">
-                    <option value="silnicni">Silniční</option>
-                    <option value="gravel">Gravel</option>
-                    <option value="triathlon">Triation</option>
-                    <option value="downhill">Downhill</option>
-                    <option value="trailove">Trailové</option>
-                    <option value="enduro">Enduro</option>
-                    <option value="cross_country">Cross country</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="editSize">Velikost</label>
-                <select id="editSize" class="form-control">
-                    <option value="XS">XS</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="editFrameMaterial">Materiál rámu</label>
-                <select id="editFrameMaterial" class="form-control">
-                    <option value="aluminium">Aluminium</option>
-                    <option value="carbon">Carbon</option>
-                    <option value="steel">Steel</option>
-                    <option value="titanium">Titanium</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="editBrakeType">Typ brzdy</label>
-                <select id="editBrakeType" class="form-control">
-                    <option value="disc">Disc</option>
-                    <option value="rim">Rim</option>
-                    <option value="hydraulic">Hydraulic</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="editBrand">Značka</label>
-                <input type="text" id="editBrand" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="editColor">Barva</label>
-                <select id="editColor" class="form-control">
-                    <option value="cerna">Černá</option>
-                    <option value="bila">Bílá</option>
-                    <option value="zluta">Žlutá</option>
-                    <option value="zelena">Zelená</option>
-                </select>
-            </div>
-            <button class="btn">Uložit změny</button>
-        </div>
-    </div>
-
     <!-- Modal pro přidání novinky -->
     <div id="newsModal" class="modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('newsModal')">&times;</span>
-            <h2>Přidat novinku</h2>
-            <div class="form-group">
-                <label for="newsTitle">Titul</label>
-                <input type="text" id="newsTitle" class="form-control">
+            <div class="modal-header"><span class="modal-close" onclick="closeModal('newsModal')">&times;</span>
+                <h2>Přidat novinku</h2>
             </div>
-            <div class="form-group">
-                <label for="editContent">Obsah</label>
-                <textarea id="editContent" class="form-control" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="newsDate">Datum</label>
-                <input type="date" id="newsDate" class="form-control">
-            </div>
-            <button class="btn">Uložit novinku</button>
-        </div>
-    </div>
-
-
-    <!-- Modal pro přidání biku -->
-    <div id="bikeModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('bikeModal')">&times;</span>
-            <h2>Přidat bike</h2>
-            <div class="form-group">
-                <label for="bikeTitle">Title</label>
-                <input type="text" id="bikeTitle" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="category">Kategorie</label>
-                <select id="category" class="form-control">
-                    <option value="silnicni">Silniční</option>
-                    <option value="gravel">Gravel</option>
-                    <option value="triathlon">Triathlon</option>
-                    <option value="downhill">Downhill</option>
-                    <option value="trail">Trailové</option>
-                    <option value="enduro">Enduro</option>
-                    <option value="crosscountry">Cross country</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="size">Velikost</label>
-                <select id="size" class="form-control">
-                    <option value="XS">XS</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="frameMaterial">Materiál rámu</label>
-                <select id="frameMaterial" class="form-control">
-                    <option value="aluminium">Aluminium</option>
-                    <option value="carbon">Carbon</option>
-                    <option value="steel">Steel</option>
-                    <option value="titanium">Titanium</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="brakeType">Typ brzdy</label>
-                <select id="brakeType" class="form-control">
-                    <option value="disc">Disc</option>
-                    <option value="rim">Rim</option>
-                    <option value="hydraulic">Hydraulic</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="brand">Značka</label>
-                <input type="text" id="brand" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="color">Barva</label>
-                <select id="color" class="form-control">
-                    <option value="cerna">Černá</option>
-                    <option value="bila">Bílá</option>
-                    <option value="zluta">Žlutá</option>
-                    <option value="zelena">Zelená</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="bikeImage">Obrázek</label>
-                <input type="file" id="bikeImage" class="form-control">
-            </div>
-            <button class="btn">Uložit bike</button>
+            <form action="{{ url_for('manage_news') }}" method="POST" class="form-group">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="action" value="create">
+                <div class="form-group">
+                    <label for="title">Titul:</label>
+                    <input type="text" id="title" name="title" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="content">Obsah:</label>
+                    <textarea id="content" name="content" required class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn">Uložit novinku</button>
+            </form>
         </div>
     </div>
 </main>

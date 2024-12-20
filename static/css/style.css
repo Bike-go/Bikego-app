@@ -1054,6 +1054,10 @@ table {
     
 }
 
+table input{
+    border: none;
+}
+
 table th, table td {
     padding: 10px;
     text-align: center;
@@ -1119,11 +1123,18 @@ table td {
     overflow: auto;
 }
 
-.card {
+.card, .card-bikes {
     background-color: var(--white);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 5px 6px 6px rgba(0, 0, 0, 0.1);
+    margin: auto;
+}
+
+.card-bikes{
+    width: 100%;
+    max-width: 600px;
+
 }
 
 .card-header {
@@ -1137,6 +1148,7 @@ table td {
 }
 
 .card-body{
+    min-width: 200px;
     overflow: auto;
     flex: 1;
 }
@@ -1853,12 +1865,18 @@ table td {
     }
 
     /*menu hamburger*/
-
     .fa-bars {
         font-size: 30px;
         color: var(--white);
     }
 
+    .mobile-menu-toggle{
+        display: flex;
+    }
+    .mobile-menu-toggle button{
+       background: none;
+       border: none;
+    }
     /*profile page */
 
     .profile {
@@ -2121,7 +2139,6 @@ table td {
         border-radius: 4px;
         color: var(--scnd_btn_color);
     }
-
 
     .review_for_bike{
         padding: 0 5%;

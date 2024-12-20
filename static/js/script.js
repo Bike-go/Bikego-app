@@ -131,7 +131,7 @@ function openEditUserModal(userId) {
 
 // Funkce pro otevření modálního okna pro editaci novinky
 function openEditNewsModal(newsId) {
-    document.getElementById('editNewsModal').style.display = 'block';
+    document.getElementById('editNewsModal{{newsId}}').style.display = 'block';
     // Můžeme přidat načítání dat konkrétní novinky
 }
 
