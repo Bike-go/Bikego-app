@@ -38,8 +38,8 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <button type="submit" name="action" value="edit">Save</button>
-                                    <button type="submit" name="action" value="delete"
+                                    <button type="submit" name="action" value="edit" class="btn">Save</button>
+                                    <button type="submit" name="action" value="delete" class="btn"
                                         onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
                                 </td>
                             </form>
@@ -59,14 +59,14 @@
             </div>
 
             <h2>Create News</h2>
-            <form action="{{ url_for('manage_news') }}" method="POST">
+            <form action="{{ url_for('manage_news') }}" method="POST" class="form-group">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <input type="hidden" name="action" value="create">
                 <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
+                <input type="text" id="title" name="title" required class="form-control">
                 <br>
                 <label for="content">Content:</label>
-                <textarea id="content" name="content" required></textarea>
+                <textarea id="content" name="content" required class="form-control"></textarea>
                 <br>
                 <button type="submit">Create News</button>
             </form>
@@ -129,11 +129,11 @@
             </div>
 
             <div class="card-body table-responsive">
-                <form action="{{ url_for('manage_bikes') }}" method="POST">
+                <form action="{{ url_for('manage_bikes') }}" method="POST" class="form-group">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="hidden" name="action" value="create">
                     <label for="model">Model:</label>
-                    <input type="text" id="model" name="model" required>
+                    <input type="text" id="model" name="model" required class="form-control">
                     <br>
                     <label for="frame_material">Frame Material:</label>
                     <select id="frame_material" name="frame_material">
@@ -151,18 +151,18 @@
                     </select>
                     <br>
                     <label for="brand">Brand:</label>
-                    <input type="text" id="brand" name="brand" required>
+                    <input type="text" id="brand" name="brand" required class="form-control">
                     <br>
                     <label for="description">Description:</label>
-                    <textarea id="description" name="description"></textarea>
+                    <textarea id="description" name="description" class="form-control"></textarea>
                     <br>
                     <label for="category_id">Category ID:</label>
-                    <input type="text" id="category_id" name="category_id" required>
+                    <input type="text" id="category_id" name="category_id" required class="form-control">
                     <br>
                     <label for="price_id">Price ID:</label>
-                    <input type="text" id="price_id" name="price_id" required>
+                    <input type="text" id="price_id" name="price_id" required class="form-control">
                     <br>
-                    <button type="submit">Create Bike</button>
+                    <button type="submit" class="btn">Create Bike</button>
                 </form>
 
                 <h2>Existing Bikes</h2>
