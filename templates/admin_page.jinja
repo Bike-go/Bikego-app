@@ -11,34 +11,40 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Username</th>
                             <th>Email</th>
+                            <th>Phone</th>
                             <th>Role</th>
-                            <th>Akce</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for user in users %}
                         <tr>
-                            <td>1</td>
-                            <td>xnovak</td>
-                            <td>jan@example.com</td>
-                            <td>user</td>
-                            <td>
-                                <button class="btn" onclick="openEditUserModal(1)">Editovat</button>
-                                <button class="btn btn-danger" onclick="deleteUser(1)">Odstranit</button>
-                            </td>
+                            <form action="{{ url_for('manage_users') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <td>
+                                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                                    <input type="text" name="username" value="{{ user.username }}">
+                                </td>
+                                <td><input type="email" name="email" value="{{ user.email }}"></td>
+                                <td><input type="text" name="phone_number" value="{{ user.phone_number }}"></td>
+                                <td>
+                                    <select name="role">
+                                        {% for role in ['Admin', 'Employee', 'Customer', 'Service'] %}
+                                        <option value="{{ role }}" {% if user.role==role %}selected{% endif %}>{{ role
+                                            }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="submit" name="action" value="edit">Save</button>
+                                    <button type="submit" name="action" value="delete"
+                                        onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+                                </td>
+                            </form>
                         </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>xsvoboda</td>
-                            <td>petr@example.com</td>
-                            <td>servis</td>
-                            <td>
-                                <button class="btn" onclick="openEditUserModal(2)">Editovat</button>
-                                <button class="btn btn-danger" onclick="deleteUser(2)">Odstranit</button>
-                            </td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -51,81 +57,151 @@
             <div class="card-header">Novinky na webu
                 <button class="btn" onclick="openNewsModal()">Přidat novinku</button>
             </div>
-            
-            <div class="card-body table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Titul</th>
-                            <th>Datum</th>
-                            <th>Akce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Novinka 1</td>
-                            <td>2024-12-06</td>
-                            <td>
-                                <button class="btn" onclick="openEditNewsModal(1)">Editovat</button>
-                                <button class="btn btn-danger" onclick="deleteNews(1)">Odstranit</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Novinka 2</td>
-                            <td>2024-12-07</td>
-                            <td>
-                                <button class="btn" onclick="openEditNewsModal(2)">Editovat</button>
-                                <button class="btn btn-danger" onclick="deleteNews(2)">Odstranit</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
+            <h2>Create News</h2>
+            <form action="{{ url_for('manage_news') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="action" value="create">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+                <br>
+                <label for="content">Content:</label>
+                <textarea id="content" name="content" required></textarea>
+                <br>
+                <button type="submit">Create News</button>
+            </form>
+
+            <!-- Existing News -->
+            <h2>Existing News</h2>
+            {% if news_items %}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for news in news_items %}
+                    <tr>
+                        <td>{{ news.title }}</td>
+                        <td>{{ news.content }}</td>
+                        <td>
+                            <!-- Form to Edit News -->
+                            <form action="{{ url_for('manage_news') }}" method="POST" style="display:inline-block;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="action" value="edit">
+                                <input type="hidden" name="news_id" value="{{ news.id }}">
+                                <label for="edit_title_{{ news.id }}">Title:</label>
+                                <input type="text" id="edit_title_{{ news.id }}" name="title" value="{{ news.title }}">
+                                <br>
+                                <label for="edit_content_{{ news.id }}">Content:</label>
+                                <textarea id="edit_content_{{ news.id }}" name="content">{{ news.content }}</textarea>
+                                <br>
+                                <button type="submit">Edit</button>
+                            </form>
+
+                            <!-- Form to Delete News -->
+                            <form action="{{ url_for('manage_news') }}" method="POST" style="display:inline-block;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="news_id" value="{{ news.id }}">
+                                <button type="submit"
+                                    onclick="return confirm('Are you sure you want to delete this news?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No news available.</p>
+            {% endif %}
         </div>
     </section>
 
     <!-- Správa biků -->
-    <section>        
+    <section>
         <div class="card">
             <div class="card-header">Seznam kol
                 <button class="btn" onclick="openBikeModal()">Přidat bike</button>
             </div>
-            
+
             <div class="card-body table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Kategorie</th>
-                            <th>Velikost</th>
-                            <th>Materiál rámu</th>
-                            <th>Typ brzdy</th>
-                            <th>Značka</th>
-                            <th>Barva</th>
-                            <th>Akce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Bik 1</td>
-                            <td>Enduro</td>
-                            <td>S</td>
-                            <td>Steel</td>
-                            <td>Disc</td>
-                            <td>Salsa</td>
-                            <td>Černá</td>
-                            <td>
-                                <button class="btn" onclick="openEditBikeModal(1)">Editovat</button>
-                                <button class="btn btn-danger" onclick="deleteBike(1)">Odstranit</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <form action="{{ url_for('manage_bikes') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="create">
+                    <label for="model">Model:</label>
+                    <input type="text" id="model" name="model" required>
+                    <br>
+                    <label for="frame_material">Frame Material:</label>
+                    <select id="frame_material" name="frame_material">
+                        <option value="Aluminum">Aluminum</option>
+                        <option value="Carbon">Carbon</option>
+                        <option value="Steel">Steel</option>
+                        <option value="Titanium">Titanium</option>
+                    </select>
+                    <br>
+                    <label for="brake_type">Brake Type:</label>
+                    <select id="brake_type" name="brake_type">
+                        <option value="Disc">Disc</option>
+                        <option value="Rim">Rim</option>
+                        <option value="Hydraulic">Hydraulic</option>
+                    </select>
+                    <br>
+                    <label for="brand">Brand:</label>
+                    <input type="text" id="brand" name="brand" required>
+                    <br>
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description"></textarea>
+                    <br>
+                    <label for="category_id">Category ID:</label>
+                    <input type="text" id="category_id" name="category_id" required>
+                    <br>
+                    <label for="price_id">Price ID:</label>
+                    <input type="text" id="price_id" name="price_id" required>
+                    <br>
+                    <button type="submit">Create Bike</button>
+                </form>
+
+                <h2>Existing Bikes</h2>
+                {% for bike in bikes %}
+                <div>
+                    <h3>{{ bike.model }}</h3>
+                    <p>{{ bike.brand }} | {{ bike.frame_material }} | {{ bike.brake_type }}</p>
+                    <form action="{{ url_for('manage_bikes') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="bike_id" value="{{ bike.id }}">
+                        <!-- Edit Bike Form -->
+                        <label for="edit_model_{{ bike.id }}">Model:</label>
+                        <input type="text" id="edit_model_{{ bike.id }}" name="model" value="{{ bike.model }}">
+                        <br>
+                        <label for="edit_frame_material_{{ bike.id }}">Frame Material:</label>
+                        <select id="edit_frame_material_{{ bike.id }}" name="frame_material">
+                            <option value="Aluminum" {% if bike.frame_material=='Aluminum' %}selected{% endif %}>
+                                Aluminum</option>
+                            <option value="Carbon" {% if bike.frame_material=='Carbon' %}selected{% endif %}>Carbon
+                            </option>
+                            <option value="Steel" {% if bike.frame_material=='Steel' %}selected{% endif %}>Steel
+                            </option>
+                            <option value="Titanium" {% if bike.frame_material=='Titanium' %}selected{% endif %}>
+                                Titanium</option>
+                        </select>
+                        <br>
+                        <button type="submit">Edit</button>
+                    </form>
+                    <!-- Delete Bike Form -->
+                    <form action="{{ url_for('manage_bikes') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="bike_id" value="{{ bike.id }}">
+                        <button type="submit"
+                            onclick="return confirm('Are you sure you want to delete this bike?');">Delete</button>
+                    </form>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </section>

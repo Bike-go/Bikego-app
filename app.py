@@ -16,7 +16,7 @@ from models.price_model import Price
 from models.rental_model import Rental
 from models.reservation_model import Reservation
 from models.review_model import Review
-from models.user_model import User
+from models.user_model import User, UserRoleEnum
 from routes import user_bp
 from utils.email_utils import send_contact_form
 from flask_wtf.csrf import generate_csrf
@@ -278,13 +278,244 @@ def contacts():
         return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
     return render_template("contacts.jinja", title="Contacts", page="contacts"), 200
 
-@app.route('/bike', methods=['GET'])
-def bike_view():
-    return render_template("bike_detail.jinja", title="Bike", page="bike"), 200
-
 @app.route('/admin', methods=['GET'])
+@jwt_required()
 def admin():
-    return render_template("admin_page.jinja", title="Admin", page="admin"), 200
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user or user.role.value not in ['Admin']:
+        return redirect(url_for("home"))
+    
+    users = User.query.order_by(User.created_at.desc()).all()
+    news_items = News.query.order_by(News.created_at.desc()).all()
+    bikes = InstanceBike.query.all()
+    
+    try:
+        csrf_token = get_jwt()["csrf"]
+    except Exception as e:
+        csrf_token = generate_csrf()
+    
+    return render_template(
+        "admin_page.jinja",
+        title="Admin",
+        page="admin",
+        users=users,
+        news_items=news_items,
+        bikes=bikes,
+        csrf_token=csrf_token
+    ), 200
+
+@app.route('/manage_users', methods=['POST'])
+@jwt_required()
+def manage_users():
+    user_id = get_jwt_identity()
+    admin_user = User.query.get(user_id)
+    if not admin_user or admin_user.role.value not in ['Admin']:
+        return redirect(url_for("home"))
+    
+    action = request.form.get('action')
+    user_id = request.form.get('user_id')
+    user = User.query.get(user_id)
+    
+    if not user:
+        flash("User not found.", "error")
+        return redirect(url_for('admin'))
+    
+    if action == "edit":
+        user.username = request.form.get('username', user.username)
+        user.email = request.form.get('email', user.email)
+        user.phone_number = request.form.get('phone_number', user.phone_number)
+        role = request.form.get('role', user.role)
+        if role in UserRoleEnum.__members__:
+            user.role = UserRoleEnum[role]
+        
+        try:
+            db.session.commit()
+            flash("User updated successfully!", "success")
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f"Error updating user: {str(e)}", "error")
+    
+    elif action == "delete":
+        try:
+            db.session.delete(user)
+            db.session.commit()
+            flash("User deleted successfully!", "success")
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f"Error deleting user: {str(e)}", "error")
+    
+    return redirect(url_for('admin'))
+
+@app.route('/manage_news', methods=['POST'])
+@jwt_required()
+def manage_news():
+    user_id = get_jwt_identity()
+    admin_user = User.query.get(user_id)
+    if not admin_user or admin_user.role.value not in ['Admin']:
+        return redirect(url_for("home"))
+    
+    action = request.form.get('action')
+    news_id = request.form.get('news_id')
+    news = News.query.get(news_id) if news_id else None
+
+    if action == "create":
+        title = request.form.get('title')
+        content = request.form.get('content')
+        author_id = user_id  # Set the current admin user as the author
+
+        if not title or not content:
+            flash("Title and content are required to create news.", "error")
+            return redirect(url_for('admin'))
+        
+        new_news = News(title=title, content=content, author_id=author_id)
+        try:
+            db.session.add(new_news)
+            db.session.commit()
+            flash("News created successfully!", "success")
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f"Error creating news: {str(e)}", "error")
+    
+    elif action == "edit" and news:
+        news.title = request.form.get('title', news.title)
+        news.content = request.form.get('content', news.content)
+        try:
+            db.session.commit()
+            flash("News updated successfully!", "success")
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f"Error updating news: {str(e)}", "error")
+    
+    elif action == "delete" and news:
+        try:
+            db.session.delete(news)
+            db.session.commit()
+            flash("News deleted successfully!", "success")
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f"Error deleting news: {str(e)}", "error")
+    else:
+        flash("Invalid action or news not found.", "error")
+    
+    return redirect(url_for('admin'))
+
+@app.route('/manage_bikes', methods=['GET', 'POST'])
+@jwt_required()
+def manage_bikes():
+    user_id = get_jwt_identity()
+    admin_user = User.query.get(user_id)
+    if not admin_user or admin_user.role.value != 'Admin':
+        return redirect(url_for("home"))
+    
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'create':
+            # Create a new bike
+            model = request.form.get('model')
+            frame_material = request.form.get('frame_material')
+            brake_type = request.form.get('brake_type')
+            brand = request.form.get('brand')
+            description = request.form.get('description')
+            category_id = request.form.get('category_id')
+            price_id = request.form.get('price_id')
+            
+            new_bike = Bike(
+                model=model,
+                frame_material=FrameMaterialEnum[frame_material],
+                brake_type=BrakeTypeEnum[brake_type],
+                brand=brand,
+                description=description,
+                Category_id=category_id,
+                Price_id=price_id
+            )
+            db.session.add(new_bike)
+            db.session.commit()
+            flash("Bike created successfully!", "success")
+
+        elif action == 'edit':
+            bike_id = request.form.get('bike_id')
+            bike = Bike.query.get(bike_id)
+            if bike:
+                bike.model = request.form.get('model', bike.model)
+                bike.frame_material = FrameMaterialEnum[request.form.get('frame_material', bike.frame_material.name)]
+                bike.brake_type = BrakeTypeEnum[request.form.get('brake_type', bike.brake_type.name)]
+                bike.brand = request.form.get('brand', bike.brand)
+                bike.description = request.form.get('description', bike.description)
+                bike.Category_id = request.form.get('category_id', bike.Category_id)
+                bike.Price_id = request.form.get('price_id', bike.Price_id)
+
+                db.session.commit()
+                flash("Bike updated successfully!", "success")
+            else:
+                flash("Bike not found.", "error")
+        
+        elif action == 'delete':
+            bike_id = request.form.get('bike_id')
+            bike = Bike.query.get(bike_id)
+            if bike:
+                db.session.delete(bike)
+                db.session.commit()
+                flash("Bike deleted successfully!", "success")
+            else:
+                flash("Bike not found.", "error")
+
+        return redirect(url_for('manage_bikes'))
+
+    # Fetch bikes to display in template
+    bikes = Bike.query.all()
+    return render_template('manage_bikes.html', bikes=bikes)
+
+@app.route('/manage_instance_bikes', methods=['GET', 'POST'])
+@jwt_required()
+def manage_instance_bikes():
+    user_id = get_jwt_identity()
+    admin_user = User.query.get(user_id)
+    if not admin_user or admin_user.role.value != 'Admin':
+        return redirect(url_for("home"))
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'create':
+            bike_id = request.form.get('bike_id')
+            size = request.form.get('size')
+            color = request.form.get('color')
+            new_instance = InstanceBike(
+                size=BikeSizeEnum[size],
+                color=color,
+                Bike_id=bike_id
+            )
+            db.session.add(new_instance)
+            db.session.commit()
+            flash("Instance created successfully!", "success")
+
+        elif action == 'edit':
+            instance_id = request.form.get('instance_id')
+            instance = InstanceBike.query.get(instance_id)
+            if instance:
+                instance.size = request.form.get('size', instance.size)
+                instance.color = request.form.get('color', instance.color)
+
+                db.session.commit()
+                flash("Instance updated successfully!", "success")
+            else:
+                flash("Instance not found.", "error")
+
+        elif action == 'delete':
+            instance_id = request.form.get('instance_id')
+            instance = InstanceBike.query.get(instance_id)
+            if instance:
+                db.session.delete(instance)
+                db.session.commit()
+                flash("Instance deleted successfully!", "success")
+            else:
+                flash("Instance not found.", "error")
+
+        return redirect(url_for('manage_instance_bikes'))
+
+    # Fetch instance bikes to display in template
+    instance_bikes = InstanceBike.query.all()
+    return render_template('manage_instance_bikes.html', instance_bikes=instance_bikes)
 
 @app.route('/rental', methods=['GET', 'POST'])
 @jwt_required()
