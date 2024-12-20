@@ -1054,6 +1054,10 @@ table {
     
 }
 
+table input{
+    border: none;
+}
+
 table th, table td {
     padding: 10px;
     text-align: center;
@@ -1137,6 +1141,7 @@ table td {
 }
 
 .card-body{
+    min-width: 200px;
     overflow: auto;
     flex: 1;
 }
