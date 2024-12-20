@@ -1853,12 +1853,18 @@ table td {
     }
 
     /*menu hamburger*/
-
     .fa-bars {
         font-size: 30px;
         color: var(--white);
     }
 
+    .mobile-menu-toggle{
+        display: flex;
+    }
+    .mobile-menu-toggle button{
+       background: none;
+       border: none;
+    }
     /*profile page */
 
     .profile {
@@ -2121,7 +2127,6 @@ table td {
         border-radius: 4px;
         color: var(--scnd_btn_color);
     }
-
 
     .review_for_bike{
         padding: 0 5%;
