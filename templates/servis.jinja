@@ -28,9 +28,9 @@
                         <input type="hidden" name="inspection_id" value="{{ inspection.id }}">
                         <select name="status">
                             {% for status in statuses %}
-                            <option value="{{ status }}" {% if inspection.rental.instance_bike.status==status
+                            <option value="{{ status }}" {% if inspection.rental.instance_bike.status.value==status
                                 %}selected{% endif %}>
-                                {{ status.value }}
+                                {{ status }}
                             </option>
                             {% endfor %}
                         </select>

@@ -90,12 +90,6 @@ def verify_email(token):
         user.email_verified = True
         db.session.commit()
 
-        # Send a welcome email
-        try:
-            send_successfully_password_change(user.email)
-        except Exception as e:
-            flash(f"Email verified, but failed to send welcome email: {e}", "warning")
-
         flash("Email verified successfully.", "success")
     except Exception as e:
         flash("Invalid or expired token.", "error")
@@ -250,6 +244,12 @@ def change_password(token):
         # Update the user's password
         user.password_hash = generate_password_hash(password0)
         db.session.commit()
+
+        # Send a confirmation email
+        try:
+            send_successfully_password_change(user.email)
+        except Exception as e:
+            flash("An error occurred while sending the confirmation email. Please try again later.", "error")
 
         flash("Password changed successfully. You can now log in with your new password.", "success")
         return redirect(url_for("user_bp.login"))

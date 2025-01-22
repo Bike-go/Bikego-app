@@ -95,11 +95,15 @@ def send_successfully_password_change(email):
 def send_contact_form(email, name, message):
     try:
         template_path = os.path.join(current_app.root_path, 'static', 'html', 'contactForm.html')
+        template_path_info = os.path.join(current_app.root_path, 'static', 'html', 'contactFormInfo.html')
         with open(template_path, "r", encoding="utf-8") as file:
             body = file.read()
+        with open(template_path_info, "r", encoding="utf-8") as file:
+            body_info = file.read()
         body = body.replace("{{NAME}}", name).replace("{{EMAIL}}", email).replace("{{MESSAGE}}", message)
     except FileNotFoundError:
         print("Contact form email template not found.")
         return
 
     send_email(Config.SENDER_EMAIL, "Bikego: Contact form", body)
+    send_email(Config.SENDER_EMAIL, "Bikego: Contact form", body_info)

@@ -40,16 +40,6 @@ INSERT INTO bikego."reservation" ("reservation_start", "reservation_end", "ready
 VALUES
   (NOW(), NOW() + INTERVAL '1 day', TRUE, 'c9a1d5d3-3333-4c65-8355-9d54c7e34321', '7a83d8b3-7777-4d8a-9bfc-6b8c98d5e123');
 
--- Sample Data for Repair
-INSERT INTO bikego."repair" ("description", "created_at", "User_id", "Instance_Bike_id")
-VALUES
-  ('Replaced brake pads.', NOW(), 'c9a1d5d3-2222-4c65-8355-9d54c7e34321', '7a83d8b3-8888-4d8a-9bfc-6b8c98d5e123');
-
--- Sample Data for Maintenance
-INSERT INTO bikego."maintenance" ("description", "maintenance_date", "User_id", "Instance_Bike_id")
-VALUES
-  ('Lubricated chain and checked tires.', NOW(), 'c9a1d5d3-2222-4c65-8355-9d54c7e34321', '7a83d8b3-7777-4d8a-9bfc-6b8c98d5e123');
-
 -- Sample Data for Review
 INSERT INTO bikego."review" ("rating", "comment", "created_at", "published_at", "User_id")
 VALUES
@@ -69,3 +59,13 @@ VALUES
 INSERT INTO bikego."inspection" ("inspection_date", "comments", "User_id", "Rental_id")
 VALUES
   (NOW(), 'Bike in good condition.', 'c9a1d5d3-1111-4c65-8355-9d54c7e34321', 1);
+
+-- Sample Data for Repair
+INSERT INTO bikego."repair" ("description", "created_at", "User_id", "Inspection_id")
+VALUES
+  ('Replaced brake pads.', NOW(), 'c9a1d5d3-2222-4c65-8355-9d54c7e34321', 1);
+
+-- Sample Data for Maintenance
+INSERT INTO bikego."maintenance" ("description", "maintenance_date", "User_id", "Inspection_id")
+VALUES
+  ('Lubricated chain and checked tires.', NOW(), 'c9a1d5d3-2222-4c65-8355-9d54c7e34321', 1);

@@ -49,6 +49,18 @@ def check_and_upload_schema(schema_name: str):
                     print(f"Schema '{schema_name}' does not exist. Creating schema...")
                     conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {schema_name}"))
                     conn.commit()
+                    print(f"Schema '{schema_name}' created successfully.")
+                else:
+                    print(f"Schema '{schema_name}' already exists.")
+
+                existing_tables = inspector.get_table_names(schema=schema_name)
+                model_tables = db.metadata.tables.keys()
+                missing_tables = [table for table in model_tables if table not in existing_tables]
+                if missing_tables:
+                    print(f"Missing tables detected in schema '{schema_name}': {missing_tables}")
+                    print("Creating missing tables...")
+                    db.create_all()
+                    print("Schema updated successfully.")
                     try:
                         data_file = "data.sql"
                         if not os.path.exists(data_file):
@@ -61,19 +73,8 @@ def check_and_upload_schema(schema_name: str):
                                 print("Data inserted successfully.")
                     except Exception as e:
                         print(f"Error inserting data into schema '{schema_name}': {e}")
-                    print(f"Schema '{schema_name}' created successfully.")
                 else:
-                    print(f"Schema '{schema_name}' already exists.")
-            existing_tables = inspector.get_table_names(schema=schema_name)
-            model_tables = db.metadata.tables.keys()
-            missing_tables = [table for table in model_tables if table not in existing_tables]
-            if missing_tables:
-                print(f"Missing tables detected in schema '{schema_name}': {missing_tables}")
-                print("Creating missing tables...")
-                db.create_all()
-                print("Schema updated successfully.")
-            else:
-                print("All tables are present. No changes made to the schema.")
+                    print("All tables are present. No changes made to the schema.")
         except SQLAlchemyError as e:
             print(f"Error while inspecting or updating the database: {e}")
         finally:

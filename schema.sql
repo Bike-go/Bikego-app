@@ -7,7 +7,7 @@ DROP TYPE IF EXISTS role_enum CASCADE;
 CREATE TYPE role_enum AS ENUM ('Admin', 'Employee', 'Customer', 'Service');
 
 -- User Table
-CREATE TABLE IF NOT EXISTS "User" (
+CREATE TABLE IF NOT EXISTS "user" (
   "id" UUID PRIMARY KEY,
   "username" VARCHAR(45) NOT NULL,
   "password_hash" VARCHAR(255) NOT NULL,
@@ -23,24 +23,24 @@ CREATE TABLE IF NOT EXISTS "User" (
 );
 
 -- News Table
-CREATE TABLE IF NOT EXISTS "News" (
+CREATE TABLE IF NOT EXISTS "news" (
   "id" SERIAL PRIMARY KEY,
   "title" VARCHAR(45) NOT NULL,
   "content" TEXT NOT NULL,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "published_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "author_id" UUID REFERENCES "User"("id") ON DELETE SET NULL
+  "author_id" UUID REFERENCES "user"("id") ON DELETE SET NULL
 );
 
 -- Category Table
-CREATE TABLE IF NOT EXISTS "Category" (
+CREATE TABLE IF NOT EXISTS "category" (
   "id" SERIAL PRIMARY KEY,
   "name" VARCHAR(45) NOT NULL UNIQUE,
   "description" TEXT
 );
 
 -- Price Table
-CREATE TABLE IF NOT EXISTS "Price" (
+CREATE TABLE IF NOT EXISTS "price" (
   "id" SERIAL PRIMARY KEY,
   "price_per_hour" INTEGER NOT NULL,
   "price_per_day" INTEGER NOT NULL
@@ -59,15 +59,15 @@ DROP TYPE IF EXISTS bike_category_enum CASCADE;
 CREATE TYPE bike_category_enum AS ENUM ('Mountain', 'Road', 'Hybrid', 'Electric');
 
 -- Bike Model Table
-CREATE TABLE IF NOT EXISTS "Bike" (
+CREATE TABLE IF NOT EXISTS "bike" (
   "id" UUID PRIMARY KEY,
   "model" VARCHAR(45) NOT NULL,
   "frame_material" frame_material_enum NOT NULL,
   "brake_type" brake_type_enum NOT NULL,
   "brand" VARCHAR(45) NOT NULL,
   "description" TEXT,
-  "Category_id" INTEGER NOT NULL REFERENCES "Category"("id") ON DELETE SET NULL,
-  "Price_id" INTEGER NOT NULL REFERENCES "Price"("id") ON DELETE SET NULL
+  "category_id" INTEGER NOT NULL REFERENCES "category"("id") ON DELETE SET NULL,
+  "price_id" INTEGER NOT NULL REFERENCES "price"("id") ON DELETE SET NULL
 );
 
 -- Size Enum
@@ -79,34 +79,34 @@ DROP TYPE IF EXISTS status_enum CASCADE;
 CREATE TYPE status_enum AS ENUM ('Available', 'Rented', 'Under_Repair', 'Out_of_Service');
 
 -- Instance of Bike Table
-CREATE TABLE IF NOT EXISTS "Instance_Bike" (
+CREATE TABLE IF NOT EXISTS "instance_bike" (
   "id" UUID PRIMARY KEY,
   "size" size_enum NOT NULL,
   "color" VARCHAR(45) NOT NULL,
   "purchase_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "last_service_at" TIMESTAMPTZ DEFAULT NOW(),
   "status" status_enum NOT NULL DEFAULT 'Available',
-  "Bike_id" UUID NOT NULL REFERENCES "Bike"("id") ON DELETE SET NULL
+  "bike_id" UUID NOT NULL REFERENCES "bike"("id") ON DELETE SET NULL
 );
 
 -- Reservation Table
-CREATE TABLE IF NOT EXISTS "Reservation" (
+CREATE TABLE IF NOT EXISTS "reservation" (
   "id" SERIAL PRIMARY KEY,
   "reservation_start" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "reservation_end" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "ready_to_pickup" BOOLEAN NOT NULL,
-  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
+  "user_id" UUID NOT NULL REFERENCES "user"("id") ON DELETE SET NULL,
+  "instance_bike_id" UUID NOT NULL REFERENCES "instance_bike"("id") ON DELETE SET NULL
 );
 
 -- Review Table
-CREATE TABLE IF NOT EXISTS "Review" (
+CREATE TABLE IF NOT EXISTS "review" (
   "id" SERIAL PRIMARY KEY,
   "rating" INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
   "comment" TEXT,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "published_at" TIMESTAMPTZ,
-  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE RESTRICT
+  "user_id" UUID NOT NULL REFERENCES "user"("id") ON DELETE RESTRICT
 );
 
 -- Currency Enum
@@ -122,7 +122,7 @@ DROP TYPE IF EXISTS payment_status_enum CASCADE;
 CREATE TYPE payment_status_enum AS ENUM ('Pending', 'Completed', 'Failed', 'Refunded');
 
 -- Payment Table
-CREATE TABLE IF NOT EXISTS "Payment" (
+CREATE TABLE IF NOT EXISTS "payment" (
   "id" SERIAL PRIMARY KEY,
   "amount" INTEGER NOT NULL,
   "payment_method" payment_method_enum NOT NULL,
@@ -134,49 +134,49 @@ CREATE TABLE IF NOT EXISTS "Payment" (
 );
 
 -- Rental Table
-CREATE TABLE IF NOT EXISTS "Rental" (
+CREATE TABLE IF NOT EXISTS "rental" (
   "id" SERIAL PRIMARY KEY,
   "start_time" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "end_time" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "total_price" INTEGER NOT NULL,
-  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Payment_id" INTEGER REFERENCES "Payment"("id") ON DELETE SET NULL,
-  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
+  "user_id" UUID NOT NULL REFERENCES "user"("id") ON DELETE SET NULL,
+  "payment_id" INTEGER REFERENCES "payment"("id") ON DELETE SET NULL,
+  "instance_bike_id" UUID NOT NULL REFERENCES "instance_bike"("id") ON DELETE SET NULL
 );
 
 -- Inspection Table
-CREATE TABLE IF NOT EXISTS "Inspection" (
+CREATE TABLE IF NOT EXISTS "inspection" (
   "id" SERIAL PRIMARY KEY,
   "inspection_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "comments" VARCHAR(45),
-  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Rental_id" INTEGER NOT NULL REFERENCES "Rental"("id") ON DELETE SET NULL
+  "user_id" UUID NOT NULL REFERENCES "user"("id") ON DELETE SET NULL,
+  "rental_id" INTEGER NOT NULL REFERENCES "rental"("id") ON DELETE SET NULL
 );
 
 -- Repair Table
-CREATE TABLE IF NOT EXISTS "Repair" (
+CREATE TABLE IF NOT EXISTS "repair" (
   "id" SERIAL PRIMARY KEY,
   "description" TEXT,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Inspection_id" INTEGER NOT NULL REFERENCES "Inspection"("id") ON DELETE SET NULL
+  "user_id" UUID NOT NULL REFERENCES "user"("id") ON DELETE SET NULL,
+  "inspection_id" INTEGER NOT NULL REFERENCES "inspection"("id") ON DELETE SET NULL
 );
 
 -- Maintenance Table
-CREATE TABLE IF NOT EXISTS "Maintenance" (
+CREATE TABLE IF NOT EXISTS "maintenance" (
   "id" SERIAL PRIMARY KEY,
   "description" VARCHAR(255),
   "maintenance_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "User_id" UUID NOT NULL REFERENCES "User"("id") ON DELETE SET NULL,
-  "Inspection_id" INTEGER NOT NULL REFERENCES "Inspection"("id") ON DELETE SET NULL
+  "user_id" UUID NOT NULL REFERENCES "user"("id") ON DELETE SET NULL,
+  "inspection_id" INTEGER NOT NULL REFERENCES "inspection"("id") ON DELETE SET NULL
 );
 
 -- Picture Table
-CREATE TABLE IF NOT EXISTS "Picture" (
+CREATE TABLE IF NOT EXISTS "picture" (
   "id" SERIAL PRIMARY KEY,
   "bike_picture_url" VARCHAR(255) NOT NULL,
   "picture_delete_hash" VARCHAR(255) NOT NULL,
   "description" VARCHAR(45),
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  "Instance_Bike_id" UUID NOT NULL REFERENCES "Instance_Bike"("id") ON DELETE SET NULL
+  "instance_bike_id" UUID NOT NULL REFERENCES "instance_bike"("id") ON DELETE SET NULL
 );
