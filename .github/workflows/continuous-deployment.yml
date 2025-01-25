@@ -37,14 +37,14 @@ jobs:
       
       - name: Save OpenVPN Configuration
         run: |
-          echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
+          echo "${{ secrets.OPENVPN_CONFIG }}" > ./openvpn-config.ovpn
           ls
           pwd
 
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@v2"
         with:
-          config_file: ~/openvpn-config.ovpn
+          config_file: ./openvpn-config.ovpn
           password: ${{ secrets.OPENVPN_PASSWORD }}
 
       - name: Check Connection Status
