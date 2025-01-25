@@ -1,10 +1,7 @@
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
 from flask_jwt_extended import create_access_token, create_refresh_token, decode_token, get_jwt, jwt_required, get_jwt_identity, set_access_cookies, set_refresh_cookies, unset_jwt_cookies, verify_jwt_in_request
-from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
-from models.bike_model import Bike
-from models.instance_bike_model import InstanceBike
 from models.rental_model import Rental
 from models.reservation_model import Reservation
 from models.review_model import Review
@@ -12,7 +9,7 @@ from models.user_model import User
 from schemas import user_schema
 from utils.email_utils import send_password_change, send_registration_email, send_reset_email, send_successfully_password_change
 from utils.imgur_utils import delete_image_from_imgur, upload_image_to_imgur
-from utils.validator_utils import is_valid_phone_number
+from utils.validator_utils import is_password_match, is_valid_email, is_valid_password, is_valid_phone_number, is_valid_username
 from flask_wtf.csrf import generate_csrf
 from db import db
 
@@ -27,6 +24,21 @@ def signup():
         email = form.email.data
         password0 = form.password0.data
         password1 = form.password1.data
+
+        # Check if username is valid
+        if not is_valid_username(username):
+            flash("Invalid username.", "danger")
+            return redirect(url_for("user_bp.signup"))
+
+        # Check if passwords match
+        if is_valid_password(password0) and not is_password_match(password0, password1):
+            flash("Passwords do not match.", "danger")
+            return redirect(url_for("user_bp.signup"))
+        
+        # Check if email is valid
+        if is_valid_email(email) is False:
+            flash("Invalid email address.", "danger")
+            return redirect(url_for("user_bp.signup"))
 
         # Check for existing email or username
         existing_user = User.query.filter(
@@ -175,7 +187,7 @@ def forgot_password():
 
 @user_bp.route('/logout', methods=['POST'])
 def logout():
-    response = redirect(url_for("home"))  # Redirect to home page
+    response = redirect(url_for("home_bp.home"))  # Redirect to home page
     unset_jwt_cookies(response)  # Unset the JWT cookies to log out the user
     return response
 
@@ -261,20 +273,13 @@ def change_password(token):
 def profile():
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
-
     user_form = user_schema.UserForm(obj=user)
 
-    # Query data
-    total_time = db.session.query(func.sum(Reservation.reservation_end - Reservation.reservation_start).label('total_time')).filter(Reservation.User_id == user.id).scalar() or timedelta(0)
-
-    favourite_bike = db.session.query(Bike.model).join(InstanceBike).join(Reservation).filter(Reservation.User_id == user.id).group_by(Bike.model).order_by(func.count(Reservation.id).desc()).limit(1).first()
-    favourite_bike = favourite_bike[0] if favourite_bike else "No favourite bike"
-
-    active_sessions = db.session.query(Reservation, InstanceBike).join(InstanceBike).filter(Reservation.User_id == user.id, Reservation.reservation_end > datetime.utcnow()).all() or []
-
-    reviews = db.session.query(Review).filter(Review.User_id == user.id).all() or []
-
-    purchase_history = db.session.query(Rental, InstanceBike).join(InstanceBike).filter(Rental.User_id == user.id).all() or []
+    active_reservations = db.session.query(Reservation).filter(Reservation.User_id == user.id, Reservation.reservation_end > datetime.utcnow()).limit(5).all()
+    past_reservations = db.session.query(Reservation).filter(Reservation.User_id == user.id, Reservation.reservation_end < datetime.utcnow()).limit(5).all()
+    active_rentals = db.session.query(Rental).filter(Rental.User_id == user.id, Rental.start_time > datetime.utcnow()).limit(5).all()
+    past_rentals = db.session.query(Rental).filter(Rental.User_id == user.id, Rental.end_time < datetime.utcnow()).limit(5).all()
+    reviews = db.session.query(Review).filter(Review.User_id == user.id).limit(5).all()
 
     csrf_token_from_jwt = get_jwt().get("csrf")
 
@@ -286,12 +291,12 @@ def profile():
             if "username" in updated_data and updated_data["username"] != user.username:
                 if User.query.filter_by(username=updated_data["username"]).first():
                     flash("Username is already taken.", "error")
-                    return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
+                    return render_profile_page(user, active_reservations, past_reservations, active_rentals, past_rentals, reviews, user_form, csrf_token_from_jwt)
 
             if "email" in updated_data and updated_data["email"] != user.email:
                 if User.query.filter_by(email=updated_data["email"]).first():
                     flash("Email is already taken.", "error")
-                    return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
+                    return render_profile_page(user, active_reservations, past_reservations, active_rentals, past_rentals, reviews, user_form, csrf_token_from_jwt)
 
                 # If email changes, set email_verified to False and send verification email
                 token = create_access_token(identity=user.id, expires_delta=timedelta(minutes=60))
@@ -301,7 +306,7 @@ def profile():
             # Validate phone number
             if "phone_number" in updated_data and updated_data["phone_number"] and not is_valid_phone_number(updated_data["phone_number"]):
                 flash("Invalid phone number format.", "error")
-                return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
+                return render_profile_page(user, active_reservations, past_reservations, active_rentals, past_rentals, reviews, user_form, csrf_token_from_jwt)
 
             # Handle Dark mode toggle
             if "darkmode" in updated_data:
@@ -328,24 +333,24 @@ def profile():
             flash(f"Error updating profile: {e}", "error")
 
         # Re-render the profile page with updated data
-        return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
+        return render_profile_page(user, active_reservations, past_reservations, active_rentals, past_rentals, reviews, user_form, csrf_token_from_jwt)
 
     # For GET request, render the profile page
-    return render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt)
+    return render_profile_page(user, active_reservations, past_reservations, active_rentals, past_rentals, reviews, user_form, csrf_token_from_jwt)
 
-def render_profile_page(user, total_time, favourite_bike, active_sessions, reviews, purchase_history, user_form, csrf_token_from_jwt, title="Profil", page="profile"):
+def render_profile_page(user, active_reservations, past_reservations, active_rentals, past_rentals, reviews, user_form, csrf_token_from_jwt, title="Profil", page="profile"):
     user_data = user_schema.UserSchema().dump(user)
     user_data["role"] = user.role.value
     return render_template(
         "profile.jinja", 
         user=user_data, 
         title=title, 
-        page=page, 
-        total_time=total_time, 
-        favourite_bike=favourite_bike,
-        active_sessions=active_sessions,
+        page=page,
+        active_reservations=active_reservations,
+        past_reservations=past_reservations,
+        active_rentals=active_rentals,
+        past_rentals=past_rentals,
         reviews=reviews,
-        purchase_history=purchase_history,
         form=user_form,
         csrf_token=csrf_token_from_jwt
     )
@@ -362,3 +367,38 @@ def refresh_token():
         response.headers['Location'] = next_url
         return response, 307
     return response, 200
+    
+@user_bp.route("/submit_review", methods=["POST"])
+@jwt_required()
+def submit_review():
+    user_id = get_jwt_identity()
+
+    try:
+        # Get form data
+        rating = request.form.get("rating")
+        comment = request.form.get("comment")
+
+        # Validate rating input
+        if not rating or not (1 <= int(rating) <= 5):
+            flash("Rating must be between 1 and 5.", "error")
+            return redirect(url_for("user_bp.profile"))
+
+        # Create new review
+        new_review = Review(
+            rating=int(rating),
+            comment=comment,
+            created_at=datetime.utcnow(),
+            User_id=user_id
+        )
+
+        # Save to database
+        db.session.add(new_review)
+        db.session.commit()
+
+        flash("Review submitted successfully!", "success")
+        return redirect(url_for("user_bp.profile"))
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error submitting review: {e}", "error")
+        return redirect(url_for("user_bp.profile"))

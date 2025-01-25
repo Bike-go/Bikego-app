@@ -16,6 +16,7 @@ encoded_password = quote(postgres_password) if postgres_password else ""
 
 SQLALCHEMY_DATABASE_URI = f"postgresql://{postgres_user}:{encoded_password}@{postgres_host}:{postgres_port}/{postgres_db}"
 
+
 class Config:
     FLASK_HOST = os.getenv("FLASK_HOST", "0.0.0.0")
     FLASK_PORT = os.getenv("FLASK_PORT", 5000)
@@ -35,10 +36,4 @@ class Config:
     JWT_COOKIE_SECURE = True
     JWT_SESSION_COOKIE = False
     JWT_CSRF_CHECK_FORM = True
-
-    #SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS = True
-
     WTF_CSRF_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-
-    #CSRF_COOKIE_NAME = 'csrf_access_token'
-    #CSRF_SESSION_KEY = 'csrf_access_token'

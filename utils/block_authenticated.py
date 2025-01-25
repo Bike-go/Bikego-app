@@ -2,6 +2,7 @@ from functools import wraps
 from flask import redirect, url_for, flash
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
+
 def block_authenticated(f):
     @wraps(f)
     @jwt_required(optional=True)
@@ -11,4 +12,5 @@ def block_authenticated(f):
             flash("You are already logged in.", "warning")
             return redirect(url_for("user_bp.profile"))
         return f(*args, **kwargs)
+
     return decorated_function

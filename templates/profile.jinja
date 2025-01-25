@@ -97,10 +97,20 @@
 
             {% if user.role == 'Admin' %}
             <div class="admin_panel">
-                <a href="{{ url_for('admin') }}">Admin panel</a>
+                <a href="{{ url_for('admin_bp.admin') }}">Admin panel</a>
             </div>
             {% endif %}
-            
+            {% if user.role is in ['Admin', 'Employee'] %}
+            <div class="admin_panel">
+                <a href="{{ url_for('rentals_bp.rent_checkout') }}">Rentals panel</a>
+            </div>
+            {% endif %}
+            {% if user.role is in ['Admin', 'Service'] %}
+            <div class="admin_panel">
+                <a href="{{ url_for('servis_bp.servis') }}">Servis panel</a>
+            </div>
+            {% endif %}
+
             <div class="scnd_btn">
                 <form method="POST" class="login" action="{{ url_for('user_bp.forgot_password') }}">
                     <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
@@ -128,27 +138,78 @@
     </div>
 
     <div class="right_container">
+        <!-- Stats Section -->
         <section class="stats">
             <h2>Moje statistiky</h2>
             <div class="stats_row">
-                <span>Celkový čas rezervace:</span>
-                <span>{{ total_time }} hours</span>
+                <span>Aktivní rezervace:</span>
+                <span>{{ active_reservations | length }} rezervací</span>
             </div>
             <div class="stats_row">
-                <span>Oblíbený bike:</span>
-                <span>{{ favourite_bike[0] if favourite_bike else 'N/A' }}</span>
+                <span>Minulé rezervace:</span>
+                <span>{{ past_reservations | length }} rezervací</span>
+            </div>
+            <div class="stats_row">
+                <span>Aktivní pronájmy:</span>
+                <span>{{ active_rentals | length }} pronájmů</span>
+            </div>
+            <div class="stats_row">
+                <span>Minulé pronájmy:</span>
+                <span>{{ past_rentals | length }} pronájmů</span>
             </div>
         </section>
 
+        <!-- Active Reservations Section -->
         <section class="sessions">
-            <h2>Aktivní sezení</h2>
-            {% for session, bike in active_sessions %}
+            <h2>Aktivní rezervace</h2>
+            {% for reservation in active_reservations %}
             <div class="session_row">
-                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální sezení - Bike">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální rezervace - Bike">
                 <div class="session_details">
-                    <span>{{ bike.model }}</span>
-                    <span>{{ session.reservation_start.strftime('%H:%M:%S') }}</span>
-                    <span>{{ session.reservation_start.strftime('%Y-%m-%d') }}</span>
+                    <span>{{ reservation.reservation_start.strftime('%H:%M:%S') }}</span>
+                    <span>{{ reservation.reservation_start.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- Past Reservations Section -->
+        <section class="sessions">
+            <h2>Minulé rezervace</h2>
+            {% for reservation in past_reservations %}
+            <div class="session_row">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Minulá rezervace - Bike">
+                <div class="session_details">
+                    <span>{{ reservation.reservation_end.strftime('%H:%M:%S') }}</span>
+                    <span>{{ reservation.reservation_end.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- Active Rentals Section -->
+        <section class="sessions">
+            <h2>Aktivní pronájmy</h2>
+            {% for rental in active_rentals %}
+            <div class="session_row">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální pronájem - Bike">
+                <div class="session_details">
+                    <span>{{ rental.start_time.strftime('%H:%M:%S') }}</span>
+                    <span>{{ rental.start_time.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- Past Rentals Section -->
+        <section class="sessions">
+            <h2>Minulé pronájmy</h2>
+            {% for rental in past_rentals %}
+            <div class="session_row">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Minulý pronájem - Bike">
+                <div class="session_details">
+                    <span>{{ rental.end_time.strftime('%H:%M:%S') }}</span>
+                    <span>{{ rental.end_time.strftime('%Y-%m-%d') }}</span>
                 </div>
             </div>
             {% endfor %}
@@ -156,27 +217,55 @@
 
         <section class="reviews">
             <h2>Moje recenze</h2>
+
+            <!-- Display Existing Reviews -->
             {% for review in reviews %}
             <div class="review_row">
                 <span class="review_title">{{ review.comment[:50] }}</span>
                 <p>{{ review.comment }}</p>
+                <span class="review_rating">
+                    Hodnocení:
+                    {% for _ in range(review.rating) %}
+                    ⭐
+                    {% endfor %}
+                    {% for _ in range(5 - review.rating) %}
+                    ☆
+                    {% endfor %}
+                </span>
             </div>
             {% endfor %}
-        </section>
 
-        <section class="history">
-            <h2>Historie nákupů</h2>
-            {% for rental, bike in purchase_history %}
-            <div class="history_row">
-                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Historie nákupu - Bike">
-                <div class="history_details">
-                    <span>{{ bike.model }}</span>
-                    <span>{{ rental.start_time.strftime('%H:%M:%S') }}</span>
-                    <span>{{ rental.start_time.strftime('%Y-%m-%d') }}</span>
+            <div class="scnd_btn"> <button id="add_review"> Napsat recenzi </button> <i class="fa-solid fa-pen"></i>
+            </div>
+            <div id="reviewModal" class="modal_recenze" style="display: none;">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Napsat recenzi</h2>
+                    <form action="{{ url_for('user_bp.submit_review') }}" method="POST" id="reviewForm">
+                        <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                        <div class="form-group">
+                            <label for="rating">Hodnocení:</label>
+                            <select id="rating" name="rating" required>
+                                <option value="">Vyberte</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="review">Vaše recenze:</label>
+                            <textarea id="review" name="review" placeholder="Napište svou recenzi zde..."
+                                required></textarea>
+                        </div>
+                        <button class="btn" type="submit">Odeslat</button>
+                    </form>
                 </div>
             </div>
-            {% endfor %}
         </section>
+
     </div>
+
 </div>
 {% endblock %}

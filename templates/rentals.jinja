@@ -4,7 +4,7 @@
     <main class="pujcovna_full_page">
         <div class="pujcovna_filters">
             <div class="filters_item">
-                <form method="get" action="{{ url_for('rentals') }}" class="filter_search_form">
+                <form method="get" action="{{ url_for('rentals_bp.rentals') }}" class="filter_search_form">
                     <!-- Brand Filter -->
                     <div class="filter_section">
                         <div class="filter_header" onclick="toggleFilter('brand_filter', this)">Značka: <i class="fa-solid fa-plus"></i></div>
@@ -139,7 +139,7 @@
             <div class="bike_collection">
                 {% for instance in bike_instances %}
                     <div class="bike">
-                        <a href="{{ url_for('rentals_detail', bike_instance_id=instance.id) }}">
+                        <a href="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=instance.id) }}">
                             <img class="bike_img"
                                 src="{{ instance.pictures[0].bike_picture_url if instance.pictures else url_for('static', filename='images/example.jpg') }}"
                                 alt="Bike Image">

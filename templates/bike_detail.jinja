@@ -5,298 +5,63 @@
     <section class="bike_preview">
         <div class="title_row">
             <h1>Detail kola</h1>
-            {% if bike_instance.status.value == 'Available' %}
-                <div class="avalibality"><i class="fa-solid fa-circle-check"></i> Dostupné</div>
-            {% else %}
-                <div class="avalibality"><i class="fa-solid fa-circle-xmark"></i> Nedostupné</div>
-            {% endif %}
-        </div>
-        <div class="preview_container">
-            <div class="bike_img">
-                {% if bike_instance.pictures %}
-                {% for picture in bike_instance.pictures %}
-                <img src="{{ picture.bike_picture_url }}" alt="{{ picture.description }}" class="bike_img">
-                {% endfor %}
+            <div class="availability">
+                {% if bike_instance.status.value == 'Available' %}
+                <span class="status available"><i class="fa-solid fa-circle-check"></i> Dostupné</span>
                 {% else %}
-                <img  src="{{ url_for('static', filename='images/example.jpg') }}"
-                    alt="Default Bike Image" class="bike_img">
+                <span class="status unavailable"><i class="fa-solid fa-circle-xmark"></i> Nedostupné</span>
                 {% endif %}
             </div>
+        </div>
+
+        <div class="preview_container">
+            <!-- Bike Images -->
+            <div class="bike_img">
+                {% if bike_instance.pictures %}
+                    {% for picture in bike_instance.pictures %}
+                    <img src="{{ picture.bike_picture_url }}" alt="{{ picture.description }}" class="bike_img">
+                    {% endfor %}
+                {% else %}
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Default Bike Image" class="bike_img">
+                {% endif %}
+            </div>
+
+            <!-- Bike Details -->
             <div class="preview_data">
                 <div class="title_row">
                     <h3>{{ bike_instance.bike.model }}</h3>
                     <span class="stars">⭐⭐⭐⭐⭐</span>
                 </div>
 
-                <div class="title_row">
-                    <h3>Velikost: {{ bike_instance.size.value }}</h3>
-                    <div class="scnd_btn"> <button id="add_review"> Napsat recenzi </button> <i
-                            class="fa-solid fa-pen"></i></div>
+                <div class="description">
+                    <p>Kolo značky {{ bike_instance.bike.brand }} nabízí rám z kvalitního materiálu 
+                    {{ bike_instance.bike.frame_material.value }}, který zajišťuje ideální kombinaci pevnosti a lehkosti.
+                    Díky brzdám typu {{ bike_instance.bike.brake_type.value }} je jízda bezpečná a pohodlná za každých 
+                    podmínek.</p>
+                    <p>Popis: {{ bike_instance.bike.description }}.</p>
                 </div>
-                <div class="title_row description">
-                    Kolo značky {{ bike_instance.bike.brand }} nabízí rám z kvalitního materiálu {{ bike_instance.bike.frame_material.value }}, který zajišťuje ideální kombinaci pevnosti a lehkosti. Díky brzdám typu {{ bike_instance.bike.brake_type.value }} je jízda bezpečná a pohodlná za každých podmínek. <br>
-                    Popis: {{ bike_instance.bike.description }}.
-                </div>
-                <p class="title_row price">{{ bike_instance.bike.price.price_per_hour }} CZK/hodinu</p>
-                <p class="title_row price">{{ bike_instance.bike.price.price_per_day }} CZK/den</p>
 
-                <form action="{{ url_for('rentals_detail', bike_instance_id=bike_instance.id) }}" method="POST" class="rental-form">
-                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
-                    <div class="title_row">
-                        <input type="text" id="rental-datetime" name="rental-datetime"
-                            placeholder="Doba zapůjčení kola:" required>
-                        <button type="submit">Rezervovat</button>
+                <!-- Pricing -->
+                <div class="pricing">
+                    <p><strong>{{ bike_instance.bike.price.price_per_hour }} CZK/hodinu</strong></p>
+                    <p><strong>{{ bike_instance.bike.price.price_per_day }} CZK/den</strong></p>
+                </div>
+
+                <!-- Rental Form -->
+                <form action="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=bike_instance.id) }}" method="POST" class="rental-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <div class="form_group">
+                        <label for="reservation_start">Začátek rezervace:</label>
+                        <input type="datetime-local" id="reservation_start" name="reservation_start" required>
                     </div>
+                    <div class="form_group">
+                        <label for="reservation_end">Konec rezervace:</label>
+                        <input type="datetime-local" id="reservation_end" name="reservation_end" required>
+                    </div>
+                    <button type="submit" class="btn">Rezervovat</button>
                 </form>
-
-                <div id="output"></div>
-
             </div>
-        </div>
-    </section>
-
-    <div id="reviewModal" class="modal_recenze" style="display: none;">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Napsat recenzi</h2>
-            <form action="{{ url_for('submit_review', bike_instance_id=bike_instance.id) }}" method="POST" id="reviewForm">
-                <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
-                <div class="form-group">
-                    <label for="rating">Hodnocení:</label>
-                    <select id="rating" name="rating" required>
-                        <option value="">Vyberte</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="review">Vaše recenze:</label>
-                    <textarea id="review" name="review" placeholder="Napište svou recenzi zde..." required></textarea>
-                </div>
-                <button class="btn" type="submit">Odeslat</button>
-            </form>
-        </div>
-    </div>
-
-    <!--
-    <section class="more_bikes">
-        <div class="title_row">
-            <h1>Další nabídky</h1>
-        </div>
-        <div class="preview_container">
-            <div class="bike" data-kategorie="trailové" data-velikost="S" data-material="steel"
-                data-typ-brzdy="hydraulic" data-znacka="surly" data-barva="žlutá">
-                <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
-                <div class="bike_labels">
-                    <i class="fa-solid fa-circle-check"></i>
-                    <div class="b_label">S</div>
-                    <div class="b_label">Trailové</div>
-                </div>
-                <h2>Trailové kolo 10</h2>
-                <h4>Trailové</h4>
-                <p>470Kč/den</p>
-            </div>
-
-            <div class="bike" data-kategorie="enduro" data-velikost="L" data-material="carbon" data-typ-brzdy="rim"
-                data-znacka="ibis" data-barva="modrá">
-                <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
-                <div class="bike_labels">
-                    <i class="fa-solid fa-circle-check"></i>
-                    <div class="b_label">L</div>
-                    <div class="b_label">Enduro</div>
-                </div>
-                <h2>Enduro kolo 11</h2>
-                <h4>Enduro</h4>
-                <p>550Kč/den</p>
-            </div>
-
-            <div class="bike" data-kategorie="cross country" data-velikost="M" data-material="aluminum"
-                data-typ-brzdy="disc" data-znacka="surly" data-barva="bílá">
-                <img src="{{ url_for('static', filename='images/example.jpg')}}" class="bike_img">
-                <div class="bike_labels">
-                    <i class="fa-solid fa-circle-check"></i>
-                    <div class="b_label">M</div>
-                    <div class="b_label">Cross Country</div>
-                </div>
-                <h2>Cross Country kolo 12</h2>
-                <h4>Cross Country</h4>
-                <p>420Kč/den</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="review_for_bike">
-        <div class="title_row">
-            <h1>Recenze</h1>
-        </div>
-
-        <div class="preview_container">
-            <div class="user_review">
-                <div class="user_profile_preview">
-                    <div class="user_icon"><img src="{{url_for('static', filename='images/user.png')}}"
-                            alt="Profilový obrázek uživatele" referrerpolicy="no-referrer"></div>
-                    <div class="name_and_rating">
-                        <h3>User</h3>
-                        <p>⭐⭐⭐⭐⭐</p>
-                    </div>
-                </div>
-
-                <p class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna
-                    in magna gravida vehicula.</p>
-            </div>
-
-            <div class="user_review">
-                <div class="user_profile_preview">
-                    <div class="user_icon"><img src="{{url_for('static', filename='images/user.png')}}"
-                            alt="Profilový obrázek uživatele" referrerpolicy="no-referrer"></div>
-                    <div class="name_and_rating">
-                        <h3>User</h3>
-                        <p>⭐⭐⭐⭐⭐</p>
-                    </div>
-                </div>
-
-                <p class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna
-                    in magna gravida vehicula.</p>
-            </div>
-
-            <div class="user_review">
-                <div class="user_profile_preview">
-                    <div class="user_icon"><img src="{{url_for('static', filename='images/user.png')}}"
-                            alt="Profilový obrázek uživatele" referrerpolicy="no-referrer"></div>
-                    <div class="name_and_rating">
-                        <h3>User</h3>
-                        <p>⭐⭐⭐⭐⭐</p>
-                    </div>
-                </div>
-
-                <p class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam sit amet magna
-                    in magna gravida vehicula.</p>
-            </div>
-        </div>
-    </section>
-    <section class="bike_detail">
-        <div class="title">Detail kola</div>
-        <div class="bike_detail_card">
-            <div class="bike_images">
-                {% if bike_instance.pictures %}
-                {% for picture in bike_instance.pictures %}
-                <img src="{{ picture.bike_picture_url }}" alt="{{ picture.description }}">
-                {% endfor %}
-                {% else %}
-                <img style="width: 10%;" src="{{ url_for('static', filename='images/example.jpg') }}"
-                    alt="Default Bike Image">
-                {% endif %}
-            </div>
-            <div class="bike_info">
-                <h2>{{ bike_instance.bike.model }}</h2>
-                <p><strong>Brand:</strong> {{ bike_instance.bike.brand }}</p>
-                <p><strong>Frame Material:</strong> {{ bike_instance.bike.frame_material.value }}</p>
-                <p><strong>Brake Type:</strong> {{ bike_instance.bike.brake_type.value }}</p>
-                <p><strong>Size:</strong> {{ bike_instance.size.value }}</p>
-                <p><strong>Color:</strong> {{ bike_instance.color }}</p>
-                <p><strong>Status:</strong> {{ bike_instance.status.value }}</p>
-                <p><strong>Price per hour:</strong> {{ bike_instance.bike.price.price_per_hour }} CZK</p>
-                <p><strong>Price per day:</strong> {{ bike_instance.bike.price.price_per_day }} CZK</p>
-                <p><strong>Description:</strong> {{ bike_instance.bike.description }}</p>
-            </div>
-            <form action="{{ url_for('rentals_detail', bike_instance_id=bike_instance.id) }}" method="POST">
-                <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
-                <label for="reservation_start">Start Time:</label>
-                <input type="datetime-local" name="reservation_start" id="reservation_start" required>
-
-                <label for="reservation_end">End Time:</label>
-                <input type="datetime-local" name="reservation_end" id="reservation_end" required>
-
-                <button type="submit">Reserve</button>
-            </form>
-            <br>
-            <form action="{{ url_for('submit_review', bike_instance_id=bike_instance.id) }}" method="POST">
-                <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
-                <div class="form-group">
-                    <label for="rating">Rating (1-5)</label>
-                    <input type="number" name="rating" min="1" max="5" required class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="comment">Comment</label>
-                    <textarea name="comment" class="form-control"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit Review</button>
-            </form>
         </div>
     </section>
 </main>
-
-
-<script>
-    /* výběr období pronájmu kola */
-    flatpickr("#rental-datetime", {
-        mode: "range",
-        enableTime: true,
-        dateFormat: "d.m.Y H:i",
-        time_24hr: true,
-        locale: "cs"
-    });
-
-    document.querySelector('.rental-form').addEventListener('submit', function (event) {
-        event.preventDefault(); // Zabráníme výchozímu odeslání formuláře
-
-        const rentalDatetime = document.getElementById('rental-datetime').value;
-        const output = document.getElementById('output');
-
-        if (!rentalDatetime) {
-            alert('Prosím, vyberte období pronájmu.');
-            return;
-        }
-
-        const [start, end] = rentalDatetime.split(" do ");
-        if (!end) {
-            alert('Prosím, vyberte konec období.');
-            return;
-        }
-
-        output.innerHTML = `
-            <strong>Vybrané období:</strong><br>
-            Od ${start} do ${end}
-        `;
-    });
-
-    // Handle modal display
-    const modal = document.getElementById("reviewModal");
-    const btn = document.getElementById("add_review");
-    const span = document.querySelector(".modal_recenze .close");
-
-    btn.onclick = function () {
-        modal.style.display = "block";
-    }
-
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    // Handle form submission
-    document.getElementById("reviewForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const rating = document.getElementById("rating").value;
-        const reviewText = document.getElementById("review").value;
-        const output = document.getElementById("output");
-
-        if (!rating || !reviewText) {
-            alert("Prosím, vyplňte všechna pole.");
-            return;
-        }
-
-        output.innerHTML = `<strong>Děkujeme za recenzi!</strong><br>Hodnocení: ${rating}<br>Recenze: ${reviewText}`;
-        modal.style.display = "none";
-    });
-</script>
 {% endblock %}

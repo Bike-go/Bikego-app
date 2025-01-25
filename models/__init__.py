@@ -14,5 +14,5 @@ from .review_model import Review
 from .user_model import User
 
 __all__ = [
-    'Bike', 'Category', 'Inspection', 'Instance_Bike', 'Maintenance', 'News', 'Payment', 'Picture', 'Price', 'Rental', 'Repair', 'Reservation', 'Review', 'User'
+    'Bike', 'Category', 'Inspection', 'InstanceBike', 'Maintenance', 'News', 'Payment', 'Picture', 'Price', 'Rental', 'Repair', 'Reservation', 'Review', 'User'
 ]

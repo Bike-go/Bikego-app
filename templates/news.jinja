@@ -20,5 +20,18 @@
         <p class="no_news">Momentálně nejsou k dispozici žádné novinky.</p>
         {% endif %}
     </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        {% if current_page > 1 %}
+        <a href="?limit={{ limit }}&offset={{ (current_page - 2) * limit }}" class="btn pagination_btn">Předchozí</a>
+        {% endif %}
+
+        <span class="pagination_info">Stránka {{ current_page }} z {{ total_pages }}</span>
+
+        {% if current_page < total_pages %}
+        <a href="?limit={{ limit }}&offset={{ current_page * limit }}" class="btn pagination_btn">Další</a>
+        {% endif %}
+    </div>
 </section>
 {% endblock %}

@@ -23,7 +23,7 @@
                 <td>{{ inspection.rental.instance_bike.id }}</td>
                 <td>{{ inspection.rental.instance_bike.status.value }}</td>
                 <td>
-                    <form method="POST" action="{{ url_for('servis') }}">
+                    <form method="POST" action="{{ url_for('servis_bp.servis') }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <input type="hidden" name="inspection_id" value="{{ inspection.id }}">
                         <select name="status">

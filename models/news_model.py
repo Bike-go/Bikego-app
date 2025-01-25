@@ -12,7 +12,7 @@ class News(db.Model):
     title = Column(String(45), nullable=False)
     content = Column(Text, nullable=False)
     created_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
-    published_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
+    published_at = Column(TIMESTAMP)
     author_id = Column(UUID, ForeignKey(f'{Config.POSTGRES_SCHEMA}.user.id'), nullable=True)
 
     author = relationship("User", back_populates="news")

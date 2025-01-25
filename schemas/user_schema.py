@@ -68,8 +68,8 @@ class UserForm(FlaskForm):
         Regexp(r'^\+?[0-9]*$', message="Telefonní číslo může obsahovat pouze čísla a +.")
     ])
     darkmode = SelectField("Tmavý režim", choices=[
-        ("true", "Zapnuto"),
-        ("false", "Vypnuto")
+        ("True", "Zapnuto"),
+        ("False", "Vypnuto")
     ], validators=[DataRequired()])
     profile_picture = FileField("Profilový obrázek", validators=[
         Optional(),
