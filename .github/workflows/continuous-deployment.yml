@@ -67,6 +67,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            > ~/bikego/.env
             set -e
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ~/bikego/.env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ~/bikego/.env
