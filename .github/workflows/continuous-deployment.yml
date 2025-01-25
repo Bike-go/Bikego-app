@@ -38,6 +38,8 @@ jobs:
       - name: Save OpenVPN Configuration
         run: |
           echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
+          ls
+          pwd
 
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@v2"
