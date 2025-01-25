@@ -34,18 +34,21 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install openvpn -y
-      
+
       - name: Save OpenVPN Configuration
         run: |
           echo "${{ secrets.OPENVPN_CONFIG }}" > ./openvpn-config.ovpn
-          ls
-          pwd
 
-      - name: Connect to VPN
-        uses: "kota65535/github-openvpn-connect-action@v2"
+      - name: Connect VPN
+        uses: golfzaptw/action-connect-ovpn@master
+        id: connect_vpn
         with:
-          config_file: ./openvpn-config.ovpn
-          password: ${{ secrets.OPENVPN_PASSWORD }}
+          PING_URL: '10.8.0.1'
+          FILE_OVPN: './openvpn-config.ovpn'
+          SECRET: ${{ secrets.OPENVPN_PASSWORD }}
+          
+      - name: Check Connect VPN
+        run: echo ${{ steps.connect_vpn.outputs.STATUS }}
 
       - name: Check Connection Status
         run: |
