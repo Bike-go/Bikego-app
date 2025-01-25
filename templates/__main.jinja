@@ -24,15 +24,6 @@
     {% else %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% endif %}
-
-    <!-- Flatpcikr scripts for renting -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/cs.js"></script>
-
-    <!-- JavaScript (Place script tag here if necessary) -->
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
-
 </head>
 
 <body>
@@ -40,29 +31,43 @@
     {% include '__header.jinja' %}
     {% endif %}
 
+    <!-- Cookie Banner -->
     <div id="cookie-banner"
-        style="display: none; position: fixed; bottom: 0; width: 100%; background: #333; color: #fff; padding: 15px; text-align: center; z-index: 1000;">
+        style="display: none; position: fixed; bottom: 0; width: 100%; background: #333; color: #fff; padding: 15px; text-align: center; z-index: 1000;"
+        role="alert" aria-live="polite">
         <p style="margin: 0; font-size: 16px;">
             Soubory cookie používáme ke zlepšení vašeho zážitku. Pokračováním v návštěvě těchto stránek souhlasíte s
             naším používáním cookies.
-            <a href="{{ url_for('legal_notices_bp.cookies') }}" style="color: #4CAF50; text-decoration: underline;">Více zde</a>.
+            <a href="{{ url_for('legal_notices_bp.cookies') }}" style="color: #4CAF50; text-decoration: underline;">Více
+                zde</a>.
         </p>
         <button id="accept-cookies"
-            style="margin-left: 15px; padding: 10px 15px; background: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 5px;">
+            style="margin-left: 15px; padding: 10px 15px; background: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 5px;"
+            aria-label="Accept Cookies">
             Přijmout
         </button>
     </div>
 
+    {% block content %}
+    {% endblock %}
+
+    {% if page not in ['login', 'signup', 'forgot_password', 'change_password'] %}
+    {% include '__footer.jinja' %}
+    {% endif %}
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/cs.js"></script>
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <!-- Cookie Banner Script -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const cookieBanner = document.getElementById("cookie-banner");
             const acceptButton = document.getElementById("accept-cookies");
             const cookies = document.cookie.split('; ');
             const cookiesAccepted = cookies.includes("cookies_accepted=true");
-            if (cookiesAccepted) {
-                console.log("Cookie already set: cookies_accepted=true");
-            } else {
-                console.log("No cookie found, showing the banner.");
+            if (!cookiesAccepted) {
                 cookieBanner.style.display = "block";
             }
             acceptButton.addEventListener("click", function () {
@@ -71,13 +76,6 @@
             });
         });
     </script>
-
-    {% block content %}
-    {% endblock %}
-
-    {% if page not in ['login', 'signup', 'forgot_password', 'change_password'] %}
-    {% include '__footer.jinja' %}
-    {% endif %}
 </body>
 
 </html>

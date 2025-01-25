@@ -1,10 +1,12 @@
 {% block header %}
-<header class="pc">
+<header class="pc" role="banner">
     <!-- Logo -->
-    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BikeGo" class="logo_image">
+    <a href="{{ url_for('home_bp.home') }}" class="logo_link">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BikeGo Logo" class="logo_image">
+    </a>
 
     <!-- Desktop Navigation -->
-    <nav class="desktop-nav">
+    <nav class="desktop-nav" role="navigation" aria-label="Main Navigation">
         <a href="{{ url_for('home_bp.home') }}" class="nav-link">Domů</a>
         <a href="{{ url_for('news_bp.news') }}" class="nav-link">Novinky</a>
         <a href="{{ url_for('rentals_bp.rentals') }}" class="nav-link">Půjčovna</a>
@@ -13,35 +15,39 @@
     </nav>
 
     <!-- Account Button -->
-    <a href="{{ url_for('user_bp.profile') if is_logged_in else url_for('user_bp.login') }}" class="acc_btn">
+    <a href="{{ url_for('user_bp.profile') if is_logged_in else url_for('user_bp.login') }}" class="acc_btn"
+        aria-label="My Account">
         Můj účet
     </a>
 </header>
 
 <!-- Mobile Header -->
-<header class="mobile">
+<header class="mobile" role="banner">
     <!-- Overlay for menu toggle -->
     <div class="overlay" id="overlay" onclick="toggleMenu()" aria-hidden="true"></div>
 
     <!-- Mobile Side Menu -->
     <div class="side_menu" id="sideMenu" role="navigation" aria-label="Mobile Navigation">
-        <a href="{{ url_for('home_bp.home') }}" class="nav-link">Domů</a>
-        <a href="{{ url_for('news_bp.news') }}" class="nav-link">Novinky</a>
-        <a href="{{ url_for('rentals_bp.rentals') }}" class="nav-link">Půjčovna</a>
-        <a href="{{ url_for('photos_bp.photos') }}" class="nav-link">Foto</a>
-        <a href="{{ url_for('contacts_bp.contacts') }}" class="nav-link">Kontakt</a>
+        <ul class="mobile-nav">
+            <li><a href="{{ url_for('home_bp.home') }}" class="nav-link">Domů</a></li>
+            <li><a href="{{ url_for('news_bp.news') }}" class="nav-link">Novinky</a></li>
+            <li><a href="{{ url_for('rentals_bp.rentals') }}" class="nav-link">Půjčovna</a></li>
+            <li><a href="{{ url_for('photos_bp.photos') }}" class="nav-link">Foto</a></li>
+            <li><a href="{{ url_for('contacts_bp.contacts') }}" class="nav-link">Kontakt</a></li>
+        </ul>
     </div>
 
     <!-- Mobile Menu Button -->
     <div class="mobile-menu-toggle">
-        <button id="btn_menu" aria-label="Toggle navigation menu" onclick="toggleMenu()">
+        <button id="btn_menu" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMenu()">
             <i class="fa-solid fa-bars"></i>
         </button>
         <p class="title">BikeGO</p>
     </div>
 
     <!-- Account Button -->
-    <a href="{{ url_for('user_bp.profile') if is_logged_in else url_for('user_bp.login') }}" class="acc_btn">
+    <a href="{{ url_for('user_bp.profile') if is_logged_in else url_for('user_bp.login') }}" class="acc_btn"
+        aria-label="My Account">
         <i class="fa-regular fa-user"></i>
     </a>
 </header>
