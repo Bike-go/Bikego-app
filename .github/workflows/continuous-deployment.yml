@@ -34,20 +34,25 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install openvpn -y
-
-      - name: Set up and Connect to OpenVPN
+      
+      - name: Configure OpenVPN
         run: |
-          echo "${{ secrets.OPENVPN_CONFIG }}" | base64 -d > ~/openvpn-config.ovpn
-          sudo openvpn --config ~/openvpn-config.ovpn --auth-nocache --daemon
-
-      - name: Deploy Files via SFTP
+          echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
+          sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --daemon &
+      
+      - name: Wait for VPN Connection
+        run: |
+          while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
+      
+      - name: Upload files to server via SFTP
         uses: Dylan700/sftp-upload-action@v1.2.3
         with:
           server: ${{ secrets.SERVER_IP }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          uploads: "./ => bikego"
+          uploads: |
+            ./ => bikego
 
       - name: Deploy and Start Docker Compose
         uses: appleboy/ssh-action@v1.0.0
