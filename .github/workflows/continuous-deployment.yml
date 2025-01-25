@@ -29,37 +29,28 @@ jobs:
           docker build -t selecro/bikego-main:${{ github.ref_name }}-${SHORT_SHA} -t selecro/bikego-main:latest .
           docker push selecro/bikego-main:${{ github.ref_name }}-${SHORT_SHA}
           docker push selecro/bikego-main:latest
-
-      - name: Verify Server Accessibility
-        run: |
-          echo "Pinging the server to verify network connectivity..."
-          ping -c 4 ${{ secrets.SERVER_IP }}  # Ping the server to check connectivity
-      
-      - name: Check Network Interfaces (Optional)
-        run: |
-          echo "Checking network interfaces..."
-          ifconfig  # Or use `ip a` if `ifconfig` is not available
-          # If you prefer `ip a`, you can use the following:
-          # ip a
       
       - name: Install OpenVPN
         run: |
           sudo apt-get update
           sudo apt-get install openvpn -y
       
-      - name: Set up and Connect to OpenVPN
+      - name: Save OpenVPN Configuration
         run: |
-          echo "${{ secrets.OPENVPN_CONFIG }}" | base64 -d > ~/openvpn-config.ovpn
-          sudo openvpn --config ~/openvpn-config.ovpn --auth-nocache --daemon
-      
+          echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
+
+      - name: Connect to OpenVPN
+        run: |
+          sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass <(echo "${{ secrets.OPENVPN_PASSWORD }}") > /dev/null 2>&1 &
+
       - name: Wait for VPN Connection
         run: |
           while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
-      
-      - name: Verify VPN Connectivity (Optional)
+
+      - name: Verify Server Accessibility
         run: |
-          echo "Checking if VPN connection is active..."
-          ifconfig  # Again, or use `ip a` to see if the VPN interface is active
+          echo "Pinging the server to verify network connectivity..."
+          ping -c 4 ${{ secrets.SERVER_IP }}  # Ping the server to check connectivity
       
       - name: Deploy Files via SFTP
         uses: Dylan700/sftp-upload-action@v1.2.3
