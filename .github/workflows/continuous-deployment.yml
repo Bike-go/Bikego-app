@@ -30,6 +30,11 @@ jobs:
           docker push selecro/bikego-main:${{ github.ref_name }}-${SHORT_SHA}
           docker push selecro/bikego-main:latest
 
+      - name: Install OpenVPN
+        run: |
+          sudo apt-get update
+          sudo apt-get install openvpn -y
+
       - name: Set up and Connect to OpenVPN
         run: |
           echo "${{ secrets.OPENVPN_CONFIG }}" | base64 -d > ~/openvpn-config.ovpn
