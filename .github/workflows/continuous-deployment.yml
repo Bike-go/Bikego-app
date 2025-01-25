@@ -41,11 +41,22 @@ jobs:
 
       - name: Connect to OpenVPN
         run: |
-          sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass <(echo "${{ secrets.OPENVPN_PASSWORD }}") > /dev/null 2>&1 &
+          for i in {1..3}; do # Retry 3 times
+            sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass <(echo "${{ secrets.OPENVPN_PASSWORD }}") > /dev/null 2>&1 &
+            while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
+            if pgrep -x "openvpn"; then
+              break  # Connection successful, exit the loop
+            fi
+            echo "OpenVPN connection attempt $i failed. Retrying..."
+            sleep 10  # Wait before retrying
+          done
 
-      - name: Wait for VPN Connection
+      - name: Check Connection Status
         run: |
-          while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
+          if ! pgrep -x "openvpn"; then
+            echo "OpenVPN connection failed after multiple attempts."
+            exit 1  # Fail the job if connection failed
+          fi
 
       - name: Verify Server Accessibility
         run: |
