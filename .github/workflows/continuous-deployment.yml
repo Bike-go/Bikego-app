@@ -7,15 +7,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  run_pull:
-    name: Run Pull and Deploy
+  deploy:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checking out code
+      - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -26,40 +23,55 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Get the short SHA hash of the commit
+      - name: Build and Push Docker Image
         run: |
-          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-  
-      - name: Build and push Docker image
-        run: |
-          docker build -t selecro/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }} .
-          docker push selecro/bikego-main:${{ github.ref_name }}-${{ env.SHORT_SHA }}
-
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          docker build -t selecro/bikego-main:${{ github.ref_name }}-${SHORT_SHA} -t selecro/bikego-main:latest .
+          docker push selecro/bikego-main:${{ github.ref_name }}-${SHORT_SHA}
+          docker push selecro/bikego-main:latest
+      
       - name: Install OpenVPN
         run: |
-          sudo apt-get update && sudo apt-get install openvpn -y
-      - name: Configure OpenVPN
-        run: |
-          echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
-          echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/openvpn.txt
-      - name: Connect to OpenVPN
-        run: |
-          sudo nohup openvpn --config ~/openvpn-config.ovpn --auth-nocache --askpass ~/openvpn.txt > /dev/null 2>&1 &
-      - name: Wait for VPN Connection
-        run: |
-          while ! pgrep -x "openvpn" > /dev/null; do sleep 1; done
+          sudo apt-get update
+          sudo apt-get install openvpn -y
 
-      - name: Upload files to server via SFTP
+      - name: Save OpenVPN Configuration
+        run: |
+          echo "${{ secrets.OPENVPN_CONFIG }}" > ./openvpn-config.ovpn
+
+      - name: Connect VPN
+        uses: golfzaptw/action-connect-ovpn@master
+        id: connect_vpn
+        with:
+          PING_URL: '10.8.0.1'
+          FILE_OVPN: './openvpn-config.ovpn'
+          SECRET: ${{ secrets.OPENVPN_PASSWORD }}
+          
+      - name: Check Connect VPN
+        run: echo ${{ steps.connect_vpn.outputs.STATUS }}
+
+      - name: Check Connection Status
+        run: |
+          if ! pgrep -x "openvpn"; then
+            echo "OpenVPN connection failed after multiple attempts."
+            exit 1  # Fail the job if connection failed
+          fi
+
+      - name: Verify Server Accessibility
+        run: |
+          echo "Pinging the server to verify network connectivity..."
+          ping -c 4 ${{ secrets.SERVER_IP }}  # Ping the server to check connectivity
+      
+      - name: Deploy Files via SFTP
         uses: Dylan700/sftp-upload-action@v1.2.3
         with:
           server: ${{ secrets.SERVER_IP }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          uploads: |
-            ./ => bikego
+          uploads: ./ => bikego
 
-      - name: SSH into Your Server and Deploy
+      - name: Deploy and Start Docker Compose
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -67,7 +79,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            set -e
+            > ~/bikego/.env
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ~/bikego/.env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ~/bikego/.env
             echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ~/bikego/.env
@@ -91,8 +103,6 @@ jobs:
             docker-compose down
             docker-compose up -d --build
 
-      - name: Terminate OpenVPN Connection
-        run: sudo pkill -f openvpn || true
-
-      - name: Remove Temporary Files
-        run: rm -rf ~/openvpn-config.ovpn ~/vpn-auth.txt ~/.ssh
+      - name: Clean Up Temporary Files
+        run: |
+          rm -rf ~/openvpn-config.ovpn ~/.ssh
