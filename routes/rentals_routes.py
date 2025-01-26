@@ -198,7 +198,7 @@ def rent_checkout():
 
         if not reservation or not reservation.ready_to_pickup:
             flash("Reservation not found or not ready for pickup.", "error")
-            return redirect(url_for("rent_checkout"))
+            return redirect(url_for("rentals_bp.rent_checkout"))
 
         rental = Rental(
             User_id=reservation.User_id,
@@ -218,7 +218,7 @@ def rent_checkout():
             db.session.rollback()
             flash(f"Error creating rental: {str(e)}", "error")
 
-        return redirect(url_for("rent_checkout"))
+        return redirect(url_for("rentals_bp.rent_checkout"))
 
     if request.method == "POST" and "rental_id" in request.form:
         rental_id = request.form.get("rental_id")
@@ -228,13 +228,13 @@ def rent_checkout():
 
         if not rental:
             flash("Rental not found.", "error")
-            return redirect(url_for("rent_checkout"))
+            return redirect(url_for("rentals_bp.rent_checkout"))
 
         try:
             end_time = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
         except ValueError:
             flash("Invalid date format for end_time. Use YYYY-MM-DD HH:MM:SS.", "error")
-            return redirect(url_for("rent_checkout"))
+            return redirect(url_for("rentals_bp.rent_checkout"))
 
         duration = (end_time - rental.start_time).total_seconds() / 3600
 
@@ -242,7 +242,7 @@ def rent_checkout():
 
         if not price:
             flash("Price not found.", "error")
-            return redirect(url_for("rent_checkout"))
+            return redirect(url_for("rentals_bp.rent_checkout"))
 
         if duration < 24:
             total_price = round(duration * price.price_per_hour)
@@ -265,4 +265,4 @@ def rent_checkout():
             db.session.rollback()
             flash(f"Error updating rental or creating inspection: {str(e)}", "error")
 
-        return redirect(url_for("rent_checkout"))
+        return redirect(url_for("rentals_bp.rent_checkout"))

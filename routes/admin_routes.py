@@ -1,13 +1,13 @@
 from flask import Blueprint, flash, request, render_template, redirect, url_for
 from flask_jwt_extended import get_jwt, jwt_required, get_jwt_identity
 from flask_wtf.csrf import generate_csrf
-import db
 from models.bike_model import Bike, BrakeTypeEnum, FrameMaterialEnum
 from models.instance_bike_model import BikeSizeEnum, InstanceBike
 from models.news_model import News
 from models.user_model import User, UserRoleEnum
 from utils.validator_utils import is_admin
 from sqlalchemy.exc import SQLAlchemyError
+from db import db
 
 admin_bp = Blueprint("admin_bp", __name__)
 

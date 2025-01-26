@@ -134,7 +134,7 @@
         <div class="card-bikes">
 
             <div class="card-body table-responsive">
-                <form action="{{ url_for('bikes_bp.manage_bikes') }}" method="POST" class="form-group">
+                <form action="{{ url_for('admin_bp.manage_bikes') }}" method="POST" class="form-group">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="hidden" name="action" value="create">
                     <label for="model">Model:</label>
@@ -175,7 +175,7 @@
                 <div>
                     <h3>{{ bike.model }}</h3>
                     <p>{{ bike.brand }} | {{ bike.frame_material }} | {{ bike.brake_type }}</p>
-                    <form action="{{ url_for('bikes_bp.manage_bikes') }}" method="POST">
+                    <form action="{{ url_for('admin_bp.manage_bikes') }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <input type="hidden" name="action" value="edit">
                         <input type="hidden" name="bike_id" value="{{ bike.id }}">
@@ -198,7 +198,7 @@
                         <button type="submit" class="btn">Edit</button>
                     </form>
                     <!-- Delete Bike Form -->
-                    <form action="{{ url_for('bikes_bp.manage_bikes') }}" method="POST">
+                    <form action="{{ url_for('admin_bp.manage_bikes') }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="bike_id" value="{{ bike.id }}">
