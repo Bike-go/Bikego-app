@@ -19,6 +19,7 @@ from routes import (
     news_bp,
     photos_bp,
     rentals_bp,
+    review_bp,
     servis_bp,
     user_bp,
 )
@@ -145,6 +146,7 @@ app.register_blueprint(legal_notices_bp, url_prefix="/")
 app.register_blueprint(news_bp, url_prefix="/")
 app.register_blueprint(photos_bp, url_prefix="/")
 app.register_blueprint(rentals_bp, url_prefix="/")
+app.register_blueprint(review_bp, url_prefix="/")
 app.register_blueprint(servis_bp, url_prefix="/")
 app.register_blueprint(user_bp, url_prefix="/")
 

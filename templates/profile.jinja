@@ -221,8 +221,20 @@
             <!-- Display Existing Reviews -->
             {% for review in reviews %}
             <div class="review_row">
-                <span class="review_title">{{ review.comment[:50] }}</span>
-                <p>{{ review.comment }}</p>
+                <span class="review_title">
+                    {% if review.comment %}
+                    {{ review.comment[:50] }} <!-- Slice only if comment is not None -->
+                    {% else %}
+                    No comment available.
+                    {% endif %}
+                </span>
+                <p>
+                    {% if review.comment %}
+                    {{ review.comment }}
+                    {% else %}
+                    No comment available.
+                    {% endif %}
+                </p>
                 <span class="review_rating">
                     Hodnocení:
                     {% for _ in range(review.rating) %}
@@ -232,17 +244,76 @@
                     ☆
                     {% endfor %}
                 </span>
+
+                <!-- Edit Button Form -->
+                <button class="edit-btn" data-review-id="{{ review.id }}" data-review-comment="{{ review.comment }}"
+                    data-review-rating="{{ review.rating }}">
+                    Edit
+                </button>
+
+                <!-- Delete Button Form -->
+                <form action="{{ url_for('review_bp.submit_review') }}" method="POST">
+                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="review_id" value="{{ review.id }}">
+                    <button type="submit"
+                        onclick="return confirm('Are you sure you want to delete this review?');">Delete</button>
+                </form>
+
+                <!-- Modal for the specific review -->
+                <div id="reviewModal_{{ review.id }}" class="modal_recenze" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal({{ review.id }})">&times;</span>
+                        <h2 id="modalTitle_{{ review.id }}">Upravit recenzi</h2>
+                        <form action="{{ url_for('review_bp.submit_review') }}" method="POST"
+                            id="reviewForm_{{ review.id }}">
+                            <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                            <input type="hidden" name="action" value="update">
+                            <input id="review_id_{{ review.id }}" name="review_id" type="hidden"
+                                value="{{ review.id }}">
+                            <div class="form-group">
+                                <label for="rating_{{ review.id }}">Hodnocení:</label>
+                                <select id="rating_{{ review.id }}" name="rating" required>
+                                    <option value="">Vyberte</option>
+                                    <option value="1" {% if review.rating==1 %}selected{% endif %}>1</option>
+                                    <option value="2" {% if review.rating==2 %}selected{% endif %}>2</option>
+                                    <option value="3" {% if review.rating==3 %}selected{% endif %}>3</option>
+                                    <option value="4" {% if review.rating==4 %}selected{% endif %}>4</option>
+                                    <option value="5" {% if review.rating==5 %}selected{% endif %}>5</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment_{{ review.id }}">Vaše recenze:</label>
+                                <textarea id="comment_{{ review.id }}" name="comment"
+                                    placeholder="Napište svou recenzi zde..." required>{{ review.comment }}</textarea>
+                            </div>
+                            <button class="btn" type="submit">Odeslat</button>
+                        </form>
+                    </div>
+                </div>
             </div>
             {% endfor %}
 
-            <div class="scnd_btn"> <button id="add_review"> Napsat recenzi </button> <i class="fa-solid fa-pen"></i>
+            {% if reviews | length == 0 %}
+            <div class="review_row">
+                <p>Zatím jste napsal(a) žádnou recenzi.</p>
             </div>
+            {% endif %}
+
+            <div class="scnd_btn">
+                <button id="add_review"> Napsat recenzi </button>
+                <i class="fa-solid fa-pen"></i>
+            </div>
+
+            <!-- The Modal for adding and editing review -->
             <div id="reviewModal" class="modal_recenze" style="display: none;">
                 <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2>Napsat recenzi</h2>
-                    <form action="{{ url_for('user_bp.submit_review') }}" method="POST" id="reviewForm">
+                    <span class="close" onclick="closeModal()">×</span>
+                    <h2 id="modalTitle">Napsat recenzi</h2>
+                    <form action="{{ url_for('review_bp.submit_review') }}" method="POST" id="reviewForm">
                         <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                        <input type="hidden" name="action" value="create">
+                        <input id="review_id" name="review_id" type="hidden">
                         <div class="form-group">
                             <label for="rating">Hodnocení:</label>
                             <select id="rating" name="rating" required>
@@ -255,15 +326,59 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="review">Vaše recenze:</label>
-                            <textarea id="review" name="review" placeholder="Napište svou recenzi zde..."
+                            <label for="comment">Vaše recenze:</label>
+                            <textarea id="comment" name="comment" placeholder="Napište svou recenzi zde..."
                                 required></textarea>
                         </div>
                         <button class="btn" type="submit">Odeslat</button>
                     </form>
                 </div>
             </div>
+
+            <script>
+                const modal = document.getElementById("reviewModal");
+                const addReviewButton = document.getElementById("add_review");
+                const closeButton = document.querySelectorAll(".close");
+
+                // When the "Napsat recenzi" button is clicked, show the modal
+                addReviewButton.onclick = function () {
+                    modal.style.display = "block";
+                }
+
+                // When the close button is clicked, hide the modal
+                closeButton.forEach(button => {
+                    button.onclick = function () {
+                        const modalToClose = button.closest('.modal_recenze');
+                        modalToClose.style.display = "none";
+                    }
+                });
+
+                // Open the modal and populate it with the review's details
+                document.querySelectorAll('.edit-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const reviewId = this.getAttribute('data-review-id');
+                        const reviewComment = this.getAttribute('data-review-comment');
+                        const reviewRating = this.getAttribute('data-review-rating');
+
+                        // Set the form's hidden fields and pre-fill the inputs
+                        document.getElementById('review_id_' + reviewId).value = reviewId;
+                        document.getElementById('comment_' + reviewId).value = reviewComment;
+                        document.getElementById('rating_' + reviewId).value = reviewRating;
+
+                        // Show the modal for the specific review
+                        document.getElementById('reviewModal_' + reviewId).style.display = 'block';
+                    });
+                });
+
+                // Close modal when clicking outside of it
+                window.onclick = function (event) {
+                    if (event.target && event.target.classList.contains('modal_recenze')) {
+                        event.target.style.display = "none";
+                    }
+                }
+            </script>
         </section>
+
 
     </div>
 

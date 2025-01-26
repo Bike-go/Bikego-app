@@ -12,3 +12,4 @@ Werkzeug
 gunicorn
 psycopg2
 email-validator
+python-barcode
