@@ -355,7 +355,7 @@ def profile():
         db.session.query(Reservation)
         .filter(
             Reservation.User_id == user.id,
-            Reservation.reservation_end > datetime.utcnow(),
+            Reservation.ready_to_pickup == True,
         )
         .limit(5)
         .all()
@@ -364,20 +364,14 @@ def profile():
         db.session.query(Reservation)
         .filter(
             Reservation.User_id == user.id,
-            Reservation.reservation_end < datetime.utcnow(),
+            Reservation.ready_to_pickup == False,
         )
-        .limit(5)
-        .all()
-    )
-    active_rentals = (
-        db.session.query(Rental)
-        .filter(Rental.User_id == user.id, Rental.start_time > datetime.utcnow())
         .limit(5)
         .all()
     )
     past_rentals = (
         db.session.query(Rental)
-        .filter(Rental.User_id == user.id, Rental.end_time < datetime.utcnow())
+        .filter(Rental.User_id == user.id, Rental.end_time != Rental.start_time)
         .limit(5)
         .all()
     )
@@ -397,7 +391,6 @@ def profile():
                         user,
                         active_reservations,
                         past_reservations,
-                        active_rentals,
                         past_rentals,
                         reviews,
                         user_form,
@@ -411,7 +404,6 @@ def profile():
                         user,
                         active_reservations,
                         past_reservations,
-                        active_rentals,
                         past_rentals,
                         reviews,
                         user_form,
@@ -436,7 +428,6 @@ def profile():
                     user,
                     active_reservations,
                     past_reservations,
-                    active_rentals,
                     past_rentals,
                     reviews,
                     user_form,
@@ -472,7 +463,6 @@ def profile():
             user,
             active_reservations,
             past_reservations,
-            active_rentals,
             past_rentals,
             reviews,
             user_form,
@@ -484,7 +474,6 @@ def profile():
         user,
         active_reservations,
         past_reservations,
-        active_rentals,
         past_rentals,
         reviews,
         user_form,
@@ -496,7 +485,6 @@ def render_profile_page(
     user,
     active_reservations,
     past_reservations,
-    active_rentals,
     past_rentals,
     reviews,
     user_form,
@@ -513,7 +501,6 @@ def render_profile_page(
         page=page,
         active_reservations=active_reservations,
         past_reservations=past_reservations,
-        active_rentals=active_rentals,
         past_rentals=past_rentals,
         reviews=reviews,
         form=user_form,

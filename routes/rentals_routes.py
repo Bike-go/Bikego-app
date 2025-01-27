@@ -126,15 +126,20 @@ def rentals_detail(bike_instance_id):
         return redirect(url_for("rentals_bp.rentals")), 302
 
     if request.method == "POST":
+        # Check if the user is logged in (JWT token verification)
+        try:
+            verify_jwt_in_request()  # This will raise an exception if JWT is not present or invalid
+            user_id = get_jwt_identity()  # Retrieve the user ID from the JWT
+        except Exception:
+            flash("You must be logged in to make a reservation.", "error")
+            return redirect(
+                url_for("user_bp.login")
+            )  # Redirect to login page if not logged in
+
         if bike_instance.status.value != "Available":
             flash("This bike is currently unavailable for reservation.", "error")
-            return (
-                redirect(
-                    url_for(
-                        "rentals_bp.rentals_detail", bike_instance_id=bike_instance.id
-                    )
-                ),
-                302,
+            return redirect(
+                url_for("rentals_bp.rentals_detail", bike_instance_id=bike_instance.id)
             )
 
         try:
@@ -149,42 +154,27 @@ def rentals_detail(bike_instance_id):
                 reservation_end = datetime.strptime(reservation_end, "%Y-%m-%dT%H:%M")
             except ValueError:
                 flash("Invalid date format. Please try again.", "error")
-                return (
-                    redirect(
-                        url_for(
-                            "rentals_bp.rentals_detail",
-                            bike_instance_id=bike_instance.id,
-                        )
-                    ),
-                    302,
+                return redirect(
+                    url_for(
+                        "rentals_bp.rentals_detail", bike_instance_id=bike_instance.id
+                    )
                 )
 
             if reservation_start >= reservation_end:
                 flash("End time must be after start time.", "error")
-                return (
-                    redirect(
-                        url_for(
-                            "rentals_bp.rentals_detail",
-                            bike_instance_id=bike_instance.id,
-                        )
-                    ),
-                    302,
+                return redirect(
+                    url_for(
+                        "rentals_bp.rentals_detail", bike_instance_id=bike_instance.id
+                    )
                 )
 
             if reservation_start < datetime.now():
                 flash("Reservation start time cannot be in the past.", "error")
-                return (
-                    redirect(
-                        url_for(
-                            "rentals_bp.rentals_detail",
-                            bike_instance_id=bike_instance.id,
-                        )
-                    ),
-                    302,
+                return redirect(
+                    url_for(
+                        "rentals_bp.rentals_detail", bike_instance_id=bike_instance.id
+                    )
                 )
-
-            verify_jwt_in_request()
-            user_id = get_jwt_identity()
 
             # Create the reservation
             new_reservation = Reservation(
@@ -203,30 +193,16 @@ def rentals_detail(bike_instance_id):
             db.session.commit()
 
             flash("Reservation created successfully!", "success")
-            return (
-                redirect(
-                    url_for(
-                        "rentals_bp.rentals_detail", bike_instance_id=bike_instance.id
-                    )
-                ),
-                302,
+            return redirect(
+                url_for("rentals_bp.rentals_detail", bike_instance_id=bike_instance.id)
             )
 
         except Exception as e:
             db.session.rollback()
             flash(f"An error occurred while processing your reservation: {e}", "error")
-            return (
-                redirect(
-                    url_for(
-                        "rentals_bp.rentals_detail", bike_instance_id=bike_instance.id
-                    )
-                ),
-                302,
+            return redirect(
+                url_for("rentals_bp.rentals_detail", bike_instance_id=bike_instance.id)
             )
-
-        except Exception as e:
-            db.session.rollback()
-            flash(f"Error creating reservation: {e}", "error")
 
     try:
         csrf_token = get_jwt()["csrf"]
@@ -333,7 +309,7 @@ def rent_checkout():
                     inspection = Inspection(
                         Rental_id=rental.id,  # Correct field name here
                         User_id=rental.User_id,  # Ensure you use the correct field name
-                        comments=comment
+                        comments=comment,
                     )
                     db.session.add(inspection)
                 else:
