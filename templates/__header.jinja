@@ -28,13 +28,11 @@
 
     <!-- Mobile Side Menu -->
     <div class="side_menu" id="sideMenu" role="navigation" aria-label="Mobile Navigation">
-        <ul class="mobile-nav">
-            <li><a href="{{ url_for('home_bp.home') }}" class="nav-link">Domů</a></li>
-            <li><a href="{{ url_for('news_bp.news') }}" class="nav-link">Novinky</a></li>
-            <li><a href="{{ url_for('rentals_bp.rentals') }}" class="nav-link">Půjčovna</a></li>
-            <li><a href="{{ url_for('photos_bp.photos') }}" class="nav-link">Foto</a></li>
-            <li><a href="{{ url_for('contacts_bp.contacts') }}" class="nav-link">Kontakt</a></li>
-        </ul>
+            <a href="{{ url_for('home_bp.home') }}" class="nav-link">Domů</a>
+            <a href="{{ url_for('news_bp.news') }}" class="nav-link">Novinky</a>
+            <a href="{{ url_for('rentals_bp.rentals') }}" class="nav-link">Půjčovna</a>
+            <a href="{{ url_for('photos_bp.photos') }}" class="nav-link">Foto</a>
+            <a href="{{ url_for('contacts_bp.contacts') }}" class="nav-link">Kontakt</a>
     </div>
 
     <!-- Mobile Menu Button -->

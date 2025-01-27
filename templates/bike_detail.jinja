@@ -5,7 +5,7 @@
     <section class="bike_preview">
         <div class="title_row">
             <h1>Detail kola</h1>
-            <div class="availability">
+            <div class="avalibality">
                 {% if bike_instance.status.value == 'Available' %}
                 <span class="status available"><i class="fa-solid fa-circle-check"></i> Dostupné</span>
                 {% else %}
@@ -42,7 +42,7 @@
                 </div>
 
                 <!-- Pricing -->
-                <div class="pricing">
+                <div class="price">
                     <p><strong>{{ bike_instance.bike.price.price_per_hour }} CZK/hodinu</strong></p>
                     <p><strong>{{ bike_instance.bike.price.price_per_day }} CZK/den</strong></p>
                 </div>
@@ -50,11 +50,11 @@
                 <!-- Rental Form -->
                 <form action="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=bike_instance.id) }}" method="POST" class="rental-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <div class="form_group">
+                    <div class="form-group">
                         <label for="reservation_start">Začátek rezervace:</label>
                         <input type="datetime-local" id="reservation_start" name="reservation_start" required>
                     </div>
-                    <div class="form_group">
+                    <div class="form-group">
                         <label for="reservation_end">Konec rezervace:</label>
                         <input type="datetime-local" id="reservation_end" name="reservation_end" required>
                     </div>

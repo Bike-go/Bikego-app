@@ -2,139 +2,132 @@
 {% block content %}
 <div class="profile">
     <div class="left_container">
-        <div class="user_icon">
-            <img src="{{ user.profile_picture_url if user.profile_picture_url else url_for('static', filename='images/user.png') }}"
-                alt="Profilový obrázek uživatele {{ user.username }}" referrerpolicy="no-referrer">
-        </div>
 
-        <div class="user_row">
-            <section class="user_details">
-                <form enctype="multipart/form-data" method="POST" class="login"
-                    action="{{ url_for('user_bp.profile') }}">
-                    <div class="form-group">
-                        <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="{{ form.username.id }}" class="form-label">{{ form.username.label }}</label>
-                        {{ form.username(class="form-field", placeholder="Uživatelské jméno") }}
-                        {% if form.username.errors %}
-                        <ul class="errors">
-                            {% for error in form.username.errors %}
-                            <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    </div>
-
-                    <div class="input-group">
-                        <label for="{{ form.email.id }}" class="form-label">{{ form.email.label }}</label>
-                        {{ form.email(class="form-field", placeholder="Email") }}
-                        {% if form.email.errors %}
-                        <ul class="errors">
-                            {% for error in form.email.errors %}
-                            <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    </div>
-
-                    <div class="input-group">
-                        <label for="{{ form.phone_number.id }}" class="form-label">{{ form.phone_number.label }}</label>
-                        {{ form.phone_number(class="form-field", placeholder="Telefonní číslo") }}
-                        {% if form.phone_number.errors %}
-                        <ul class="errors">
-                            {% for error in form.phone_number.errors %}
-                            <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    </div>
-
-                    <div class="input-group">
-                        <label for="{{ form.darkmode.id }}" class="form-label">{{ form.darkmode.label }}</label>
-                        {{ form.darkmode(class="form-field") }}
-                        {% if form.darkmode.errors %}
-                        <ul class="errors">
-                            {% for error in form.darkmode.errors %}
-                            <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    </div>
-
-                    <div class="input-group-image">
-                        <label for="{{ form.profile_picture.id }}" class="form-label">{{ form.profile_picture.label
-                            }}</label>
-                        {{ form.profile_picture(class="form-field") }}
-                        {% if form.profile_picture.errors %}
-                        <ul class="errors">
-                            {% for error in form.profile_picture.errors %}
-                            <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    </div>
-
-                    <div class="row_reg">
-                        {{ form.submit(class="create") }}
-                    </div>
-
-                    {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                    <ul class="flashes">
-                        {% for message in messages %}
-                        <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                    {% endwith %}
-                </form>
-            </section>
-        </div>
-
-        <div class="user_row">
-
-            {% if user.role == 'Admin' %}
-            <div class="admin_panel">
-                <a href="{{ url_for('admin_bp.admin') }}">Admin panel</a>
+        <form enctype="multipart/form-data" method="POST" class="login"
+            action="{{ url_for('user_bp.profile') }}">
+            <div class="form-group" style="display: none;">
+                <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
             </div>
-            {% endif %}
-            {% if user.role is in ['Admin', 'Employee'] %}
-            <div class="admin_panel">
-                <a href="{{ url_for('rentals_bp.rent_checkout') }}">Rentals panel</a>
-            </div>
-            {% endif %}
-            {% if user.role is in ['Admin', 'Service'] %}
-            <div class="admin_panel">
-                <a href="{{ url_for('servis_bp.servis') }}">Servis panel</a>
-            </div>
-            {% endif %}
 
-            <div class="scnd_btn">
-                <form method="POST" class="login" action="{{ url_for('user_bp.forgot_password') }}">
+            <div class="user_icon">
+                <img src="{{ user.profile_picture_url if user.profile_picture_url else url_for('static', filename='images/user.png') }}"
+                    alt="Profilový obrázek uživatele {{ user.username }}" referrerpolicy="no-referrer">
+            </div>
+
+            <div class="input-group">
+                <label for="{{ form.username.id }}" class="form-label">{{ form.username.label }}</label>
+                {{ form.username(class="form-field", placeholder="Uživatelské jméno") }}
+                {% if form.username.errors %}
+                <ul class="errors">
+                    {% for error in form.username.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <div class="input-group">
+                <label for="{{ form.email.id }}" class="form-label">{{ form.email.label }}</label>
+                {{ form.email(class="form-field", placeholder="Email") }}
+                {% if form.email.errors %}
+                <ul class="errors">
+                    {% for error in form.email.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <div class="input-group">
+                <label for="{{ form.phone_number.id }}" class="form-label">{{ form.phone_number.label }}</label>
+                {{ form.phone_number(class="form-field", placeholder="-") }}
+                {% if form.phone_number.errors %}
+                <ul class="errors">
+                    {% for error in form.phone_number.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <div class="input-group" style="display: none;">
+                <label for="{{ form.darkmode.id }}" class="form-label">{{ form.darkmode.label }}</label>
+                {{ form.darkmode(class="form-field") }}
+                {% if form.darkmode.errors %}
+                <ul class="errors">
+                    {% for error in form.darkmode.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <div class="input-group">
+                <label for="{{ form.profile_picture.id }}" class="form-label">{{ form.profile_picture.label}}</label>
+                {{ form.profile_picture(class="form-field") }}
+                {% if form.profile_picture.errors %}
+                <ul class="errors" style="display: none;">
+                    {% for error in form.profile_picture.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            {{ form.submit(class="create") }}
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <div class="tools_menu">
+                <form method="POST" class="action" action="{{ url_for('user_bp.forgot_password') }}">
                     <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
                     <input type="email" name="email" class="form-field" value="{{ user.email }}" readonly hidden />
                     <button type="submit" class="btn">Změnit heslo</button>
                 </form>
-            </div>
 
-            <div class="scnd_btn">
-                <form method="POST" class="login" action="{{ url_for('user_bp.logout') }}">
+                <form method="POST" class="action" action="{{ url_for('user_bp.logout') }}">
                     <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
                     <button type="submit" class="btn">Odhlášení</button>
                 </form>
-            </div>
 
-            <div class="delete_profile">
-                <form method="POST" class="login" action="{{ url_for('user_bp.delete_user') }}">
+                <form method="POST" class="action" action="{{ url_for('user_bp.delete_user') }}">
                     <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                    <button type="submit" class="sign-out">Smazat profil</button>
                     <input type="password" name="password" class="form-control" placeholder="Zadejte své heslo"
                         required />
-                    <button type="submit" class="btn">Smazat profil</button>
+                    
                 </form>
+
+            </div>   
+
+        </form>
+
+        <div class="support_menu">
+            {% if user.role == 'Admin' %}
+            <div class="support_item">
+                <a href="{{ url_for('admin_bp.admin') }}">Admin panel</a>
             </div>
+            {% endif %}
+            {% if user.role is in ['Admin', 'Employee'] %}
+            <div class="support_item">
+                <a href="{{ url_for('rentals_bp.rent_checkout') }}">Rentals panel</a>
+            </div>
+            {% endif %}
+            {% if user.role is in ['Admin', 'Service'] %}
+            <div class="support_item">
+                <a href="{{ url_for('servis_bp.servis') }}">Servis panel</a>
+            </div>
+            {% endif %}
         </div>
+
     </div>
 
     <div class="right_container">
@@ -245,20 +238,23 @@
                     {% endfor %}
                 </span>
 
-                <!-- Edit Button Form -->
-                <button class="edit-btn" data-review-id="{{ review.id }}" data-review-comment="{{ review.comment }}"
-                    data-review-rating="{{ review.rating }}">
-                    Edit
-                </button>
+                <div class="row">
+                    <!-- Edit Button Form -->
+                    <button class="edit_btn" data-review-id="{{ review.id }}" data-review-comment="{{ review.comment }}"
+                        data-review-rating="{{ review.rating }}">
+                        Upravit
+                    </button>
 
-                <!-- Delete Button Form -->
-                <form action="{{ url_for('review_bp.submit_review') }}" method="POST">
-                    <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="review_id" value="{{ review.id }}">
-                    <button type="submit"
-                        onclick="return confirm('Are you sure you want to delete this review?');">Delete</button>
-                </form>
+                    <!-- Delete Button Form -->
+                    <form action="{{ url_for('review_bp.submit_review') }}" method="POST">
+                        <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="review_id" value="{{ review.id }}">
+                        <button type="submit"
+                            onclick="return confirm('Are you sure you want to delete this review?');" class="remove_btn">Odstranit</button>
+                    </form>
+                </div>
+
 
                 <!-- Modal for the specific review -->
                 <div id="reviewModal_{{ review.id }}" class="modal_recenze" style="display: none;">
@@ -300,10 +296,7 @@
             </div>
             {% endif %}
 
-            <div class="scnd_btn">
-                <button id="add_review"> Napsat recenzi </button>
-                <i class="fa-solid fa-pen"></i>
-            </div>
+            <button id="add_review" class="scnd_btn"> Napsat recenzi <i class="fa-solid fa-pen"></i> </button>
 
             <!-- The Modal for adding and editing review -->
             <div id="reviewModal" class="modal_recenze" style="display: none;">
@@ -354,7 +347,7 @@
                 });
 
                 // Open the modal and populate it with the review's details
-                document.querySelectorAll('.edit-btn').forEach(button => {
+                document.querySelectorAll('.edit_btn').forEach(button => {
                     button.addEventListener('click', function () {
                         const reviewId = this.getAttribute('data-review-id');
                         const reviewComment = this.getAttribute('data-review-comment');
