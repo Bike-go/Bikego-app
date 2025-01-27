@@ -2,47 +2,6 @@
 
 {% block content%}
 <div class="rent_back">
-    <!-- Sekce: Vrácení kol -->
-    <section>
-        <h2 class="title">Vrácení kol</h2>
-        <form method="POST" id="bikeReturnForm">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <div>
-                <label for="rental_id">Select Rental</label>
-                <select id="rental_id" name="rental_id" required>
-                    {% for rental in rentals_to_update %}
-                    <option value="{{ rental.id }}">
-                        {{ rental.instance_bike.color }} - {{ rental.user.username }} ({{ rental.start_time }})
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div>
-                <label for="end_time">End Time (YYYY-MM-DD HH:MM:SS)</label>
-                <input type="text" id="end_time" name="end_time" required>
-            </div>
-
-            <div>
-                <label for="comments">Inspection Comments (Optional)</label>
-                <textarea id="comments" name="comments" rows="4"
-                    placeholder="Enter any comments about the bike or the rental process."></textarea>
-            </div>
-
-            <button type="submit">Update Rental</button>
-        </form>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <ul>
-            {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </section>
-
     <!-- Sekce: Půjčování kol -->
     <section>
         <h2 class="title">Půjčování kol</h2>
@@ -52,16 +11,59 @@
                 <label for="reservation_id">Select Reservation</label>
                 <select id="reservation_id" name="reservation_id" required>
                     {% for reservation in reservations %}
-                    <option value="{{ reservation.id }}">
-                        {{ reservation.user.username }} - {{ reservation.instance_bike.color }} ({{
-                        reservation.instance_bike.size.value }})
+                    <option value="{{ reservation.reservation.id }}" {% if loop.first %} selected {% endif %}>
+                        {{ reservation.reservation.user.username }} -
+                        {{ reservation.reservation.instance_bike.color }}
+                        ({{ reservation.reservation.instance_bike.size.value }})
                     </option>
                     {% endfor %}
                 </select>
             </div>
 
-            <button type="submit">Create Rental</button>
+            <div id="barcodes">
+                {% for reservation in reservations %}
+                <div id="barcode_{{ reservation.reservation.id }}" class="barcode-container0" style="display:none;">
+                    <label>Barcode for Reservation #{{ reservation.reservation.id }}:</label>
+                    <div class="barcode-image">
+                        {{ reservation.barcode_svg|safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit">Vypujcit</button>
         </form>
+
+        <script>
+            // Function to show the barcode for the selected reservation
+            function showBarcodeForSelectedReservation() {
+                // Hide all barcode containers first
+                var barcodeContainers = document.querySelectorAll('.barcode-container');
+                barcodeContainers.forEach(function (container) {
+                    container.style.display = 'none';
+                });
+
+                // Get the selected reservation's ID
+                var selectedReservationId = document.getElementById('reservation_id').value;
+
+                // Show the barcode for the selected reservation
+                var selectedBarcode = document.getElementById('barcode_' + selectedReservationId);
+                if (selectedBarcode) {
+                    selectedBarcode.style.display = 'block';
+                }
+            }
+
+            // Event listener for when the user changes the selection
+            document.getElementById('reservation_id').addEventListener('change', function () {
+                showBarcodeForSelectedReservation();
+            });
+
+            // Run the function on page load to show the default selected barcode
+            document.addEventListener('DOMContentLoaded', function () {
+                showBarcodeForSelectedReservation();
+            });
+        </script>
+
 
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -73,5 +75,127 @@
         {% endif %}
         {% endwith %}
     </section>
+
+    <!-- Sekce: Vrácení kol -->
+    <section>
+        <h2 class="title">Vrácení kol</h2>
+        <form method="POST" id="bikeReturnForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <!-- Rental Selection -->
+            <div>
+                <label for="rental_id">Select Rental</label>
+                <select id="rental_id" name="rental_id" required>
+                    {% for rental in rentals_to_update %}
+                    <option value="{{ rental.rental.id }}" {% if loop.first %} selected {% endif %}>
+                        {{ rental.rental.instance_bike.color }} - {{ rental.rental.user.username }} ({{
+                        rental.rental.start_time }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Inspection Comments (Optional) -->
+            <div>
+                <label for="comments">Inspection Comments (Optional)</label>
+                <div id="comments-container">
+                    <textarea name="comments[]" rows="4"
+                        placeholder="Enter any comments about the bike or the rental process."></textarea>
+                </div>
+                <button type="button" id="add-comment-btn">+</button>
+            </div>
+
+
+            <div id="barcodes">
+                {% for rental in rentals_to_update %}
+                <div id="barcode_{{ rental.rental.id }}" class="barcode-container" style="display:none;">
+                    <label>Barcode for Reservation #{{ rental.rental.id }}:</label>
+                    <div class="barcode-image">
+                        {{ rental.barcode_svg|safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit">Vratit</button>
+        </form>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </section>
+    <script>
+        // Function to show the barcode for the selected reservation
+        function showBarcodeForSelectedReservation() {
+            // Hide all barcode containers first
+            var barcodeContainers = document.querySelectorAll('.barcode-container0');
+            barcodeContainers.forEach(function (container) {
+                container.style.display = 'none';
+            });
+
+            // Get the selected reservation's ID
+            var selectedReservationId = document.getElementById('reservation_id').value;
+
+            // Show the barcode for the selected reservation
+            var selectedBarcode = document.getElementById('barcode_' + selectedReservationId);
+            if (selectedBarcode) {
+                selectedBarcode.style.display = 'block';
+            }
+        }
+
+        // Function to show the barcode for the selected rental
+        function showBarcodeForRental() {
+            // Hide all barcode containers first
+            var barcodeContainers = document.querySelectorAll('.barcode-container');
+            barcodeContainers.forEach(function (container) {
+                container.style.display = 'none';
+            });
+
+            // Get the selected rental's ID
+            var selectedRentalId = document.getElementById('rental_id').value;
+
+            // Show the barcode for the selected rental
+            var selectedBarcode = document.getElementById('barcode_' + selectedRentalId);
+            if (selectedBarcode) {
+                selectedBarcode.style.display = 'block';
+            }
+        }
+
+        // Event listeners for dropdown changes
+        document.addEventListener('DOMContentLoaded', function () {
+            // Show the barcode for the default selected reservation on page load
+            showBarcodeForSelectedReservation();
+            showBarcodeForRental();
+
+            // Add event listeners for dropdown changes
+            var reservationDropdown = document.getElementById('reservation_id');
+            if (reservationDropdown) {
+                reservationDropdown.addEventListener('change', showBarcodeForSelectedReservation);
+            }
+
+            var rentalDropdown = document.getElementById('rental_id');
+            if (rentalDropdown) {
+                rentalDropdown.addEventListener('change', showBarcodeForRental);
+            }
+        });
+
+        // Function to add a new comment input field dynamically
+        document.getElementById('add-comment-btn').addEventListener('click', function () {
+            var commentContainer = document.getElementById('comments-container');
+            var newTextarea = document.createElement('textarea');
+            newTextarea.name = 'comments[]';
+            newTextarea.rows = 4;
+            newTextarea.placeholder = "Enter any comments about the bike or the rental process.";
+            commentContainer.appendChild(newTextarea);
+        });
+    </script>
+
 </div>
 {% endblock %}

@@ -55,78 +55,80 @@
 
     <!-- Správa novinek -->
     <section>
-    <div class="card">
-        <div class="card-header">Novinky na webu
-            <button class="btn" onclick="openNewsModal()">Přidat novinku</button>
-        </div>
+        <div class="card">
+            <div class="card-header">Novinky na webu
+                <button class="btn" onclick="openNewsModal()">Přidat novinku</button>
+            </div>
 
-        <!-- Existing News -->
-        {% if news_items %}
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Content</th>
-                    <th>Publish</th>
-                    <th>Save</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for news in news_items %}
-                <tr>
-                    <form action="{{ url_for('news_bp.manage_news') }}" method="POST" style="display:inline-block;">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                        <input type="hidden" name="action" value="edit">
-                        <input type="hidden" name="news_id" value="{{ news.id }}">
-                        <td>
-                            <input type="text" id="edit_title_{{ news.id }}" name="title" value="{{ news.title }}">
-                        </td>
-                        <td>
-                            <textarea id="edit_content_{{ news.id }}" name="content">{{ news.content }}</textarea>
-                        </td>
-                        <td>
-                            <label>
-                                <input type="checkbox" name="publish" value="1" {% if news.published_at %}checked{% endif %}>
-                                Publish
-                            </label>
-                        </td>
-                        <td>
-                            <button type="submit" class="btn">Save</button>
-                        </td>
-                    </form>
-
-                    <td>
+            <!-- Existing News -->
+            {% if news_items %}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Publish</th>
+                        <th>Save</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for news in news_items %}
+                    <tr>
                         <form action="{{ url_for('news_bp.manage_news') }}" method="POST" style="display:inline-block;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="action" value="edit">
                             <input type="hidden" name="news_id" value="{{ news.id }}">
-                            <button type="submit" class="btn"
-                                onclick="return confirm('Are you sure you want to delete this news?');">Delete</button>
+                            <td>
+                                <input type="text" id="edit_title_{{ news.id }}" name="title" value="{{ news.title }}">
+                            </td>
+                            <td>
+                                <textarea id="edit_content_{{ news.id }}" name="content">{{ news.content }}</textarea>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="publish" value="1" {% if news.published_at %}checked{%
+                                        endif %}>
+                                    Publish
+                                </label>
+                            </td>
+                            <td>
+                                <button type="submit" class="btn">Save</button>
+                            </td>
                         </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
 
-        <!-- Pagination Controls -->
-        <div class="pagination">
-            {% if current_page > 1 %}
-            <a href="?limit={{ limit }}&offset={{ (current_page - 2) * limit }}" class="btn">Previous</a>
-            {% endif %}
+                        <td>
+                            <form action="{{ url_for('news_bp.manage_news') }}" method="POST"
+                                style="display:inline-block;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="news_id" value="{{ news.id }}">
+                                <button type="submit" class="btn"
+                                    onclick="return confirm('Are you sure you want to delete this news?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-            <span>Page {{ current_page }} of {{ total_pages }}</span>
+            <!-- Pagination Controls -->
+            <div class="pagination">
+                {% if current_page > 1 %}
+                <a href="?limit={{ limit }}&offset={{ (current_page - 2) * limit }}" class="btn">Previous</a>
+                {% endif %}
 
-            {% if current_page < total_pages %}
-            <a href="?limit={{ limit }}&offset={{ current_page * limit }}" class="btn">Next</a>
+                <span>Page {{ current_page }} of {{ total_pages }}</span>
+
+                {% if current_page < total_pages %} <a href="?limit={{ limit }}&offset={{ current_page * limit }}"
+                    class="btn">Next</a>
+                    {% endif %}
+            </div>
+            {% else %}
+            <p>No news available.</p>
             {% endif %}
         </div>
-        {% else %}
-        <p>No news available.</p>
-        {% endif %}
-    </div>
-</section>
+    </section>
 
 
     <!-- Správa biků -->

@@ -54,8 +54,7 @@ def admin():
             current_page=current_page,
             total_pages=total_pages,
             limit=limit,
-        ),
-        200,
+        )
     )
 
 

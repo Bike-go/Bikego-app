@@ -149,6 +149,7 @@ CREATE TABLE IF NOT EXISTS "inspection" (
   "id" SERIAL PRIMARY KEY,
   "inspection_date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "comments" VARCHAR(45),
+  "finished" BOOLEAN NOT NULL DEFAULT FALSE,
   "user_id" UUID NOT NULL REFERENCES "user"("id") ON DELETE SET NULL,
   "rental_id" INTEGER NOT NULL REFERENCES "rental"("id") ON DELETE SET NULL
 );

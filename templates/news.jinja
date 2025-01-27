@@ -29,9 +29,9 @@
 
         <span class="pagination_info">Stránka {{ current_page }} z {{ total_pages }}</span>
 
-        {% if current_page < total_pages %}
-        <a href="?limit={{ limit }}&offset={{ current_page * limit }}" class="btn pagination_btn">Další</a>
-        {% endif %}
+        {% if current_page < total_pages %} <a href="?limit={{ limit }}&offset={{ current_page * limit }}"
+            class="btn pagination_btn">Další</a>
+            {% endif %}
     </div>
 </section>
 {% endblock %}

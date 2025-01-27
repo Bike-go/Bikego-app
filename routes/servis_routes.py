@@ -24,40 +24,42 @@ def servis():
 
     if request.method == "POST":
         inspection_id = request.form.get("inspection_id")
-        new_status = request.form.get("status")
 
-        # Validate form data
-        if not inspection_id or not new_status:
-            flash("Invalid input. Please provide all required fields.", "error")
-            return redirect(url_for("servis_bp.servis")), 400
-
-        if new_status not in valid_statuses:
-            flash("Invalid status value.", "error")
-            return redirect(url_for("servis_bp.servis")), 400
-
+        # Fetch the inspection
         inspection = Inspection.query.get(inspection_id)
         if not inspection:
             flash("Inspection not found.", "error")
             return redirect(url_for("servis_bp.servis")), 404
 
-        instance_bike = (
-            InstanceBike.query.join(Rental, Rental.Instance_Bike_id == InstanceBike.id)
-            .filter(Rental.id == inspection.Rental_id)
-            .first()
-        )
-
-        if not instance_bike:
-            flash("Associated bike not found.", "error")
-            return redirect(url_for("servis_bp.servis")), 404
-
-        # Update bike status
+        # Update the finished field for the inspection
         try:
-            instance_bike.status = new_status
+            inspection.finished = True
             db.session.commit()
-            flash("Bike status updated successfully.", "success")
+
+            # After updating, check if all inspections for the rental_id are finished
+            rental_id = inspection.Rental_id
+            instance_bike = (
+                InstanceBike.query.join(
+                    Rental, Rental.Instance_Bike_id == InstanceBike.id
+                )
+                .filter(Rental.id == rental_id)
+                .first()
+            )
+
+            if instance_bike:
+                # Check if all inspections for the rental_id are finished
+                all_finished = Inspection.query.filter_by(Rental_id=rental_id).all()
+                if all(inspection.finished for inspection in all_finished):
+                    # If all inspections are finished, update the bike status to 'available'
+                    instance_bike.status = "Available"
+                    db.session.commit()
+
+            flash("Inspection status updated successfully.", "success")
         except SQLAlchemyError as e:
             db.session.rollback()
-            flash(f"An error occurred while updating the bike status: {e}", "error")
+            flash(
+                f"An error occurred while updating the inspection status: {e}", "error"
+            )
 
         return redirect(url_for("servis_bp.servis"))
 
@@ -69,6 +71,7 @@ def servis():
     inspections = (
         Inspection.query.join(Rental, Rental.id == Inspection.Rental_id)
         .join(InstanceBike, Rental.Instance_Bike_id == InstanceBike.id)
+        .filter(Inspection.finished == False)
         .order_by(Inspection.inspection_date.desc())
         .paginate(page=page, per_page=per_page)
     )

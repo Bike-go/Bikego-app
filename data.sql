@@ -56,9 +56,9 @@ VALUES
   (NOW(), NOW() + INTERVAL '2 hours', 30, 'c9a1d5d3-3333-4c65-8355-9d54c7e34321', 1, '7a83d8b3-7777-4d8a-9bfc-6b8c98d5e123');
 
 -- Sample Data for Inspection
-INSERT INTO bikego."inspection" ("inspection_date", "comments", "User_id", "Rental_id")
+INSERT INTO bikego."inspection" ("inspection_date", "comments", "finished", "User_id", "Rental_id")
 VALUES
-  (NOW(), 'Bike in good condition.', 'c9a1d5d3-1111-4c65-8355-9d54c7e34321', 1);
+  (NOW(), 'Bike in good condition.', FALSE, 'c9a1d5d3-1111-4c65-8355-9d54c7e34321', 1);
 
 -- Sample Data for Repair
 INSERT INTO bikego."repair" ("description", "created_at", "User_id", "Inspection_id")
