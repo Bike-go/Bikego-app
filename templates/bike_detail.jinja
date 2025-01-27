@@ -5,8 +5,8 @@
     <section class="bike_preview">
         <div class="title_row">
             <h1>Detail kola</h1>
-            <div class="avalibality">
-                {% if bike_instance.status.value == 'Available' %}
+            <div class="availability">
+                {% if bike_instance.bike_instance.status.value == 'Available' %}
                 <span class="status available"><i class="fa-solid fa-circle-check"></i> Dostupné</span>
                 {% else %}
                 <span class="status unavailable"><i class="fa-solid fa-circle-xmark"></i> Nedostupné</span>
@@ -17,38 +17,56 @@
         <div class="preview_container">
             <!-- Bike Images -->
             <div class="bike_img">
-                {% if bike_instance.pictures %}
-                    {% for picture in bike_instance.pictures %}
-                    <img src="{{ picture.bike_picture_url }}" alt="{{ picture.description }}" class="bike_img">
-                    {% endfor %}
+                {% if bike_instance.bike_instance.pictures %}
+                {% for picture in bike_instance.bike_instance.pictures %}
+                <img src="{{ picture.bike_picture_url }}" alt="{{ picture.description }}" class="bike_img">
+                {% endfor %}
                 {% else %}
-                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Default Bike Image" class="bike_img">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Default Bike Image"
+                    class="bike_img">
                 {% endif %}
             </div>
 
             <!-- Bike Details -->
             <div class="preview_data">
                 <div class="title_row">
-                    <h3>{{ bike_instance.bike.model }}</h3>
-                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                    <h3>{{ bike_instance.bike_instance.bike.model }}</h3>
+
                 </div>
 
+                <p class="b_label"><strong style="display: none;">Brand:</strong> {{
+                    bike_instance.bike_instance.bike.brand }}</p>
+                <p class="b_label"><strong style="display: none;">Size:</strong> {{
+                    bike_instance.bike_instance.size.value }}</p>
+                <p class="b_label"><strong style="display: none;">Frame Material:</strong> {{
+                    bike_instance.bike_instance.bike.frame_material.value }}</p>
+
+
                 <div class="description">
-                    <p>Kolo značky {{ bike_instance.bike.brand }} nabízí rám z kvalitního materiálu 
-                    {{ bike_instance.bike.frame_material.value }}, který zajišťuje ideální kombinaci pevnosti a lehkosti.
-                    Díky brzdám typu {{ bike_instance.bike.brake_type.value }} je jízda bezpečná a pohodlná za každých 
-                    podmínek.</p>
-                    <p>Popis: {{ bike_instance.bike.description }}.</p>
+                    <p>Kolo značky {{ bike_instance.bike_instance.bike.brand }} nabízí rám z kvalitního materiálu
+                        {{ bike_instance.bike_instance.bike.frame_material.value }}, který zajišťuje ideální kombinaci
+                        pevnosti a
+                        lehkosti.
+                        Díky brzdám typu {{ bike_instance.bike_instance.bike.brake_type.value }} je jízda bezpečná a
+                        pohodlná za
+                        každých
+                        podmínek.</p>
+                    <p>Popis: {{ bike_instance.bike_instance.bike.description }}.</p>
                 </div>
 
                 <!-- Pricing -->
                 <div class="price">
-                    <p><strong>{{ bike_instance.bike.price.price_per_hour }} CZK/hodinu</strong></p>
-                    <p><strong>{{ bike_instance.bike.price.price_per_day }} CZK/den</strong></p>
+                    <p><strong>{{ bike_instance.bike_instance.bike.price.price_per_hour }} CZK/hodinu</strong></p>
+                    <p><strong>{{ bike_instance.bike_instance.bike.price.price_per_day }} CZK/den</strong></p>
                 </div>
+                {{ bike_instance.barcode_svg|safe }}
 
                 <!-- Rental Form -->
-                <form action="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=bike_instance.id) }}" method="POST" class="rental-form">
+                {% if bike_instance.bike_instance.status.value == 'Available' %}
+                <!-- Rental Form -->
+                <form
+                    action="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=bike_instance.bike_instance.id) }}"
+                    method="POST" class="rental-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="form-group">
                         <label for="reservation_start">Začátek rezervace:</label>
@@ -60,8 +78,21 @@
                     </div>
                     <button type="submit" class="btn">Rezervovat</button>
                 </form>
+                {% else %}
+                <!-- Unavailability Message -->
+                <p class="unavailable-message">Rezervace není k dispozici, protože kolo není dostupné.</p>
+                {% endif %}
             </div>
         </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
     </section>
 </main>
 {% endblock %}

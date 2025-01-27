@@ -30,7 +30,6 @@
                                 <td><input type="email" name="email" value="{{ user.email }}"></td>
                                 <td><input type="text" name="phone_number" value="{{ user.phone_number }}"></td>
                                 <td>
-                                    {{ user.role.value }}
                                     <select name="role">
                                         {% for role in ['Admin', 'Employee', 'Customer', 'Service'] %}
 
@@ -55,161 +54,255 @@
 
     <!-- Správa novinek -->
     <section>
-    <div class="card">
-        <div class="card-header">Novinky na webu
-            <button class="btn" onclick="openNewsModal()">Přidat novinku</button>
-        </div>
+        <div class="card">
+            <div class="card-header">Novinky na webu
 
-        <!-- Existing News -->
-        {% if news_items %}
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Content</th>
-                    <th>Publish</th>
-                    <th>Save</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for news in news_items %}
-                <tr>
-                    <form action="{{ url_for('news_bp.manage_news') }}" method="POST" style="display:inline-block;">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                        <input type="hidden" name="action" value="edit">
-                        <input type="hidden" name="news_id" value="{{ news.id }}">
-                        <td>
-                            <input type="text" id="edit_title_{{ news.id }}" name="title" value="{{ news.title }}">
-                        </td>
-                        <td>
-                            <textarea id="edit_content_{{ news.id }}" name="content">{{ news.content }}</textarea>
-                        </td>
-                        <td>
-                            <label>
-                                <input type="checkbox" name="publish" value="1" {% if news.published_at %}checked{% endif %}>
-                                Publish
-                            </label>
-                        </td>
-                        <td>
-                            <button type="submit" class="btn">Save</button>
-                        </td>
-                    </form>
+            </div>
 
-                    <td>
+            <!-- Existing News -->
+            {% if news_items %}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Publish</th>
+                        <th>Save</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for news in news_items %}
+                    <tr>
                         <form action="{{ url_for('news_bp.manage_news') }}" method="POST" style="display:inline-block;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="action" value="edit">
                             <input type="hidden" name="news_id" value="{{ news.id }}">
-                            <button type="submit" class="btn"
-                                onclick="return confirm('Are you sure you want to delete this news?');">Delete</button>
+                            <td>
+                                <input type="text" id="edit_title_{{ news.id }}" name="title" value="{{ news.title }}">
+                            </td>
+                            <td>
+                                <textarea id="edit_content_{{ news.id }}" name="content">{{ news.content }}</textarea>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="publish" value="1" {% if news.published_at %}checked{%
+                                        endif %}>
+                                    Publish
+                                </label>
+                            </td>
+                            <td>
+                                <button type="submit" class="btn">Save</button>
+                            </td>
                         </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
 
-        <!-- Pagination Controls -->
-        <div class="pagination">
-            {% if current_page > 1 %}
-            <a href="?limit={{ limit }}&offset={{ (current_page - 2) * limit }}" class="btn">Previous</a>
-            {% endif %}
+                        <td>
+                            <form action="{{ url_for('news_bp.manage_news') }}" method="POST"
+                                style="display:inline-block;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="news_id" value="{{ news.id }}">
+                                <button type="submit" class="btn"
+                                    onclick="return confirm('Are you sure you want to delete this news?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button class="btn" onclick="openNewsModal()">Přidat novinku</button>
 
-            <span>Page {{ current_page }} of {{ total_pages }}</span>
+            <!-- Pagination Controls -->
+            <div class="pagination">
+                {% if current_page > 1 %}
+                <a href="?limit={{ limit }}&offset={{ (current_page - 2) * limit }}" class="btn">Previous</a>
+                {% endif %}
 
-            {% if current_page < total_pages %}
-            <a href="?limit={{ limit }}&offset={{ current_page * limit }}" class="btn">Next</a>
+                <span>Page {{ current_page }} of {{ total_pages }}</span>
+
+                {% if current_page < total_pages %} <a href="?limit={{ limit }}&offset={{ current_page * limit }}"
+                    class="btn">Next</a>
+                    {% endif %}
+            </div>
+            {% else %}
+            <p>No news available.</p>
             {% endif %}
         </div>
-        {% else %}
-        <p>No news available.</p>
-        {% endif %}
+    </section>
+
+    <section>
+        <div class="card-bikes">
+            <!-- Table to List and Edit InstanceBikes -->
+            <h2>Instance Bikes</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Frame Material</th>
+                        <th>Brake Type</th>
+                        <th>Brand</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Status</th>
+                        <th>Barcode</th>
+                        <th>Actions</th>
+                    <tr>This is in wrong place</tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in instance_bikes %}
+                    <tr>
+                        <form method="POST" action="{{ url_for('admin_bp.manage_bikes') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="action" value="edit_instance">
+                            <input type="hidden" name="instance_id" value="{{ item[0].id }}">
+                            <!-- Accessing instance by index 0 -->
+
+                            <td>{{ item[1].model }}</td> <!-- Accessing bike by index 1 -->
+                            <td>{{ item[1].frame_material.value }}</td> <!-- Accessing bike frame_material -->
+                            <td>{{ item[1].brake_type.value }}</td> <!-- Accessing bike brake_type -->
+                            <td>{{ item[1].brand }}</td> <!-- Accessing bike brand -->
+                            <td>{{ item[0].size.value }}</td> <!-- Accessing instance size by index 0 -->
+                            <td><input type="text" name="color" value="{{ item[0].color }}"></td>
+                            <!-- Accessing instance color by index 0 -->
+
+                            <td>
+                                {{ item[0].status.value }}
+                            </td>
+
+
+                            <!-- Display the barcode -->
+                            <td>
+                                <div class="barcode">
+                                    <!-- If you have barcode_svg as a string, you can directly include it as SVG -->
+                                    {{ item[2] | safe }} <!-- Accessing barcode_svg by index 2 -->
+                                </div>
+                            </td>
+
+                            <td>
+                                <button type="submit" class="btn">Save</button>
+                            </td>
+                        </form>
+                        <td>
+                            <form action="{{ url_for('admin_bp.manage_bikes') }}" method="POST"
+                                style="display:inline-block;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="action" value="delete_instance">
+                                <input type="hidden" name="instance_id" value="{{ item[0].id }}">
+                                <button type="submit" class="btn"
+                                    onclick="return confirm('Are you sure you want to delete this news?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+            <!-- Form to Create a New Bike -->
+            <h2>Create New Bike</h2>
+            <form method="POST" action="{{ url_for('admin_bp.manage_bikes') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="action" value="create">
+
+                <div>
+                    <label>Model:</label>
+                    <input type="text" name="model" required>
+                </div>
+
+                <div>
+                    <label>Frame Material:</label>
+                    <select name="frame_material">
+                        {% for material in FrameMaterialEnum %}
+                        <option value="{{ material.name }}">{{ material.value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label>Brake Type:</label>
+                    <select name="brake_type">
+                        {% for brake in BrakeTypeEnum %}
+                        <option value="{{ brake.name }}">{{ brake.value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label>Brand:</label>
+                    <input type="text" name="brand" required>
+                </div>
+
+                <div>
+                    <label>Description:</label>
+                    <textarea name="description"></textarea>
+                </div>
+
+                <div>
+                    <label>Category ID:</label>
+                    <input type="number" name="Category_id" required>
+                </div>
+
+                <div>
+                    <label>Price ID:</label>
+                    <input type="number" name="Price_id" required>
+                </div>
+
+                <div>
+                    <label>Number of Instances:</label>
+                    <input type="number" name="instance_count" value="1" min="1" required>
+                </div>
+
+                <div>
+                    <label>Instance Size:</label>
+                    <select name="size">
+                        {% for size in BikeSizeEnum %}
+                        <option value="{{ size.name }}">{{ size.value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label>Instance Color:</label>
+                    <input type="text" name="color" required>
+                </div>
+
+                <button type="submit" class="btn">Create Bike</button>
+            </form>
+        </div>
+    </section>
+    <section>
+    <h3>Statistics</h3>
+
+    <div>
+        <h4>Users by Role (Donut Chart)</h4>
+        <div id="user-role-chart"></div>
+        <script>
+            var userRoleChart = {{ user_role_donut_chart|tojson }};
+            Plotly.newPlot('user-role-chart', userRoleChart.data, userRoleChart.layout);
+        </script>
+    </div>
+
+    <div>
+        <h4>Bikes by Category (Donut Chart)</h4>
+        <div id="bike-category-chart"></div>
+        <script>
+            var bikeCategoryChart = {{ bike_category_donut_chart|tojson }};
+            Plotly.newPlot('bike-category-chart', bikeCategoryChart.data, bikeCategoryChart.layout);
+        </script>
+    </div>
+
+    <div>
+        <h4>Reservations by User (Bar Chart)</h4>
+        <div id="reservation-chart"></div>
+        <script>
+            var reservationChart = {{ reservation_bar_chart|tojson }};
+            Plotly.newPlot('reservation-chart', reservationChart.data, reservationChart.layout);
+        </script>
     </div>
 </section>
 
-
-    <!-- Správa biků -->
-    <section>
-        <div class="card-bikes">
-
-            <div class="card-body table-responsive">
-                <form action="{{ url_for('admin_bp.manage_bikes') }}" method="POST" class="form-group">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <input type="hidden" name="action" value="create">
-                    <label for="model">Model:</label>
-                    <input type="text" id="model" name="model" required class="form-control">
-                    <br>
-                    <label for="frame_material">Frame Material:</label>
-                    <select id="frame_material" name="frame_material">
-                        <option value="Aluminum">Aluminum</option>
-                        <option value="Carbon">Carbon</option>
-                        <option value="Steel">Steel</option>
-                        <option value="Titanium">Titanium</option>
-                    </select>
-                    <br>
-                    <label for="brake_type">Brake Type:</label>
-                    <select id="brake_type" name="brake_type">
-                        <option value="Disc">Disc</option>
-                        <option value="Rim">Rim</option>
-                        <option value="Hydraulic">Hydraulic</option>
-                    </select>
-                    <br>
-                    <label for="brand">Brand:</label>
-                    <input type="text" id="brand" name="brand" required class="form-control">
-                    <br>
-                    <label for="description">Description:</label>
-                    <textarea id="description" name="description" class="form-control"></textarea>
-                    <br>
-                    <label for="category_id">Category ID:</label>
-                    <input type="text" id="category_id" name="category_id" required class="form-control">
-                    <br>
-                    <label for="price_id">Price ID:</label>
-                    <input type="text" id="price_id" name="price_id" required class="form-control">
-                    <br>
-                    <button type="submit" class="btn">Create Bike</button>
-                </form>
-
-                <h2>Existing Bikes</h2>
-                {% for bike in bikes %}
-                <div>
-                    <h3>{{ bike.model }}</h3>
-                    <p>{{ bike.brand }} | {{ bike.frame_material }} | {{ bike.brake_type }}</p>
-                    <form action="{{ url_for('admin_bp.manage_bikes') }}" method="POST">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                        <input type="hidden" name="action" value="edit">
-                        <input type="hidden" name="bike_id" value="{{ bike.id }}">
-                        <!-- Edit Bike Form -->
-                        <label for="edit_model_{{ bike.id }}">Model:</label>
-                        <input type="text" id="edit_model_{{ bike.id }}" name="model" value="{{ bike.model }}">
-                        <br>
-                        <label for="edit_frame_material_{{ bike.id }}">Frame Material:</label>
-                        <select id="edit_frame_material_{{ bike.id }}" name="frame_material">
-                            <option value="Aluminum" {% if bike.frame_material=='Aluminum' %}selected{% endif %}>
-                                Aluminum</option>
-                            <option value="Carbon" {% if bike.frame_material=='Carbon' %}selected{% endif %}>Carbon
-                            </option>
-                            <option value="Steel" {% if bike.frame_material=='Steel' %}selected{% endif %}>Steel
-                            </option>
-                            <option value="Titanium" {% if bike.frame_material=='Titanium' %}selected{% endif %}>
-                                Titanium</option>
-                        </select>
-                        <br>
-                        <button type="submit" class="btn">Edit</button>
-                    </form>
-                    <!-- Delete Bike Form -->
-                    <form action="{{ url_for('admin_bp.manage_bikes') }}" method="POST">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="bike_id" value="{{ bike.id }}">
-                        <button type="submit" onclick="return confirm('Are you sure you want to delete this bike?');"
-                            class="btn">Delete</button>
-                    </form>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
 
     <!-- Modal pro přidání novinky -->
     <div id="newsModal" class="modal">

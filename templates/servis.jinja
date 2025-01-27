@@ -24,16 +24,7 @@
                     <form method="POST" action="{{ url_for('servis_bp.servis') }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <input type="hidden" name="inspection_id" value="{{ data.inspection.id }}">
-                        <select style="display: none;"></select><!-- nemazat -->
-                        <select name="status">
-                            {% for status in statuses %}
-                            <option value="{{ status }}" {% if data.inspection.rental.instance_bike.status.value==status
-                                %} selected {% endif %}>
-                                {{ status }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit" class="btn btn-primary">Update Status</button>
+                        <button type="submit" class="btn btn-primary">Finished</button>
                     </form>
                 </td>
             </tr>

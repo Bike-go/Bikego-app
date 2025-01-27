@@ -13,3 +13,6 @@ gunicorn
 psycopg2
 email-validator
 python-barcode
+plotly
+pandas
+numpy

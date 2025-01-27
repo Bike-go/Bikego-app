@@ -143,10 +143,6 @@
                 <span>{{ past_reservations | length }} rezervací</span>
             </div>
             <div class="stats_row">
-                <span>Aktivní pronájmy:</span>
-                <span>{{ active_rentals | length }} pronájmů</span>
-            </div>
-            <div class="stats_row">
                 <span>Minulé pronájmy:</span>
                 <span>{{ past_rentals | length }} pronájmů</span>
             </div>
@@ -156,13 +152,14 @@
         <section class="sessions">
             <h2>Aktivní rezervace</h2>
             {% for reservation in active_reservations %}
-            <div class="session_row">
+            <a href="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=reservation.Instance_Bike_id) }}"
+                class="session_row">
                 <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální rezervace - Bike">
                 <div class="session_details">
                     <span>{{ reservation.reservation_start.strftime('%H:%M:%S') }}</span>
                     <span>{{ reservation.reservation_start.strftime('%Y-%m-%d') }}</span>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </section>
 
@@ -170,27 +167,14 @@
         <section class="sessions">
             <h2>Minulé rezervace</h2>
             {% for reservation in past_reservations %}
-            <div class="session_row">
-                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Minulá rezervace - Bike">
+            <a href="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=reservation.Instance_Bike_id) }}"
+                class="session_row">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální rezervace - Bike">
                 <div class="session_details">
-                    <span>{{ reservation.reservation_end.strftime('%H:%M:%S') }}</span>
-                    <span>{{ reservation.reservation_end.strftime('%Y-%m-%d') }}</span>
+                    <span>{{ reservation.reservation_start.strftime('%H:%M:%S') }}</span>
+                    <span>{{ reservation.reservation_start.strftime('%Y-%m-%d') }}</span>
                 </div>
-            </div>
-            {% endfor %}
-        </section>
-
-        <!-- Active Rentals Section -->
-        <section class="sessions">
-            <h2>Aktivní pronájmy</h2>
-            {% for rental in active_rentals %}
-            <div class="session_row">
-                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální pronájem - Bike">
-                <div class="session_details">
-                    <span>{{ rental.start_time.strftime('%H:%M:%S') }}</span>
-                    <span>{{ rental.start_time.strftime('%Y-%m-%d') }}</span>
-                </div>
-            </div>
+            </a>
             {% endfor %}
         </section>
 
@@ -198,13 +182,14 @@
         <section class="sessions">
             <h2>Minulé pronájmy</h2>
             {% for rental in past_rentals %}
-            <div class="session_row">
-                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Minulý pronájem - Bike">
+            <a href="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=rental.Instance_Bike_id) }}"
+                class="session_row">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální rezervace - Bike">
                 <div class="session_details">
-                    <span>{{ rental.end_time.strftime('%H:%M:%S') }}</span>
+                    <span>{{ rental.start_time.strftime('%H:%M:%S') }}</span>
                     <span>{{ rental.end_time.strftime('%Y-%m-%d') }}</span>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </section>
 

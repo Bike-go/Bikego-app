@@ -165,6 +165,53 @@
                 {% endfor %}
             </form>
         </div>
+    </div>
+
+    <section class="pujcovna_main">
+        <div class="pujcovna_search_row">
+            <div class="search_bar">
+                <form method="get" action="{{ url_for('rentals_bp.rentals') }}" class="search_form">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="search" class="text" id="search-input" placeholder="Vyhledávání"
+                        value="{{ selected_filters.search or '' }}">
+                    <button type="submit" class="search_button">Search</button>
+
+                    <!-- Retain other filter parameters -->
+                    {% for key, value in selected_filters.items() if key != 'search' %}
+                    {% if value %}
+                    {% if value is iterable and value is not string %}
+                    {% for val in value %}
+                    <input type="hidden" name="{{ key }}" value="{{ val }}">
+                    {% endfor %}
+                    {% else %}
+                    <input type="hidden" name="{{ key }}" value="{{ value }}">
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </form>
+            </div>
+
+            <form method="get" action="{{ url_for('rentals_bp.rentals') }}" class="sorting_form">
+                <select name="sort" onchange="this.form.submit()" class="sorting_dropdown">
+                    {% for option in sort_options %}
+                    <option value="{{ option.value }}" {% if option.value==sort_option %}selected{% endif %}>
+                        {{ option.label }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% for key, value in selected_filters.items() %}
+                {% if value %}
+                {% if value is iterable and value is not string %}
+                {% for val in value %}
+                <input type="hidden" name="{{ key }}" value="{{ val }}">
+                {% endfor %}
+                {% else %}
+                <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+            </form>
+        </div>
 
         <div class="bike_collection">
             {% for instance in bike_instances %}
@@ -186,7 +233,6 @@
                         <p class="b_label"><strong style="display: none;">Size:</strong> {{ instance.size.value }}</p>
                         <p class="b_label"><strong style="display: none;">Frame Material:</strong> {{
                             instance.bike.frame_material.value }}</p>
-
                     </div>
                     <h4>{{ instance.bike.model }}</h4>
                 </a>

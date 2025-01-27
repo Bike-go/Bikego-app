@@ -48,5 +48,30 @@
         aria-label="My Account">
         <i class="fa-regular fa-user"></i>
     </a>
+    <script>
+        function toggleMenu() {
+            var overlay = document.getElementById('overlay');
+            var sideMenu = document.getElementById('sideMenu');
+            var btnMenu = document.getElementById('btn_menu');
+            var icon = btnMenu.querySelector('i');
+
+            // Toggle the side menu and overlay visibility
+            sideMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+
+            // Toggle the aria-expanded attribute
+            var ariaExpanded = btnMenu.getAttribute('aria-expanded') === 'true' || false;
+            btnMenu.setAttribute('aria-expanded', !ariaExpanded);
+
+            // Toggle the menu icon (e.g., change to a close icon when active)
+            if (sideMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times'); // Assuming you have a 'times' icon for close
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+    </script>
 </header>
 {% endblock %}
