@@ -874,10 +874,6 @@ footer nav {
     justify-content: space-between;
     padding-left: 20px;
     margin: 0;
-    border-radius: 8px;
-}
-.scnd_btn:hover {
-    background-color: var(--scnd_btn_color);
 }
 
 .filter_section .scnd_btn{
@@ -942,6 +938,18 @@ footer nav {
     border-style: none;
 }
 
+.pujcovna_search_row .search_bar .search_button{
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    color: var(--gray_btn);
+}
+
+.search_button .fa-solid{
+    margin: 0;
+}
+
 .bike_collection {
     width: 100%;
     display: flex;
@@ -950,7 +958,6 @@ footer nav {
     gap: 20px;
 
 }
-
 
 
 .bike {
@@ -1033,34 +1040,14 @@ footer nav {
     color: var(--white);
 }
 
-#sorting_btn {
-    position: relative;
-}
-
-.sorting-options {
-    position: absolute;
-    top: 40px;
-    left: 0;
+.sorting_dropdown{
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    color: var(--white);
     background-color: var(--main_color);
-    border: 1px solid #ccc;
-    list-style: none;
-    padding: 10px 0;
-    margin: 0;
-    width: 200px;
-    z-index: 10;
-    display: none;
-    /* Skryté ve výchozím stavu */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.sorting-options li {
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.sorting-options li:hover {
-    opacity: 0.5;
+    padding: 10px 8px;
+    border-radius: 8px;
 }
 
 /*Pujcovna page end*/
@@ -1488,31 +1475,11 @@ table td {
     margin-bottom: 40px;
 }
 
-#rentedBikesTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-#rentedBikesTable th, #rentedBikesTable td {
-    border: 1px solid #dee2e6;
-    padding: 10px;
-    text-align: left;
-}
-
-#rentedBikesTable th {
-    background-color: #e9ecef;
-    font-weight: bold;
-}
-
-#rentedBikesTable td {
-    background-color: var(--white);
-}
-
 /* Formulář pro vrácení kola */
-#bikeReturnForm {
-    display: grid;
-    grid-template-columns: 1fr;
+#bikeReturnForm, #rentedBikesTable {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
     max-width: 500px;
     margin: 0 auto;
@@ -1523,14 +1490,21 @@ table td {
     flex-direction: column;
 }
 
-#bikeReturnForm label {
+#bikeReturnForm label, #rentedBikesTable label {
     font-size: 1rem;
     margin-bottom: 8px;
 }
 
+#bikeReturnForm select,#rentedBikesTable select {
+    width: 500px;
+}
+
 #bikeReturnForm input,
 #bikeReturnForm select,
-#bikeReturnForm textarea {
+#bikeReturnForm textarea,
+#rentedBikesTable input,
+#rentedBikesTable select,
+#rentedBikesTable textarea{
     padding: 10px;
     border: 1px solid #ced4da;
     border-radius: 5px;
@@ -1539,6 +1513,7 @@ table td {
 
 #bikeReturnForm textarea {
     resize: vertical;
+    width: 480px;
 }
 
 #bikeReturnForm .btn {
@@ -1561,28 +1536,6 @@ table td {
     margin-bottom: 40px;
 }
 
-/* Tabulka pro půjčování kol */
-#orderedBikesTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-#orderedBikesTable th, #orderedBikesTable td {
-    border: 1px solid #dee2e6;
-    padding: 10px;
-    text-align: left;
-}
-
-#orderedBikesTable th {
-    background-color: #e9ecef;
-    font-weight: bold;
-}
-
-#orderedBikesTable td {
-    background-color: #ffffff;
-}
-
 /* Formulář pro půjčení kola */
 #bikeRentalForm {
     display: grid;
@@ -1597,35 +1550,23 @@ table td {
     flex-direction: column;
 }
 
-#bikeRentalForm label {
-    font-size: 1rem;
-    margin-bottom: 8px;
-}
-
-#bikeRentalForm input,
-#bikeRentalForm select {
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-#bikeRentalForm .btn {
-    background-color: var(--main_color);
-    color: white;
-    padding: 10px 20px;
+#add-comment-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
+    background-color: var(--main_color);
+    color: var(--white);
+    padding: 8px 15px;
+    font-size: 24px;
+    border-radius: 8px;
+    margin: auto;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-#bikeRentalForm .btn:hover {
+#add-comment-btn:hover{
     background-color: var(--scnd_btn_color);
 }
-
-
 /*rent_back_bike end*/
 
 /*Servis*/
@@ -1825,28 +1766,13 @@ table td {
 
     }
 
-    .search_bar {
-        color: var(--gray_btn);
-        border-style: solid;
-        border-radius: 5px;
-        border-width: 1px;
-        padding: 5px 10px 5px 10px;
-        margin: auto;
-        margin-top: 3px;
-        margin-bottom: 3px;
-        width: 85%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    .pujcovna_search_row{
+        margin-top: 10px;
     }
 
     .search_bar input {
-        text-decoration: none;
-        border-style: none;
-        color: var(--gray_btn);
         font-weight: 400;
         font-size: 16px;
-        width: 90%;
         padding: 3px;
     }
 
@@ -2215,6 +2141,38 @@ table td {
 
     .update-status {
         padding: 6px 12px; /* Menší tlačítko pro mobilní verzi */
+    }
+
+        /*rent back responzive*/
+    #bikeReturnForm .btn, #rentedBikesTable .btn {
+        padding: 10px 8px;
+        width: 80px;
+        font-size: 16px;
+        font-weight: 600;
+
+    }
+
+    #bikeReturnForm select,#rentedBikesTable select {
+        width: 300px;
+    }
+
+    #bikeReturnForm label{
+        margin-left: 20px;
+    }
+
+    #barcodes{
+        display: none;
+    }
+    
+    #bikeReturnForm textarea{
+        width: 300px;
+    }
+
+    #bikeReturnForm, #rentedBikesTable {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
     }
 
 }
