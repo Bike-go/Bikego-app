@@ -61,8 +61,6 @@ def rentals():
     # Apply sorting
     if sort_option == "name":
         query = query.order_by(Bike.model)
-    elif sort_option == "price":
-        query = query.order_by(InstanceBike.price)  # Assuming `price` is a field
     elif sort_option == "availability":
         query = query.order_by(
             InstanceBike.status
@@ -110,7 +108,6 @@ def rentals():
         sort_option=sort_option,
         sort_options=[
             {"value": "name", "label": "Název"},
-            {"value": "price", "label": "Cena"},
             {"value": "availability", "label": "Dostupnost"},
         ],
     )

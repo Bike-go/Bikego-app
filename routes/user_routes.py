@@ -360,18 +360,13 @@ def profile():
         .limit(5)
         .all()
     )
-    past_reservations = (
-        db.session.query(Reservation)
-        .filter(
-            Reservation.User_id == user.id,
-            Reservation.ready_to_pickup == False,
-        )
-        .limit(5)
-        .all()
-    )
-    past_rentals = (
+
+    history_rentals = (
         db.session.query(Rental)
-        .filter(Rental.User_id == user.id, Rental.end_time != Rental.start_time)
+        .filter(
+            Rental.User_id == user.id,
+            Rental.end_time != Rental.start_time,
+        )
         .limit(5)
         .all()
     )
@@ -390,8 +385,7 @@ def profile():
                     return render_profile_page(
                         user,
                         active_reservations,
-                        past_reservations,
-                        past_rentals,
+                        history_rentals,
                         reviews,
                         user_form,
                         csrf_token_from_jwt,
@@ -403,8 +397,7 @@ def profile():
                     return render_profile_page(
                         user,
                         active_reservations,
-                        past_reservations,
-                        past_rentals,
+                        history_rentals,
                         reviews,
                         user_form,
                         csrf_token_from_jwt,
@@ -427,8 +420,7 @@ def profile():
                 return render_profile_page(
                     user,
                     active_reservations,
-                    past_reservations,
-                    past_rentals,
+                    history_rentals,
                     reviews,
                     user_form,
                     csrf_token_from_jwt,
@@ -462,8 +454,7 @@ def profile():
         return render_profile_page(
             user,
             active_reservations,
-            past_reservations,
-            past_rentals,
+            history_rentals,
             reviews,
             user_form,
             csrf_token_from_jwt,
@@ -473,8 +464,7 @@ def profile():
     return render_profile_page(
         user,
         active_reservations,
-        past_reservations,
-        past_rentals,
+        history_rentals,
         reviews,
         user_form,
         csrf_token_from_jwt,
@@ -484,8 +474,7 @@ def profile():
 def render_profile_page(
     user,
     active_reservations,
-    past_reservations,
-    past_rentals,
+    history_rentals,
     reviews,
     user_form,
     csrf_token_from_jwt,
@@ -500,8 +489,7 @@ def render_profile_page(
         title=title,
         page=page,
         active_reservations=active_reservations,
-        past_reservations=past_reservations,
-        past_rentals=past_rentals,
+        history_rentals=history_rentals,
         reviews=reviews,
         form=user_form,
         csrf_token=csrf_token_from_jwt,

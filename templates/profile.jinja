@@ -3,8 +3,7 @@
 <div class="profile">
     <div class="left_container">
 
-        <form enctype="multipart/form-data" method="POST" class="login"
-            action="{{ url_for('user_bp.profile') }}">
+        <form enctype="multipart/form-data" method="POST" class="login" action="{{ url_for('user_bp.profile') }}">
             <div class="form-group" style="display: none;">
                 <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
             </div>
@@ -103,10 +102,10 @@
                     <button type="submit" class="sign-out">Smazat profil</button>
                     <input type="password" name="password" class="form-control" placeholder="Zadejte své heslo"
                         required />
-                    
+
                 </form>
 
-            </div>   
+            </div>
 
         </form>
 
@@ -134,27 +133,27 @@
         <!-- Stats Section -->
         <section class="stats">
             <h2>Moje statistiky</h2>
+
+            <!-- Rezervace -->
             <div class="stats_row">
-                <span>Aktivní rezervace:</span>
+                <span>Rezervace k vyzvednutí:</span>
                 <span>{{ active_reservations | length }} rezervací</span>
             </div>
+
+            <!-- Historie -->
             <div class="stats_row">
-                <span>Minulé rezervace:</span>
-                <span>{{ past_reservations | length }} rezervací</span>
-            </div>
-            <div class="stats_row">
-                <span>Minulé pronájmy:</span>
-                <span>{{ past_rentals | length }} pronájmů</span>
+                <span>Historie pronájmů:</span>
+                <span>{{ history_rentals | length }} pronájmů</span>
             </div>
         </section>
 
-        <!-- Active Reservations Section -->
+        <!-- Reservations Section -->
         <section class="sessions">
-            <h2>Aktivní rezervace</h2>
+            <h2>Rezervace k vyzvednutí</h2>
             {% for reservation in active_reservations %}
             <a href="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=reservation.Instance_Bike_id) }}"
                 class="session_row">
-                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální rezervace - Bike">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Rezervace">
                 <div class="session_details">
                     <span>{{ reservation.reservation_start.strftime('%H:%M:%S') }}</span>
                     <span>{{ reservation.reservation_start.strftime('%Y-%m-%d') }}</span>
@@ -163,28 +162,13 @@
             {% endfor %}
         </section>
 
-        <!-- Past Reservations Section -->
+        <!-- Rentals Section -->
         <section class="sessions">
-            <h2>Minulé rezervace</h2>
-            {% for reservation in past_reservations %}
-            <a href="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=reservation.Instance_Bike_id) }}"
-                class="session_row">
-                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální rezervace - Bike">
-                <div class="session_details">
-                    <span>{{ reservation.reservation_start.strftime('%H:%M:%S') }}</span>
-                    <span>{{ reservation.reservation_start.strftime('%Y-%m-%d') }}</span>
-                </div>
-            </a>
-            {% endfor %}
-        </section>
-
-        <!-- Past Rentals Section -->
-        <section class="sessions">
-            <h2>Minulé pronájmy</h2>
-            {% for rental in past_rentals %}
+            <h2>Historie pronájmů</h2>
+            {% for rental in history_rentals %}
             <a href="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=rental.Instance_Bike_id) }}"
                 class="session_row">
-                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Aktuální rezervace - Bike">
+                <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="Pronájem">
                 <div class="session_details">
                     <span>{{ rental.start_time.strftime('%H:%M:%S') }}</span>
                     <span>{{ rental.end_time.strftime('%Y-%m-%d') }}</span>
@@ -192,6 +176,7 @@
             </a>
             {% endfor %}
         </section>
+
 
         <section class="reviews">
             <h2>Moje recenze</h2>
@@ -235,8 +220,8 @@
                         <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="review_id" value="{{ review.id }}">
-                        <button type="submit"
-                            onclick="return confirm('Are you sure you want to delete this review?');" class="remove_btn">Odstranit</button>
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this review?');"
+                            class="remove_btn">Odstranit</button>
                     </form>
                 </div>
 
