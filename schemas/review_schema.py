@@ -1,8 +1,7 @@
-from marshmallow import fields, validate, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, validate, EXCLUDE
 from models.review_model import Review
 
-class ReviewSchema(SQLAlchemyAutoSchema):
+class ReviewSchema(Schema):
     class Meta:
         model = Review
         load_instance = True

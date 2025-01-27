@@ -7,79 +7,71 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Job 1: Setup Environment
-  setup:
-    name: Setup Environment Variables
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Set Deployment Variables
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "IMAGE=bikego-main" >> $GITHUB_ENV
-          for var in HOST PORT FLASK_ENV DB_USER DB_PASSWORD DB_HOST DB_PORT DB_NAME DB_SCHEMA_NAME JWT_SECRET_KEY IMGUR_CLIENT_ID SENDER_EMAIL SENDER_PASSWORD; do
-            echo "$var=${{ secrets[$var] }}" >> $GITHUB_ENV
-          done
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  # Job 2: Build and Push Docker Image
-  build:
-    name: Build and Push Docker Image
-    runs-on: ubuntu-latest
-    needs: setup
-
-    steps:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Image
+      - name: Build and Push Docker Image
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
-          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
-          docker build -t bikego/${{ env.IMAGE }}:${{ github.ref_name }}-$SHORT_SHA .
+          docker build -t selecro/bikego-main:${{ github.ref_name }}-${SHORT_SHA} -t selecro/bikego-main:latest .
+          docker push selecro/bikego-main:${{ github.ref_name }}-${SHORT_SHA}
+          docker push selecro/bikego-main:latest
       
-      - name: Push Docker Image
-        run: |
-          docker push bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
-
-  # Job 3: Setup VPN Connection
-  vpn_setup:
-    name: Establish VPN Connection
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
       - name: Install OpenVPN
-        run: sudo apt-get update && sudo apt-get install openvpn -y
-
-      - name: Configure and Connect to OpenVPN
         run: |
-          echo "${{ secrets.OPENVPN_CONFIG }}" > ~/openvpn-config.ovpn
-          echo "${{ secrets.OPENVPN_PASSWORD }}" > ~/vpn-auth.txt
-          sudo openvpn --config ~/openvpn-config.ovpn --auth-user-pass ~/vpn-auth.txt --daemon
+          sudo apt-get update
+          sudo apt-get install openvpn -y
 
-      - name: Ensure VPN Connection
+      - name: Save OpenVPN Configuration
         run: |
-          for i in {1..10}; do
-            if pgrep -x "openvpn" > /dev/null; then break; fi
-            echo "Waiting for VPN connection..." && sleep 3
-          done
+          echo "${{ secrets.OPENVPN_CONFIG }}" > ./openvpn-config.ovpn
 
-  # Job 4: Deploy Application to Server
-  deploy:
-    name: Deploy Application
-    runs-on: ubuntu-latest
-    needs: vpn_setup
+      - name: Connect VPN
+        uses: golfzaptw/action-connect-ovpn@master
+        id: connect_vpn
+        with:
+          PING_URL: '10.8.0.1'
+          FILE_OVPN: './openvpn-config.ovpn'
+          SECRET: ${{ secrets.OPENVPN_PASSWORD }}
+          
+      - name: Check Connect VPN
+        run: echo ${{ steps.connect_vpn.outputs.STATUS }}
 
-    steps:
-      - name: SSH Deploy and Run Docker Container
+      - name: Check Connection Status
+        run: |
+          if ! pgrep -x "openvpn"; then
+            echo "OpenVPN connection failed after multiple attempts."
+            exit 1  # Fail the job if connection failed
+          fi
+
+      - name: Verify Server Accessibility
+        run: |
+          echo "Pinging the server to verify network connectivity..."
+          ping -c 4 ${{ secrets.SERVER_IP }}  # Ping the server to check connectivity
+      
+      - name: Deploy Files via SFTP
+        uses: Dylan700/sftp-upload-action@v1.2.3
+        with:
+          server: ${{ secrets.SERVER_IP }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          uploads: ./ => bikego
+
+      - name: Deploy and Start Docker Compose
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -87,37 +79,30 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            docker login || true
-            docker pull bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
-            docker stop ${{ env.IMAGE }} || true
-            docker rm ${{ env.IMAGE }} || true
-            docker run -d --name ${{ env.IMAGE }} \
-              -e HOST="${{ env.HOST }}" \
-              -e PORT="${{ env.PORT }}" \
-              -e FLASK_ENV="${{ env.FLASK_ENV }}" \
-              -e DB_USER="${{ env.DB_USER }}" \
-              -e DB_PASSWORD="${{ env.DB_PASSWORD }}" \
-              -e DB_HOST="${{ env.DB_HOST }}" \
-              -e DB_PORT="${{ env.DB_PORT }}" \
-              -e DB_NAME="${{ env.DB_NAME }}" \
-              -e DB_SCHEMA_NAME="${{ env.DB_SCHEMA_NAME }}" \
-              -e JWT_SECRET_KEY="${{ env.JWT_SECRET_KEY }}" \
-              -e IMGUR_CLIENT_ID="${{ env.IMGUR_CLIENT_ID }}" \
-              -e SENDER_EMAIL="${{ env.SENDER_EMAIL }}" \
-              -e SENDER_PASSWORD="${{ env.SENDER_PASSWORD }}" \
-              -p ${{ secrets.DEFAULT_PORT }}:${{ secrets.DEFAULT_PORT }} \
-              bikego/${{ env.IMAGE }}:${{ github.ref_name }}-${{ env.SHORT_SHA }}
-            docker update --restart unless-stopped ${{ env.IMAGE }}
+            > ~/bikego/.env
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ~/bikego/.env
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ~/bikego/.env
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ~/bikego/.env
+            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> ~/bikego/.env
+            echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> ~/bikego/.env
+            echo "POSTGRES_SCHEMA=${{ secrets.POSTGRES_SCHEMA }}" >> ~/bikego/.env
+            echo "PGADMIN_DEFAULT_EMAIL=${{ secrets.PGADMIN_DEFAULT_EMAIL }}" >> ~/bikego/.env
+            echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> ~/bikego/.env
+            echo "FLASK_APP=${{ secrets.FLASK_APP }}" >> ~/bikego/.env
+            echo "FLASK_ENV=${{ secrets.FLASK_ENV }}" >> ~/bikego/.env
+            echo "FLASK_HOST=${{ secrets.FLASK_HOST }}" >> ~/bikego/.env
+            echo "FLASK_PORT=${{ secrets.FLASK_PORT }}" >> ~/bikego/.env
+            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> ~/bikego/.env
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> ~/bikego/.env
+            echo "IMGUR_CLIENT_ID=${{ secrets.IMGUR_CLIENT_ID }}" >> ~/bikego/.env
+            echo "IMGUR_CLIENT_SECRET=${{ secrets.IMGUR_CLIENT_SECRET }}" >> ~/bikego/.env
+            echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" >> ~/bikego/.env
+            echo "SENDER_PASSWORD=${{ secrets.SENDER_PASSWORD }}" >> ~/bikego/.env
+            echo "URL_IN_EMAIL=${{ secrets.URL_IN_EMAIL }}" >> ~/bikego/.env
+            cd ~/bikego
+            docker-compose down
+            docker-compose up -d --build
 
-  # Job 5: Cleanup Resources
-  cleanup:
-    name: Cleanup VPN and Temporary Files
-    runs-on: ubuntu-latest
-    needs: deploy
-
-    steps:
-      - name: Terminate OpenVPN Connection
-        run: sudo pkill -f openvpn || true
-
-      - name: Remove Temporary Files
-        run: rm -rf ~/openvpn-config.ovpn ~/vpn-auth.txt ~/.ssh
+      - name: Clean Up Temporary Files
+        run: |
+          rm -rf ~/openvpn-config.ovpn ~/.ssh

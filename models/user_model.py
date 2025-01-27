@@ -1,12 +1,22 @@
 from datetime import datetime
+import uuid
 from sqlalchemy import Column, Enum, String, Boolean, TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from db import db
+from enum import Enum as PyEnum
+from config import Config
+
+class UserRoleEnum(PyEnum):
+    Admin = 'Admin'
+    Employee = 'Employee'
+    Customer = 'Customer'
+    Service = 'Service'
 
 class User(db.Model):
-    __tablename__ = "User"
-    id = Column(UUID, primary_key=True)
+    __tablename__ = "user"
+    __table_args__ = {'schema': Config.POSTGRES_SCHEMA}
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = Column(String(45), nullable=False)
     password_hash = Column(String(255), nullable=False)
     email = Column(String(100), nullable=False)
@@ -17,7 +27,7 @@ class User(db.Model):
     picture_delete_hash = Column(String(255))
     email_verified = Column(Boolean, default=False, nullable=False)
     darkmode = Column(Boolean, default=False, nullable=False)
-    role = Column(Enum('Admin', 'Employee', 'Customer'), nullable=False)
+    role = Column(Enum(UserRoleEnum), nullable=False)
 
     news = relationship("News", back_populates="author")
     reservations = relationship("Reservation", back_populates="user")

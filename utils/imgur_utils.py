@@ -1,10 +1,8 @@
-import os
 import requests
-from dotenv import load_dotenv
+from config import Config
 
-load_dotenv()
+IMGUR_CLIENT_ID = Config.IMGUR_CLIENT_ID
 
-IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
 
 def upload_image_to_imgur(image_file):
     imgur_url = "https://api.imgur.com/3/image"
@@ -15,6 +13,7 @@ def upload_image_to_imgur(image_file):
         raise Exception("Failed to upload image to Imgur.")
 
     return response.json()["data"]["link"], response.json()["data"]["deletehash"]
+
 
 def delete_image_from_imgur(delete_hash):
     imgur_url = f"https://api.imgur.com/3/image/{delete_hash}"

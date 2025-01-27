@@ -1,8 +1,7 @@
-from marshmallow import fields, validate, EXCLUDE
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, validate, EXCLUDE
 from models.bike_model import Bike
 
-class BikeSchema(SQLAlchemyAutoSchema):
+class BikeSchema(Schema):
     class Meta:
         model = Bike
         load_instance = True

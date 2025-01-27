@@ -1,0 +1,77 @@
+{% block header %}
+<header class="pc" role="banner">
+    <!-- Logo -->
+    <a href="{{ url_for('home_bp.home') }}" class="logo_link">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BikeGo Logo" class="logo_image">
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav" role="navigation" aria-label="Main Navigation">
+        <a href="{{ url_for('home_bp.home') }}" class="nav-link">Domů</a>
+        <a href="{{ url_for('news_bp.news') }}" class="nav-link">Novinky</a>
+        <a href="{{ url_for('rentals_bp.rentals') }}" class="nav-link">Půjčovna</a>
+        <a href="{{ url_for('photos_bp.photos') }}" class="nav-link">Foto</a>
+        <a href="{{ url_for('contacts_bp.contacts') }}" class="nav-link">Kontakt</a>
+    </nav>
+
+    <!-- Account Button -->
+    <a href="{{ url_for('user_bp.profile') if is_logged_in else url_for('user_bp.login') }}" class="acc_btn"
+        aria-label="My Account">
+        Můj účet
+    </a>
+</header>
+
+<!-- Mobile Header -->
+<header class="mobile" role="banner">
+    <!-- Overlay for menu toggle -->
+    <div class="overlay" id="overlay" onclick="toggleMenu()" aria-hidden="true"></div>
+
+    <!-- Mobile Side Menu -->
+    <div class="side_menu" id="sideMenu" role="navigation" aria-label="Mobile Navigation">
+            <a href="{{ url_for('home_bp.home') }}" class="nav-link">Domů</a>
+            <a href="{{ url_for('news_bp.news') }}" class="nav-link">Novinky</a>
+            <a href="{{ url_for('rentals_bp.rentals') }}" class="nav-link">Půjčovna</a>
+            <a href="{{ url_for('photos_bp.photos') }}" class="nav-link">Foto</a>
+            <a href="{{ url_for('contacts_bp.contacts') }}" class="nav-link">Kontakt</a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <div class="mobile-menu-toggle">
+        <button id="btn_menu" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <p class="title">BikeGO</p>
+    </div>
+
+    <!-- Account Button -->
+    <a href="{{ url_for('user_bp.profile') if is_logged_in else url_for('user_bp.login') }}" class="acc_btn"
+        aria-label="My Account">
+        <i class="fa-regular fa-user"></i>
+    </a>
+    <script>
+        function toggleMenu() {
+            var overlay = document.getElementById('overlay');
+            var sideMenu = document.getElementById('sideMenu');
+            var btnMenu = document.getElementById('btn_menu');
+            var icon = btnMenu.querySelector('i');
+
+            // Toggle the side menu and overlay visibility
+            sideMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+
+            // Toggle the aria-expanded attribute
+            var ariaExpanded = btnMenu.getAttribute('aria-expanded') === 'true' || false;
+            btnMenu.setAttribute('aria-expanded', !ariaExpanded);
+
+            // Toggle the menu icon (e.g., change to a close icon when active)
+            if (sideMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times'); // Assuming you have a 'times' icon for close
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+    </script>
+</header>
+{% endblock %}
