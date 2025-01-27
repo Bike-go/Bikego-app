@@ -182,32 +182,28 @@ footer nav {
     flex-direction: column;
 }
 
-.container_2 .Kontakt {
-    display: flex;
-    align-items: center;
-    width: 220px;
-    margin: 5px;
-    font-size: 16px;
-
-}
-
-.kontakt_btn {
+.container_2 .legal-links {
     position: absolute;
     right: 220px;
-    text-transform: uppercase;
-    font-size: 24px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    background: none;
-    padding-top: 10px;
+    gap: 5px;
+
 }
 
-.kontakt_btn a {
+.container_2 .legal-links a{
+    font-size: 16px;
+    font-weight: 400;
     text-decoration: none;
     text-transform: none;
-    font-weight: 400;
 }
+
+.container_2 .contact-info{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 
 .down_container {
     display: flex;
@@ -497,7 +493,8 @@ footer nav {
 /* Profile page*/
 .profile {
     display: flex;
-    width: 80%;
+    width: 85%;
+    gap: 1rem;
     margin: auto;
     padding-top: 40px;
 }
@@ -507,39 +504,30 @@ footer nav {
     flex-direction: column;
     align-items: center;
     width: 40%;
-}
-
-.left_container .user_details {
-    padding: 0;
-}
-
-.left_container .user_details .login{
-    width: 90%;
+    border: 1px solid #ddd; /* Subtle border for better focus */
+    border-radius: 10px; /* Rounded corners for a modern look */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    padding: 15px;
 }
 
 
 .left_container .user_icon {
+    margin: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--scnd_btn_color);
     border-radius: 50%;
-    width: 400px;
-    height: 400px;
+    width: 350px;
+    height: 350px;
+    margin-bottom: 15px;
 }
 
 .user_icon img {
-    width: 220px;
-    height: 220px;
     border-radius: 50%;
-}
-
-
-.left_container .user_row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px;
+    width: 350px;
+    height: 350px;
+    object-fit: cover;
 }
 
 .left_container .user_row .flag {
@@ -593,104 +581,127 @@ footer nav {
 }
 
 .left_container .login{
-    text-align: center;
-}
-
-.left_container .input-group, .left_container .input-group-image{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    margin: 10px 0;
 }
 
-.row_reg .create{
+.left_container .input-group{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.create{
+    margin: auto;
     cursor: pointer;
     border: none;
     background-color: var(--main_color);
     color: var(--white);
     font-weight: 600;
     font-size: 14px;
-    padding:18px 28px;
     border-radius: 8px;
+    padding: 12px;
 }
 
-.row_reg .create:hover{
+.create:hover{
     background-color: var(--scnd_btn_color);
 }
 
-.input-group input, .input-group-image input{
+.input-group input{
     border: none;
     font-size: 16px;
-    text-align: center;
 }
 
-.input-group .form-label, .input-group-image .form-label{
+.input-group .form-label{
     font-weight: 600;
     font-size: 20px;
 }
 
+
 .left_container .user_row{
     display: flex;
     flex-direction: column;
-    padding: 0;
-    margin: 10px 0;
-}
-
-.left_container .user_row .scnd_btn{
     margin: 0;
-    padding: 8px;
-    font-weight: 600;
-    font-size: 18px;
-    width: auto;
-    margin: 5px 0;
+    padding: 0;
 }
 
-.left_container .user_row .scnd_btn button{
-    font-weight: 600;
-    font-size: 14px;
+.left_container .support_menu{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.left_container .support_menu .support_item{
+    width: 150px;
     display: flex;
     justify-content: center;
-}
-
-.left_container .user_row .delete_profile {
-    display: flex;
-    flex-direction: column;
-}
-
-.delete_profile input{
-    width: 150px;
-}
-
-.delete_profile button{
-    background-color: var(--scnd_btn_color);
-}
-
-/* Buttons */
-.button_group {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 15px;
-    width: 100%;
-    margin-top: 20px;
 }
 
-.button_group .btn {
-    background-color: var(--scnd_btn_color);
-    color: var(--white);
-    font-size: 1rem;
-    font-weight: bold;
+.support_item a {
+    text-decoration: none;
+    font-size: 18px;
+    color: var(--scnd_btn_color);
+}
+
+.support_item a:hover{
+    font-size: 22px;
+}
+
+.tools_menu {
+    display: flex;
+    gap: 8px;
+    max-width: 460px;
+    margin: 0 auto; /* Center the menu */
+    padding: 10px;
+}
+
+.tools_menu .action{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.tools_menu .btn,
+.tools_menu .sign-out {
     padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
     border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    width: 150px;
+    height: 60px;
 }
 
-.button_group .btn:hover {
-    background-color: var(--main_color);
+.tools_menu .btn {
+    background-color: var(--gray_btn);
+    color: #fff;
+}
+
+.tools_menu .btn:hover {
+    background-color: #6e6e6e;
+}
+
+.tools_menu .sign-out {
+    background-color: #dc3545;
+    color: #fff;
+}
+.tools_menu .sign-out:hover {
+    background-color: #a71d2a;
+}
+
+.tools_menu .form-control::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+.sign-out{
+    cursor: pointer;
+    background-color: #b93e3e;
+    color: var(--white);
+    font-size: 16px;
 }
 
 /* Modal Styles */
@@ -734,7 +745,7 @@ footer nav {
 }
 
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 
@@ -745,6 +756,10 @@ footer nav {
     gap: 2rem;
     padding: 1rem;
     width: 60%;
+    border: 1px solid #ddd; /* Subtle border for better focus */
+    border-radius: 10px; /* Rounded corners for a modern look */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    padding: 15px;
 }
 
 .profile .right_container section {
@@ -761,6 +776,27 @@ footer nav {
     width: 100%;
     font-weight: 400;
     font-size: 28px;
+}
+
+.profile .right_container .edit_btn, .profile .right_container .remove_btn{
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--gray_btn);
+    color: var(--white);
+    width: 80px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 0;
+}
+
+.profile .right_container .edit_btn:hover, .profile .right_container .remove_btn:hover{
+    background-color: #616161;
+}
+
+.row{
+    display: flex;
+    gap: 10px;
 }
 
 .stats_row,
@@ -794,6 +830,9 @@ footer nav {
 .stars {
     color: gold;
 }
+
+
+
 
 
 
@@ -899,6 +938,18 @@ footer nav {
     border-style: none;
 }
 
+.pujcovna_search_row .search_bar .search_button{
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    color: var(--gray_btn);
+}
+
+.search_button .fa-solid{
+    margin: 0;
+}
+
 .bike_collection {
     width: 100%;
     display: flex;
@@ -907,7 +958,6 @@ footer nav {
     gap: 20px;
 
 }
-
 
 
 .bike {
@@ -990,34 +1040,14 @@ footer nav {
     color: var(--white);
 }
 
-#sorting_btn {
-    position: relative;
-}
-
-.sorting-options {
-    position: absolute;
-    top: 40px;
-    left: 0;
+.sorting_dropdown{
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    color: var(--white);
     background-color: var(--main_color);
-    border: 1px solid #ccc;
-    list-style: none;
-    padding: 10px 0;
-    margin: 0;
-    width: 200px;
-    z-index: 10;
-    display: none;
-    /* Skryté ve výchozím stavu */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.sorting-options li {
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.sorting-options li:hover {
-    opacity: 0.5;
+    padding: 10px 8px;
+    border-radius: 8px;
 }
 
 /*Pujcovna page end*/
@@ -1074,7 +1104,7 @@ table td {
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin: 15px 0;
 }
 
 .form-group label {
@@ -1254,7 +1284,8 @@ table td {
 }
 
 .preview_data .price{
-    font-size: 32px;
+    font-size: 28px;
+    margin-top: 10px;
     color: var(--price);
 }
 
@@ -1444,31 +1475,11 @@ table td {
     margin-bottom: 40px;
 }
 
-#rentedBikesTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-#rentedBikesTable th, #rentedBikesTable td {
-    border: 1px solid #dee2e6;
-    padding: 10px;
-    text-align: left;
-}
-
-#rentedBikesTable th {
-    background-color: #e9ecef;
-    font-weight: bold;
-}
-
-#rentedBikesTable td {
-    background-color: var(--white);
-}
-
 /* Formulář pro vrácení kola */
-#bikeReturnForm {
-    display: grid;
-    grid-template-columns: 1fr;
+#bikeReturnForm, #rentedBikesTable {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
     max-width: 500px;
     margin: 0 auto;
@@ -1479,14 +1490,21 @@ table td {
     flex-direction: column;
 }
 
-#bikeReturnForm label {
+#bikeReturnForm label, #rentedBikesTable label {
     font-size: 1rem;
     margin-bottom: 8px;
 }
 
+#bikeReturnForm select,#rentedBikesTable select {
+    width: 500px;
+}
+
 #bikeReturnForm input,
 #bikeReturnForm select,
-#bikeReturnForm textarea {
+#bikeReturnForm textarea,
+#rentedBikesTable input,
+#rentedBikesTable select,
+#rentedBikesTable textarea{
     padding: 10px;
     border: 1px solid #ced4da;
     border-radius: 5px;
@@ -1495,6 +1513,7 @@ table td {
 
 #bikeReturnForm textarea {
     resize: vertical;
+    width: 480px;
 }
 
 #bikeReturnForm .btn {
@@ -1517,28 +1536,6 @@ table td {
     margin-bottom: 40px;
 }
 
-/* Tabulka pro půjčování kol */
-#orderedBikesTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-#orderedBikesTable th, #orderedBikesTable td {
-    border: 1px solid #dee2e6;
-    padding: 10px;
-    text-align: left;
-}
-
-#orderedBikesTable th {
-    background-color: #e9ecef;
-    font-weight: bold;
-}
-
-#orderedBikesTable td {
-    background-color: #ffffff;
-}
-
 /* Formulář pro půjčení kola */
 #bikeRentalForm {
     display: grid;
@@ -1553,35 +1550,23 @@ table td {
     flex-direction: column;
 }
 
-#bikeRentalForm label {
-    font-size: 1rem;
-    margin-bottom: 8px;
-}
-
-#bikeRentalForm input,
-#bikeRentalForm select {
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-#bikeRentalForm .btn {
-    background-color: var(--main_color);
-    color: white;
-    padding: 10px 20px;
+#add-comment-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
+    background-color: var(--main_color);
+    color: var(--white);
+    padding: 8px 15px;
+    font-size: 24px;
+    border-radius: 8px;
+    margin: auto;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-#bikeRentalForm .btn:hover {
+#add-comment-btn:hover{
     background-color: var(--scnd_btn_color);
 }
-
-
 /*rent_back_bike end*/
 
 /*Servis*/
@@ -1781,34 +1766,19 @@ table td {
 
     }
 
-    .search_bar {
-        color: var(--gray_btn);
-        border-style: solid;
-        border-radius: 5px;
-        border-width: 1px;
-        padding: 5px 10px 5px 10px;
-        margin: auto;
-        margin-top: 3px;
-        margin-bottom: 3px;
-        width: 85%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    .pujcovna_search_row{
+        margin-top: 10px;
     }
 
     .search_bar input {
-        text-decoration: none;
-        border-style: none;
-        color: var(--gray_btn);
         font-weight: 400;
         font-size: 16px;
-        width: 90%;
         padding: 3px;
     }
 
     /*footer*/
 
-    .kontakt_btn {
+    .container_2 .legal-links {
         display: none;
     }
 
@@ -1895,34 +1865,29 @@ table td {
     .left_container .user_icon {
         width: 150px;
         height: 150px;
-        margin: 10px 0;
     }
 
     .left_container .user_icon img {
-        width: 80px;
-        height: auto;
+        width: 150px;
+        height: 150px;
     }
 
-    .left_container .user_row {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .left_container .user_row .flag {
-        width: 30px;
-        margin: 5px;
-    }
-
-    .left_container .user_row .scnd_btn,
-    .left_container .employer_btn {
-        margin: 5px 0;
-        min-width: 140px;
-        padding: 10px;
-    }
-
-    .left_container .user_row .scnd_btn button,
-    .left_container .employer_btn button {
+    .input-group input{
         font-size: 14px;
+    }
+
+    .input-group .form-label{
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .left_container .support_menu .support_item{
+        width: 120px;
+    }
+
+    .support_item a {
+        font-size: 16px;
+        text-decoration: underline;
     }
 
     .profile .right_container {
@@ -2176,6 +2141,38 @@ table td {
 
     .update-status {
         padding: 6px 12px; /* Menší tlačítko pro mobilní verzi */
+    }
+
+        /*rent back responzive*/
+    #bikeReturnForm .btn, #rentedBikesTable .btn {
+        padding: 10px 8px;
+        width: 80px;
+        font-size: 16px;
+        font-weight: 600;
+
+    }
+
+    #bikeReturnForm select,#rentedBikesTable select {
+        width: 300px;
+    }
+
+    #bikeReturnForm label{
+        margin-left: 20px;
+    }
+
+    #barcodes{
+        display: none;
+    }
+    
+    #bikeReturnForm textarea{
+        width: 300px;
+    }
+
+    #bikeReturnForm, #rentedBikesTable {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
     }
 
 }

@@ -5,10 +5,10 @@
     <!-- Sekce: Půjčování kol -->
     <section>
         <h2 class="title">Půjčování kol</h2>
-        <form method="POST">
+        <form method="POST" id="rentedBikesTable">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <div>
-                <label for="reservation_id">Select Reservation</label>
+                <label for="reservation_id" style="display: none;">Select Reservation</label>
                 <select id="reservation_id" name="reservation_id" required>
                     {% for reservation in reservations %}
                     <option value="{{ reservation.reservation.id }}" {% if loop.first %} selected {% endif %}>
@@ -31,7 +31,7 @@
                 {% endfor %}
             </div>
 
-            <button type="submit">Vypujcit</button>
+            <button type="submit" class="btn">Vypujcit</button>
         </form>
 
         <script>
@@ -84,7 +84,7 @@
 
             <!-- Rental Selection -->
             <div>
-                <label for="rental_id">Select Rental</label>
+                <label for="rental_id" style="display: none;">Select Rental</label>
                 <select id="rental_id" name="rental_id" required>
                     {% for rental in rentals_to_update %}
                     <option value="{{ rental.rental.id }}" {% if loop.first %} selected {% endif %}>
@@ -117,7 +117,7 @@
                 {% endfor %}
             </div>
 
-            <button type="submit">Vratit</button>
+            <button type="submit" class="btn">Vratit</button>
         </form>
 
 

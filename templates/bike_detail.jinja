@@ -55,7 +55,7 @@
                 </div>
 
                 <!-- Pricing -->
-                <div class="pricing">
+                <div class="price">
                     <p><strong>{{ bike_instance.bike_instance.bike.price.price_per_hour }} CZK/hodinu</strong></p>
                     <p><strong>{{ bike_instance.bike_instance.bike.price.price_per_day }} CZK/den</strong></p>
                 </div>
@@ -68,11 +68,11 @@
                     action="{{ url_for('rentals_bp.rentals_detail', bike_instance_id=bike_instance.bike_instance.id) }}"
                     method="POST" class="rental-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <div class="form_group">
+                    <div class="form-group">
                         <label for="reservation_start">Začátek rezervace:</label>
                         <input type="datetime-local" id="reservation_start" name="reservation_start" required>
                     </div>
-                    <div class="form_group">
+                    <div class="form-group">
                         <label for="reservation_end">Konec rezervace:</label>
                         <input type="datetime-local" id="reservation_end" name="reservation_end" required>
                     </div>

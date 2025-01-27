@@ -1,4 +1,36 @@
 /* ========================== 
+   Ovládání postranního menu
+========================== */
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sideMenu = document.getElementById("sideMenu");
+    const overlay = document.getElementById("overlay");
+    const btnMenu = document.getElementById("btn_menu");
+
+    btnMenu.addEventListener("click", toggleMenu);
+
+    overlay.addEventListener("click", closeMenu);
+
+    document.addEventListener("click", function(event) {
+        if (!sideMenu.contains(event.target) && !btnMenu.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
+    function toggleMenu() {
+        sideMenu.classList.toggle("open");
+        overlay.classList.toggle("active");
+    }
+
+    function closeMenu() {
+        sideMenu.classList.remove("open");
+        overlay.classList.remove("active");
+    }
+});
+
+
+
+/* ========================== 
    Carousel (Přepínání obrázků)
 ========================== */
 
@@ -27,22 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         goToSlide(nextSlide);
     }, 8000);
 });
-
-
-/* ========================== 
-   Ovládání postranního menu
-========================== */
-
-// Funkce pro otevření/zavření menu
-function toggleMenu() {
-    const sideMenu = document.getElementById("sideMenu");
-    const overlay = document.getElementById("overlay");
-    sideMenu.classList.toggle("open"); // Přepnutí třídy 'open' pro zobrazení menu
-    overlay.classList.toggle("active"); // Zobrazení/zastavení overlay
-}
-
-// Přidání posluchače události pro tlačítko otevření menu
-document.getElementById("btn_menu").addEventListener("click", toggleMenu);
 
 
 /* ========================== 
