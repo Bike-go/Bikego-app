@@ -1,101 +1,83 @@
-from datetime import datetime
-from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy.exc import SQLAlchemyError
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 from models.news_model import News
-from utils.validator_utils import is_admin
+from datetime import datetime
+from utils.validator_utils import is_admin_or_employee
 from db import db
-
-MAX_LIMIT = 50
 
 news_bp = Blueprint("news_bp", __name__)
 
-@news_bp.route('/news', methods=['GET'])
-def news():
-    limit = min(request.args.get("limit", default=5, type=int), MAX_LIMIT)
-    offset = max(request.args.get("offset", default=0, type=int), 0)
+# Public endpoint to fetch latest news articles with pagination
+@news_bp.route("/get-news", methods=["GET"])
+def get_latest_news():
+    limit = request.args.get("limit", default=5, type=int)
+    offset = request.args.get("offset", default=0, type=int)
 
-    # Fetch total count for pagination
-    total_news_count = News.query.filter(News.published_at != None).count()
-
-    # Fetch paginated news items
-    news_items = (
-        News.query.filter(News.published_at != None)
-        .order_by(News.published_at.desc())
+    latest_news = (
+        News.query.order_by(News.published_at.desc())
         .offset(offset)
         .limit(limit)
         .all()
     )
     
-    # Calculate pagination data
-    current_page = (offset // limit) + 1
-    total_pages = (total_news_count + limit - 1) // limit  # Ceiling division for total pages
+    news_data = [news.to_dict() for news in latest_news]
+    
+    return jsonify(news_data), 200
 
-    return render_template(
-        "news.jinja",
-        title="News",
-        page="news",
-        news_items=news_items,
-        current_page=current_page,
-        total_pages=total_pages,
-        limit=limit,
-    ), 200
-
-@news_bp.route('/manage_news', methods=['POST'])
+# Private endpoint to create a new news article
+@news_bp.route("/create-news", methods=["POST"])
 @jwt_required()
-def manage_news():
-    user_id = get_jwt_identity()
-    if is_admin():
-        return redirect(url_for("home_bp.home"))
-    
-    action = request.form.get('action')
-    news_id = request.form.get('news_id')
-    news = News.query.get(news_id) if news_id else None
+def create_news():
+    if not is_admin_or_employee():
+        return jsonify({"msg": "Admin or Employee access required."}), 403
 
-    if action == "create":
-        title = request.form.get('title')
-        content = request.form.get('content')
-        author_id = user_id  # Set the current admin user as the author
-
-        if not title or not content:
-            flash("Title and content are required to create news.", "error")
-            return redirect(url_for('admin_bp.admin'))
-        
-        new_news = News(title=title, content=content, author_id=author_id)
-        try:
-            db.session.add(new_news)
-            db.session.commit()
-            flash("News created successfully!", "success")
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f"Error creating news: {str(e)}", "error")
+    data = request.json
+    new_news = News(
+        title=data['title'],
+        content=data['content'],
+        created_at=datetime.utcnow(),
+        published_at=data['published_at'],
+    )
     
-    elif action == "edit" and news:
-        news.title = request.form.get('title', news.title)
-        news.content = request.form.get('content', news.content)
-
-        # Handle the publish checkbox
-        if "publish" in request.form:
-            news.published_at = datetime.utcnow()  # Set published_at to now if checkbox is checked
-        else:
-            news.published_at = None  # Clear published_at if checkbox is unchecked
-
-        try:
-            db.session.commit()
-            flash("News updated successfully!", "success")
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f"Error updating news: {str(e)}", "error")
+    db.session.add(new_news)
+    db.session.commit()
     
-    elif action == "delete" and news:
-        try:
-            db.session.delete(news)
-            db.session.commit()
-            flash("News deleted successfully!", "success")
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f"Error deleting news: {str(e)}", "error")
-    else:
-        flash("Invalid action or news not found.", "error")
+    return jsonify(new_news.to_dict()), 201
+
+# Private endpoint to update an existing news article
+@news_bp.route("/update-news/<int:news_id>", methods=["PUT"])
+@jwt_required()
+def update_news(news_id):
+    if not is_admin_or_employee():
+        return jsonify({"msg": "Admin or Employee access required."}), 403
+
+    data = request.json
+    news_article = News.query.get(news_id)
     
-    return redirect(url_for('admin_bp.admin'))
+    if not news_article:
+        return jsonify({"msg": "News article not found."}), 404
+    
+    news_article.title = data.get('title', news_article.title)
+    news_article.content = data.get('content', news_article.content)
+    news_article.published_at = data.get('published_at', news_article.published_at)
+    
+    db.session.commit()
+    
+    return jsonify(news_article.to_dict()), 200
+
+# Private endpoint to delete a news article
+@news_bp.route("/delete-news/<int:news_id>", methods=["DELETE"])
+@jwt_required()
+def delete_news(news_id):
+    if not is_admin_or_employee():
+        return jsonify({"msg": "Admin or Employee access required."}), 403
+
+    news_article = News.query.get(news_id)
+    
+    if not news_article:
+        return jsonify({"msg": "News article not found."}), 404
+    
+    db.session.delete(news_article)
+    db.session.commit()
+    
+    return jsonify({"msg": "News article deleted."}), 200

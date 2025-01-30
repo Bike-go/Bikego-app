@@ -1,7 +1,8 @@
-from marshmallow import Schema, fields, validate, EXCLUDE
+from marshmallow import fields, validate, EXCLUDE
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from models.picture_model import Picture
 
-class PictureSchema(Schema):
+class PictureSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Picture
         load_instance = True

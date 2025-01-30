@@ -1,7 +1,8 @@
-from marshmallow import Schema, fields, validate, EXCLUDE
+from marshmallow import fields, validate, EXCLUDE
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from models.news_model import News
 
-class NewsSchema(Schema):
+class NewsSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = News
         load_instance = True

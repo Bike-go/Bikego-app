@@ -1,7 +1,8 @@
-from marshmallow import Schema, fields, EXCLUDE
+from marshmallow import fields, EXCLUDE
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from models.maintenance_model import Maintenance
 
-class MaintenanceSchema(Schema):
+class MaintenanceSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Maintenance
         load_instance = True
@@ -11,4 +12,4 @@ class MaintenanceSchema(Schema):
     description = fields.Str(required=False)
     maintenance_date = fields.DateTime(dump_only=True)
     User_id = fields.UUID(required=True)
-    Inspection_id = fields.UUID(required=True)
+    Instance_Bike_id = fields.UUID(required=True)

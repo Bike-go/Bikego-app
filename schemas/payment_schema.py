@@ -1,7 +1,8 @@
-from marshmallow import Schema, fields, validate, EXCLUDE
+from marshmallow import fields, validate, EXCLUDE
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from models.payment_model import Payment
 
-class PaymentSchema(Schema):
+class PaymentSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Payment
         load_instance = True

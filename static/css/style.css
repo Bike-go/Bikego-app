@@ -1,17 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-* {
-    margin: 0;
-    font-family: "Inter", sans-serif;
-    padding: 0;
-}
+*{margin: 0; font-family: "Inter", sans-serif; padding: 0;}
 
-body {
+body{
     display: flex;
     flex-direction: column;
     min-width: 370px;
-    max-width: 100%;
-    overflow-x: hidden;
 }
 
 :root {
@@ -20,58 +14,25 @@ body {
     --gray_btn: #C9C9C9;
     --white: #fff;
     --black: #000;
-    --price: #ec0000;
-}
-
-/* Flash Messages */
-.flashes {
-    margin: 20px 0;
-    list-style: none;
-    padding: 0;
-}
-
-.flashes li {
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-}
-
-.alert-success {
-    color: var(--scnd_btn_color);
-}
-
-.alert-danger {
-    color: #ff6b6b;
 }
 
 
-.fa-solid,
-.fa-regular,
-.fa-brands {
+.fa-solid, .fa-regular, .fa-brands {
     font-size: 24px;
     margin-right: 10px;
     text-decoration: none;
 }
 
-.down_container .fa-solid,
-.fa-regular,
-.fa-brands {
+.down_container .fa-solid, .fa-regular, .fa-brands{
     font-size: 40px;
     margin-right: 20px;
 }
 
-.mobile,
-.search_bar {
+.mobile, .search_bar {
     display: none;
 }
 
-.search_row .search_bar {
-    display: block;
-}
-
-header {
+header{
     position: sticky;
     z-index: 5;
     top: 0;
@@ -79,12 +40,11 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 60px;
+    padding: 10px 60px 10px 60px;
 
 }
 
-header a,
-footer a {
+a {
     text-decoration: none;
     color: var(--white);
     font-size: 24px;
@@ -92,11 +52,15 @@ footer a {
     text-transform: uppercase;
 }
 
+header a:hover {
+    font-weight: 700;
+}
+
 nav {
     display: flex;
     justify-content: space-between;
     width: 900px;
-    padding: 0 20px;
+    padding: 0 20px 0 20px;
 }
 
 .logo_image {
@@ -108,10 +72,9 @@ nav {
     height: auto;
 }
 
-.acc_btn,
-.kontakt_btn {
+.acc_btn, .kontakt_btn {
     background-color: var(--scnd_btn_color);
-    display: flex;
+    display:flex ;
     justify-content: center;
     align-items: center;
     width: 220px;
@@ -120,12 +83,11 @@ nav {
     text-decoration: none;
 }
 
-
 section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 5px 20%;
+    padding: 5px 20% 5px 20%;
 }
 
 .title {
@@ -144,7 +106,7 @@ section {
 footer {
     background-color: var(--main_color);
     color: var(--white);
-    padding: 20px 10%;
+    padding: 20px 10% 20px 10%;
     margin-top: 40px;
 }
 
@@ -154,13 +116,13 @@ footer .title {
     margin: 0 0 5px 0;
 }
 
-footer p {
+footer p{
     text-transform: none;
     color: var(--white);
     font-size: 20px;
 }
 
-footer a {
+footer a{
     text-decoration: underline;
     font-size: 18px;
     font-weight: 500;
@@ -170,7 +132,7 @@ footer nav {
     width: 500px;
 }
 
-.up_container {
+.up_container{
     display: flex;
     justify-content: space-between;
     width: 600px;
@@ -182,30 +144,23 @@ footer nav {
     flex-direction: column;
 }
 
-.container_2 .legal-links {
+.container_2 .Kontakt {
+    display: flex;
+    align-items: center;
+    width: 220px;
+    margin: 5px;
+    font-size: 16px;
+
+}
+
+.kontakt_btn{
     position: absolute;
     right: 220px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-
+    text-transform: uppercase;
+    font-size: 24px;
 }
 
-.container_2 .legal-links a{
-    font-size: 16px;
-    font-weight: 400;
-    text-decoration: none;
-    text-transform: none;
-}
-
-.container_2 .contact-info{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-
-.down_container {
+.down_container{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -214,7 +169,7 @@ footer nav {
     border-width: 2px;
 }
 
-.image_roll {
+.image_roll{
     position: relative;
     height: 70vh;
     overflow: hidden;
@@ -257,1390 +212,6 @@ footer nav {
     background-color: var(--white);
 }
 
-/*Kontakt page*/
-
-.contact_page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 10%;
-}
-
-.contact_page .title {
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--black);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-}
-
-.contact_page .text {
-    font-size: 18px;
-    color: var(--black);
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-.contact_info {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 40px;
-}
-
-.contact_item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.contact_item i {
-    font-size: 40px;
-    color: var(--main_color);
-    margin-bottom: 10px;
-}
-
-.contact_item h3 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.contact_item p {
-    font-size: 18px;
-    color: var(--black);
-}
-
-.contact_form {
-    width: 100%;
-    max-width: 600px;
-}
-
-.contact_form .title {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--black);
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.contact_form form {
-    display: flex;
-    flex-direction: column;
-}
-
-.contact_form label {
-    font-size: 18px;
-    color: var(--black);
-    margin-bottom: 5px;
-}
-
-.contact_form input,
-.contact_form textarea {
-    border: 1px solid var(--gray_btn);
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 16px;
-    margin-bottom: 20px;
-    max-width: 578px;
-    max-height: 100px;
-}
-
-.contact_form .send_btn {
-    background-color: var(--scnd_btn_color);
-    color: var(--white);
-    font-size: 18px;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-weight: 600;
-    transition: background-color 0.3s;
-}
-
-.contact_form .send_btn:hover {
-    background-color: var(--main_color);
-}
-
-/*Kontakt page end*/
-
-/*Novinky page*/
-.news_page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 10%;
-}
-
-.news_page .title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--black);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-}
-
-.news_page .text {
-    font-size: 18px;
-    color: var(--black);
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-/* Seznam novinek */
-.news_list {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    width: 100%;
-}
-
-.news_item {
-    border: 1px solid var(--gray_btn);
-    border-radius: 10px;
-    padding: 15px 20px;
-    background-color: var(--white);
-    transition: transform 0.2s;
-}
-
-.news_item:hover {
-    transform: scale(1.02);
-}
-
-.news_title {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--main_color);
-    text-decoration: none;
-    margin-bottom: 10px;
-}
-
-.news_title:hover {
-    text-decoration: underline;
-}
-
-.news_date {
-    font-size: 16px;
-    color: var(--gray_btn);
-    margin-bottom: 10px;
-}
-
-.news_excerpt {
-    font-size: 18px;
-    color: var(--black);
-}
-
-/*Novinky page end*/
-
-/*Foto page*/
-
-.gallery_page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 10%;
-}
-
-.gallery_page .title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--black);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-}
-
-.gallery_page .text {
-    font-size: 18px;
-    color: var(--black);
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    width: 100%;
-}
-
-.gallery_item {
-    position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-    transition: transform 0.3s;
-}
-
-.gallery_item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s;
-}
-
-.gallery_item:hover img {
-    transform: scale(1.05);
-}
-
-.gallery_item:hover {
-    transform: translateY(-5px);
-}
-
-/*Foto page end*/
-
-/* Profile page*/
-.profile {
-    display: flex;
-    width: 85%;
-    gap: 1rem;
-    margin: auto;
-    padding-top: 40px;
-}
-
-.profile .left_container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 40%;
-    border: 1px solid #ddd; /* Subtle border for better focus */
-    border-radius: 10px; /* Rounded corners for a modern look */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-    padding: 15px;
-}
-
-
-.left_container .user_icon {
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--scnd_btn_color);
-    border-radius: 50%;
-    width: 350px;
-    height: 350px;
-    margin-bottom: 15px;
-}
-
-.user_icon img {
-    border-radius: 50%;
-    width: 350px;
-    height: 350px;
-    object-fit: cover;
-}
-
-.left_container .user_row .flag {
-    width: 50px;
-    margin: 0 10px;
-}
-
-.left_container .user_row .scnd_btn,
-.employer_btn {
-    background-color: var(--scnd_btn_color);
-    border-radius: 8px;
-    padding: 10px;
-    margin: 0 20px;
-}
-
-.left_container .user_row .scnd_btn button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-width: 140px;
-    border-style: none;
-    color: var(--white);
-    font-size: 18px;
-    font-weight: 100;
-    background: none;
-    cursor: pointer;
-
-}
-
-.left_container .employer_btn {
-    background-color: #5a5a5a;
-    min-width: 230px;
-}
-
-.left_container .employer_btn button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-width: 230px;
-    border-style: none;
-    color: var(--white);
-    font-size: 18px;
-    font-weight: 800;
-    background: none;
-    cursor: pointer;
-
-}
-
-.left_container .fa-solid {
-    margin: 0;
-}
-
-.left_container .login{
-    display: flex;
-    flex-direction: column;
-}
-
-.left_container .input-group{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.create{
-    margin: auto;
-    cursor: pointer;
-    border: none;
-    background-color: var(--main_color);
-    color: var(--white);
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: 8px;
-    padding: 12px;
-}
-
-.create:hover{
-    background-color: var(--scnd_btn_color);
-}
-
-.input-group input{
-    border: none;
-    font-size: 16px;
-}
-
-.input-group .form-label{
-    font-weight: 600;
-    font-size: 20px;
-}
-
-
-.left_container .user_row{
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-}
-
-.left_container .support_menu{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px;
-}
-
-.left_container .support_menu .support_item{
-    width: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.support_item a {
-    text-decoration: none;
-    font-size: 18px;
-    color: var(--scnd_btn_color);
-}
-
-.support_item a:hover{
-    font-size: 22px;
-}
-
-.tools_menu {
-    display: flex;
-    gap: 8px;
-    max-width: 460px;
-    margin: 0 auto; /* Center the menu */
-    padding: 10px;
-}
-
-.tools_menu .action{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-
-.tools_menu .btn,
-.tools_menu .sign-out {
-    padding: 12px;
-    font-size: 14px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    height: 60px;
-}
-
-.tools_menu .btn {
-    background-color: var(--gray_btn);
-    color: #fff;
-}
-
-.tools_menu .btn:hover {
-    background-color: #6e6e6e;
-}
-
-.tools_menu .sign-out {
-    background-color: #dc3545;
-    color: #fff;
-}
-.tools_menu .sign-out:hover {
-    background-color: #a71d2a;
-}
-
-.tools_menu .form-control::placeholder {
-    color: #aaa;
-    font-style: italic;
-}
-
-.sign-out{
-    cursor: pointer;
-    background-color: #b93e3e;
-    color: var(--white);
-    font-size: 16px;
-}
-
-/* Modal Styles */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal_content {
-    background-color: var(--white);
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    color: var(--secondary-color);
-    position: relative;
-}
-
-.modal_content .close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--secondary-color);
-    transition: color 0.3s;
-}
-
-.modal_content .close:hover {
-    color: var(--main-color);
-}
-
-.input-group {
-    margin-bottom: 10px;
-}
-
-
-.profile .right_container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2rem;
-    padding: 1rem;
-    width: 60%;
-    border: 1px solid #ddd; /* Subtle border for better focus */
-    border-radius: 10px; /* Rounded corners for a modern look */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-    padding: 15px;
-}
-
-.profile .right_container section {
-    padding-bottom: 1rem;
-    align-items: flex-start;
-    width: 100%;
-    padding: 0;
-}
-
-.profile .right_container section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--black);
-    width: 100%;
-    font-weight: 400;
-    font-size: 28px;
-}
-
-.profile .right_container .edit_btn, .profile .right_container .remove_btn{
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;
-    background-color: var(--gray_btn);
-    color: var(--white);
-    width: 80px;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 6px 0;
-}
-
-.profile .right_container .edit_btn:hover, .profile .right_container .remove_btn:hover{
-    background-color: #616161;
-}
-
-.row{
-    display: flex;
-    gap: 10px;
-}
-
-.stats_row,
-.session_row,
-.review_row,
-.history_row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    width: 95%;
-}
-
-.session_row img,
-.history_row img {
-    width: 150px;
-    height: auto;
-}
-
-.review_row {
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.review_title {
-    font-weight: bold;
-    font-size: 20px;
-    margin-right: 0.5rem;
-}
-
-.stars {
-    color: gold;
-}
-
-
-
-
-
-
-/*Profile page end */
-
-/*Pujcovna page start*/
-.pujcovna_full_page {
-    display: flex;
-    justify-content: center;
-    padding: 0 80px;
-    margin-top: 20px;
-    
-}
-
-.pujcovna_filters {
-    width: 400px;
-    padding: 0 20px;
-    margin-top: 70px;
-}
-
-.filter-save,
-.scnd_btn {
-    display: block;
-    margin: auto;
-    width: 90%;
-    padding: 10px;
-    background-color: var(--main_color);
-    color: var(--white);
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.scnd_btn {
-    width: 250px;
-    display: flex;
-    justify-content: space-between;
-    padding-left: 20px;
-    margin: 0;
-}
-
-.filter_section .scnd_btn{
-    width: 100%;
-    border-radius: 8px;
-    
-}
-.pujcovna_filters span {
-    font-size: 20px;
-}
-
-.filter_header {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-    border-bottom: 1px solid #ccc;
-    font-weight: 600;
-    font-size: 24px;
-    margin: 10px 0;
-}
-
-.subfilters {
-    display: flex;
-    gap: 10px;
-    margin: 10px 15px;
-    font-size: 18px;
-}
-
-.subfilters input[type="checkbox"] {
-    transform: scale(1.5);
-    margin-right: 10px;
-}
-
-.pujcovna_main {
-    width: 100%;
-    padding: 0;
-}
-
-.pujcovna_search_row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--black);
-}
-
-.pujcovna_search_row .search_bar {
-    color: var(--gray_btn);
-    border-style: solid;
-    border-radius: 5px;
-    border-width: 1px;
-    padding: 5px 10px 5px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.pujcovna_search_row .search_bar input {
-    text-decoration: none;
-    border-style: none;
-}
-
-.pujcovna_search_row .search_bar .search_button{
-    padding: 0;
-    margin: 0;
-    background: none;
-    border: none;
-    color: var(--gray_btn);
-}
-
-.search_button .fa-solid{
-    margin: 0;
-}
-
-.bike_collection {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-
-}
-
-
-.bike {
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    text-decoration: none; 
-}
-
-.bike a{
-    text-decoration: none;
-}
-
-
-.bike h4{
-    text-decoration: none;
-    color: var(--black);
-    width: auto;
-    font-size: 20px;
-    padding-left: 30px;
-}
-
-.bike_img {
-    width: 300px;
-
-}
-
-.bike_labels {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.fa-circle-check, .fa-circle-xmark{
-    color: #15b800;
-    margin: 0;
-    font-size: 32px;
-}
-
-.fa-circle-xmark{
-    color: #e00000;
-}
-
-.bike_labels .b_label {
-    background-color: #e9e9e9;
-    color: var(--black);
-    font-size: 18px;
-    padding: 5px 7px;
-    border-radius: 5px;
-}
-
-
-
-.pages {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-    gap: 10px;
-}
-
-.pages a {
-    padding: 8px 12px;
-    text-decoration: none;
-    color: var(--black);
-    border: 1px solid var(--gray_btn);
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: var(--white);
-    transition: all 0.3s ease;
-}
-
-.pages a.active {
-    background-color: var(--main_color);
-    color: var(--white);
-}
-
-.pages a:hover {
-    background-color: var(--main_color);
-    color: var(--white);
-}
-
-.sorting_dropdown{
-    font-size: 18px;
-    font-weight: 600;
-    border: none;
-    color: var(--white);
-    background-color: var(--main_color);
-    padding: 10px 8px;
-    border-radius: 8px;
-}
-
-/*Pujcovna page end*/
-
-/*Admin page start*/
-
-.admin_page_body{
-    margin: auto;
-    text-align: center;
-}
-
-.admin_page_body h1 {
-    margin: 25px;
-    text-transform: uppercase;
-    font-size: 40px;
-    border-bottom: 1px solid var(--scnd_btn_color);
-    color: var(--scnd_btn_color);
-}
-
-
-/* Formuláře a tabulky */
-
-.table-responsive {
-    overflow-x: auto;
-    white-space: nowrap;
-    width: 100%;
-}
-
-
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-    
-}
-
-table input{
-    border: none;
-}
-
-table th, table td {
-    padding: 10px;
-    text-align: center;
-    border: 1px solid var(--gray_btn);
-}
-
-table th {
-    background-color: var(--gray_btn);
-    color: var(--black);
-}
-
-table td {
-    background-color: var(--white);
-}
-
-.form-group {
-    margin: 15px 0;
-}
-
-.form-group label {
-    display: block;
-    font-weight: 600;
-}
-
-.form-control {
-    width: 100%;
-    max-width: 570px;
-    padding: 10px;
-    border: 1px solid var(--gray_btn);
-    border-radius: 4px;
-    margin: auto;
-}
-
-.btn, .admin_panel {
-    padding: 10px 20px;
-    color: var(--white);
-    background-color: var(--main_color);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.admin_panel {
-    padding: 18px 28px;
-    border-radius: 8px;
-}
-
-.admin_panel a{
-    color: var(--white);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.btn:hover {
-    background-color: var(--scnd_btn_color);
-}
-
-/* Sekce pro různé uživatele, novinky a bike */
-.admin_page_body section {
-    margin-bottom: 30px;
-    padding: 0;
-    align-items: flex-start;
-    overflow: auto;
-}
-
-.card, .card-bikes {
-    background-color: var(--white);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 5px 6px 6px rgba(0, 0, 0, 0.1);
-    margin: auto;
-}
-
-.card-bikes{
-    width: 100%;
-    max-width: 600px;
-
-}
-
-.card-header {
-    width: 100%;
-    font-weight: 600;
-    font-size: 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.card-body{
-    min-width: 200px;
-    overflow: auto;
-    flex: 1;
-}
-
-
-/* Modal (pro editaci) */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0, 0, 0);
-    background-color: rgba(0, 0, 0, 0.4);
-    padding-top: 100px;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    max-width: 600px;
-    border-radius: 8px;
-}
-
-.modal-close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.modal-close:hover,
-.modal-close:focus {
-    color: var(--black);
-    text-decoration: none;
-    cursor: pointer;
-}
-
-
-/*Admin page end*/
-
-/*Bike detail*/
-
-.bike_preview, .more_bikes{
-    padding: 20px 15%;
-    align-items: flex-start;
-    
-}
-
-.title_row h1{
-    font-size: 32px;
-}
-
-.bike_preview h3{
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.title_row{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--black);
-    width: 100%;
-
-}
-
-.title_row .avalibality{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-
-.preview_container{
-    display: flex;
-    justify-content: space-between;
-}
-.preview_container .bike_img {
-    width: 500px;
-    margin-right: 30px;
-}
-
-.preview_data{
-    display: flex;
-    flex-direction: column;
-}
-
-.preview_data .title_row{
-    border-bottom: none;
-    margin: 10px 0;
-}
-
-.preview_data .description{
-    font-size: 18px;
-}
-
-.preview_data .price{
-    font-size: 28px;
-    margin-top: 10px;
-    color: var(--price);
-}
-
-.preview_data .scnd_btn {
-    display: flex;
-    justify-content: space-between;
-    padding-left: 20px;
-    margin: 0;
-    border-radius: 10px;
-}
-
-.preview_data button{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-style: none;
-    color: var(--white);
-    font-size: 20px;
-    font-weight: 600;
-    background: none;
-    cursor: pointer;
-}
-
-.rental-form{
-    width: 100%;
-
-}
-
-.rental-form label{
-    margin-right: 10px;
-    font-weight: 600;
-    font-size: 24px;
-
-}
-
-.rental-form input{
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 400px;
-    font-size: 20px;
-}
-
-.rental-form button{
-    padding: 10px;
-    background-color: var(--main_color);
-    color: var(--white);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 20px;
-}
-
-.rental-form button:hover{
-    background-color: var(--scnd_btn_color);
-}
-
-.preview_data #output {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #e7f7e7;
-    border: 1px solid #d4eed4;
-    border-radius: 4px;
-    color: var(--scnd_btn_color);
-}
-
-.more_bikes{
-    display: flex;
-    align-items: center;
-}
-
-.more_bikes .preview_container{
-    width: 100%;
-    justify-content: center;
-}
-
-
-.more_bikes .preview_container .bike_img{
-    width: 250px;    
-}
-.review_for_bike{
-    padding: 0 15%;
-}
-
-.review_for_bike .preview_container{
-    width: 100%;
-
-}
-
-.review_for_bike .preview_container {
-    flex-direction: column;
-}
-
-.review_for_bike .preview_container .user_review {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding-top: 20px;
-}
-
-.review_for_bike .user_profile_preview .user_icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--scnd_btn_color);
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-}
-
-.review_for_bike .user_profile_preview{
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.review_for_bike .user_profile_preview img{
-    width: 60px;
-}
-
-.review_for_bike .user_profile_preview .name_and_rating{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-}
-
-.modal_recenze {
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal_recenze .modal-content {
-    background-color: var(--white);
-    margin: 15% auto;
-    padding: 20px;
-    width: 50%;
-}
-
-.modal_recenze .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.modal_recenze .close:hover, .modal_recenze .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.modal_recenze textarea {
-    border: 1px solid var(--gray_btn);
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 16px;
-    margin-bottom: 20px;
-    max-width: 560px;
-    width: 100%;
-    max-height: 400px;
-}
-
-/*Bike detail end*/
-
-/*rent_back_bike*/
-
-.rent_back {
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.rent_back .title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-.rent_back section:first-of-type {
-    margin-bottom: 40px;
-}
-
-/* Formulář pro vrácení kola */
-#bikeReturnForm, #rentedBikesTable {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-#bikeReturnForm .form-control {
-    display: flex;
-    flex-direction: column;
-}
-
-#bikeReturnForm label, #rentedBikesTable label {
-    font-size: 1rem;
-    margin-bottom: 8px;
-}
-
-#bikeReturnForm select,#rentedBikesTable select {
-    width: 500px;
-}
-
-#bikeReturnForm input,
-#bikeReturnForm select,
-#bikeReturnForm textarea,
-#rentedBikesTable input,
-#rentedBikesTable select,
-#rentedBikesTable textarea{
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-#bikeReturnForm textarea {
-    resize: vertical;
-    width: 480px;
-}
-
-#bikeReturnForm .btn {
-    background-color: var(--main_color);
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#bikeReturnForm .btn:hover {
-    background-color: var(--scnd_btn_color);
-}
-
-/* Sekce pro půjčování kol */
-.rent_back section:last-of-type {
-    margin-bottom: 40px;
-}
-
-/* Formulář pro půjčení kola */
-#bikeRentalForm {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-#bikeRentalForm .form-control {
-    display: flex;
-    flex-direction: column;
-}
-
-#add-comment-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: var(--main_color);
-    color: var(--white);
-    padding: 8px 15px;
-    font-size: 24px;
-    border-radius: 8px;
-    margin: auto;
-    cursor: pointer;
-}
-
-#add-comment-btn:hover{
-    background-color: var(--scnd_btn_color);
-}
-/*rent_back_bike end*/
-
-/*Servis*/
-/* Specifický styl pro stránku servisního technika */
-.service_page {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.service_page .title {
-    font-size: 2rem;
-    color: #343a40;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-/* Styl pro tabulku */
-#serviceBikesTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-#serviceBikesTable th, #serviceBikesTable td {
-    border: 1px solid #dee2e6;
-    padding: 12px;
-    text-align: left;
-}
-
-#serviceBikesTable th {
-    background-color: #e9ecef;
-    font-weight: bold;
-}
-
-#serviceBikesTable td {
-    background-color: #ffffff;
-}
-
-/* Styl pro select box se statusem */
-.bike-status {
-    padding: 8px;
-    font-size: 1rem;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    width: 150px;
-}
-
-/* Styl pro tlačítko pro uložení změn */
-.update-status {
-    background-color: #007bff;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.update-status:hover {
-    background-color: #0056b3;
-}
-
-/*Servis end*/
-
-#cookie-banner p {
-    display: inline;
-    font-size: 14px;
-}
-
-#cookie-banner button:hover {
-    background-color: #45a049;
-}
 
 @media screen and (max-width: 1250px) {
     .pc {
@@ -1697,15 +268,14 @@ table td {
     }
 
     section {
-        padding: 5px 5%;
+        padding: 5px 5% 5px 5%;
     }
 
-    header .title {
+    header .title{
         color: var(--white);
         text-transform: none;
     }
-
-    header .Kontakt {
+    header .Kontakt{
         width: 100px;
         display: flex;
         align-items: center;
@@ -1715,7 +285,7 @@ table td {
         font-size: 20px;
     }
 
-
+    
     .text {
         font-size: 14px;
     }
@@ -1731,12 +301,12 @@ table td {
         padding: 10px 5% 10px 5%;
     }
 
-    .image_roll {
+    .image_roll{
         height: 50vh;
     }
 
 
-    .logo_image {
+    .logo_image{
         display: none;
     }
 
@@ -1750,35 +320,48 @@ table td {
         text-align: center;
     }
 
-    .fa-regular,
-    .fa-brands,
-    .fa-solid {
+    .fa-regular, .fa-brands, .fa-solid {
         margin: 0;
     }
 
-    .fa-user {
+    .fa-user{
         font-size: 30px;
 
     }
 
-    .fa-magnifying-glass {
+    .fa-magnifying-glass{
         font-size: 30px;
 
     }
 
-    .pujcovna_search_row{
-        margin-top: 10px;
+    .search_bar {
+        color: var(--gray_btn);
+        border-style: solid;
+        border-radius: 5px;
+        border-width: 1px;
+        padding: 5px 10px 5px 10px;
+        margin: auto;
+        margin-top: 3px;
+        margin-bottom: 3px;
+        width: 85%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .search_bar input {
+        text-decoration: none;
+        border-style: none;
+        color: var(--gray_btn);
         font-weight: 400;
         font-size: 16px;
+        width: 90%;
         padding: 3px;
     }
 
     /*footer*/
 
-    .container_2 .legal-links {
+    .kontakt_btn{
         display: none;
     }
 
@@ -1786,13 +369,13 @@ table td {
         padding: 30px 5% 30px 5%;
         margin-top: 20px;
     }
-
-    footer .fa-solid {
+    
+    footer .fa-solid{
         font-size: 15px;
         margin-right: 5px;
     }
-
-    footer .up_container {
+    
+    footer .up_container{
         width: 100%;
         max-width: 600px;
         justify-content: space-between;
@@ -1823,11 +406,11 @@ table td {
         justify-content: space-between;
     }
 
-    footer a {
+    footer a{
         font-size: 12px;
     }
 
-    .down_container .Kontakt {
+    .down_container .Kontakt{
         order: 2;
         display: flex;
         justify-content: space-between;
@@ -1835,344 +418,13 @@ table td {
     }
 
     /*menu hamburger*/
-    .fa-bars {
+
+    .fa-bars{
         font-size: 30px;
         color: var(--white);
     }
 
-    .mobile-menu-toggle{
-        display: flex;
-    }
-    .mobile-menu-toggle button{
-       background: none;
-       border: none;
-    }
-    /*profile page */
 
-    .profile {
-        flex-direction: column;
-        align-items: center;
-        width: 90%;
-        margin: auto;
-        padding-top: 0;
-    }
-
-    .profile .left_container {
-        width: 100%;
-        align-items: center;
-    }
-
-    .left_container .user_icon {
-        width: 150px;
-        height: 150px;
-    }
-
-    .left_container .user_icon img {
-        width: 150px;
-        height: 150px;
-    }
-
-    .input-group input{
-        font-size: 14px;
-    }
-
-    .input-group .form-label{
-        font-weight: 600;
-        font-size: 14px;
-    }
-
-    .left_container .support_menu .support_item{
-        width: 120px;
-    }
-
-    .support_item a {
-        font-size: 16px;
-        text-decoration: underline;
-    }
-
-    .profile .right_container {
-        width: 100%;
-        padding: 10px;
-    }
-
-    .profile .right_container section {
-        width: 100%;
-        align-items: center;
-    }
-
-    .profile .right_container section h2 {
-        font-size: 20px;
-        margin-bottom: 10px;
-        border-bottom: 1px solid var(--black);
-    }
-
-    .stats_row,
-    .session_row,
-    .review_row,
-    .history_row {
-        margin-bottom: 15px;
-    }
-
-    .session_row img,
-    .history_row img {
-        width: 80px;
-        margin-bottom: 10px;
-    }
-
-    .history_details,
-    .session_details {
-
-        padding: 0 0 0 50px;
-    }
-
-
-    .review_title {
-        font-size: 18px;
-    }
-
-    .show_all {
-        font-size: 14px;
-    }
-
-    .pujcovna_full_page {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-
-    .pujcovna_filters {
-        display: none;
-    }
-
-    #sorting_btn {
-        width: 250px;
-        font-size: 18px;
-    }
-
-    .pujcovna_search_row {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .sorting-options {
-        display: none; 
-    }
-
-    .bike_collection {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    /* Tlačítka */
-    .admin_page_body .btn {
-        padding: 6px 10px;
-        font-size: 15px;
-    }
-
-    .admin_page_body table th, table td {
-        padding: 4px;
-        font-size: 15px;
-    }
-
-    /* Modalní okna */
-    .admin_page_body .modal-content {
-        max-width: 500px;
-        padding: 15px;
-    }
-    /* Formuláře */
-    .admin_page_body .form-control {
-        max-width: 100%;
-        padding: 8px;
-        max-width: 340px;
-    }
-
-    .admin_page_body .card {
-        max-width: 370px;
-        padding: 0;
-    }
-
-    .admin_page_body h1 {
-        font-size: 28px;
-    }
-
-    .admin_page_body .card-header {
-        font-size: 18px;
-        margin-bottom: 0px;
-    }
-
-    .table-responsive {
-        overflow-x: auto;
-        width: 100%;
-    }
-
-    /*Bike detail*/
-
-    .bike_preview{
-        align-items: center;
-    }
-
-    .bike_preview, .more_bikes{
-        padding: 10px 5%;  
-    }
-
-    .title_row h1{
-        font-size: 20px;
-    }
-
-    .bike_preview h3{
-        font-size: 16px;
-    }
-
-    .title_row{
-        flex-direction: column;
-        height: auto;
-        gap: 10px;
-        padding-bottom: 10px;
-    }
-
-    .title_row .avalibality{
-        font-size: 16px;
-    }
-
-
-    .preview_container{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .preview_container .bike_img {
-        width: 300px;
-        margin-right: 15px;
-    }
-
-
-    .preview_data .title_row{
-        margin: 5px 0;
-        flex-direction: column;
-    }
-
-    .preview_data .description{
-        font-size: 14px;
-    }
-
-    .preview_data .price{
-        font-size: 24px;
-    }
-
-    .preview_data .scnd_btn {
-        justify-content: flex-start;
-        align-items: center;
-        gap: 10px;
-        padding-left: 10px;
-        border-radius: 10px;
-        width: 140px;
-    }
-
-    .preview_data button{
-        font-size: 14px;
-    }
-
-    .rental-form{
-        width: 100%
-    }
-
-    .rental-form label{
-        margin-right: 10px;
-        font-weight: 600;
-        font-size: 24px;
-
-    }
-
-    .rental-form input{
-        width: 300px;
-        font-size: 14px;
-    }
-
-    .rental-form button{
-        font-size: 14px;
-    }
-
-
-    .preview_data #output {
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #e7f7e7;
-        border: 1px solid #d4eed4;
-        border-radius: 4px;
-        color: var(--scnd_btn_color);
-    }
-
-    .review_for_bike{
-        padding: 0 5%;
-    }
-
-    .user_review .description {
-        font-size: 12px;
-    }
-
-    .modal_recenze textarea {
-        font-size: 14px;
-        max-width: 280px;
-        max-height: 200px;
-    }
-
-    #serviceBikesTable {
-        width: 100%;
-        overflow-x: auto;
-        display: block; /* Povolit horizontální scrollování */
-    }
-
-    .service_page .title {
-        font-size: 1.5rem; /* Menší font pro mobilní zařízení */
-    }
-
-    /* Vylepšené styly pro tabulku na mobilních zařízeních */
-    #serviceBikesTable th, #serviceBikesTable td {
-        padding: 8px;
-        font-size: 0.9rem; /* Menší text pro lepší přehlednost */
-    }
-
-    .bike-status {
-        width: auto; /* Aby bylo možné přizpůsobit šířku na malých obrazovkách */
-    }
-
-    .update-status {
-        padding: 6px 12px; /* Menší tlačítko pro mobilní verzi */
-    }
-
-        /*rent back responzive*/
-    #bikeReturnForm .btn, #rentedBikesTable .btn {
-        padding: 10px 8px;
-        width: 80px;
-        font-size: 16px;
-        font-weight: 600;
-
-    }
-
-    #bikeReturnForm select,#rentedBikesTable select {
-        width: 300px;
-    }
-
-    #bikeReturnForm label{
-        margin-left: 20px;
-    }
-
-    #barcodes{
-        display: none;
-    }
-    
-    #bikeReturnForm textarea{
-        width: 300px;
-    }
-
-    #bikeReturnForm, #rentedBikesTable {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
 
 }
+

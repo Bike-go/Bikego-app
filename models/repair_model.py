@@ -3,16 +3,14 @@ from sqlalchemy import Column, Integer, Text, TIMESTAMP, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from db import db
-from config import Config
 
 class Repair(db.Model):
-    __tablename__ = "repair"
-    __table_args__ = {'schema': Config.POSTGRES_SCHEMA}
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    __tablename__ = "Repair"
+    id = Column(Integer, primary_key=True)
     description = Column(Text)
     created_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
-    User_id = Column(UUID, ForeignKey(f'{Config.POSTGRES_SCHEMA}.user.id'), nullable=False)
-    Inspection_id = Column(Integer, ForeignKey(f'{Config.POSTGRES_SCHEMA}.inspection.id'), nullable=True)
+    User_id = Column(UUID, ForeignKey('User.id'), nullable=False)
+    Instance_Bike_id = Column(UUID, ForeignKey('Instance_Bike.id'), nullable=False)
 
     user = relationship("User", back_populates="repairs")
-    inspection = relationship("Inspection", back_populates="repairs")
+    instance_bike = relationship("InstanceBike", back_populates="repairs")

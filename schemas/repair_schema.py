@@ -1,7 +1,8 @@
-from marshmallow import Schema, fields, EXCLUDE
+from marshmallow import fields, EXCLUDE
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from models.repair_model import Repair
 
-class RepairSchema(Schema):
+class RepairSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Repair
         load_instance = True
@@ -11,4 +12,4 @@ class RepairSchema(Schema):
     description = fields.Str(required=False)
     created_at = fields.DateTime(dump_only=True)
     User_id = fields.UUID(required=True)
-    Inspection_id = fields.UUID(required=True)
+    Instance_Bike_id = fields.UUID(required=True)

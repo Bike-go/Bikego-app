@@ -11,8 +11,9 @@ from .rental_model import Rental
 from .repair_model import Repair
 from .reservation_model import Reservation
 from .review_model import Review
+from .statistics_model import Statistics
 from .user_model import User
 
 __all__ = [
-    'Bike', 'Category', 'Inspection', 'InstanceBike', 'Maintenance', 'News', 'Payment', 'Picture', 'Price', 'Rental', 'Repair', 'Reservation', 'Review', 'User'
+    'Bike', 'Category', 'Inspection', 'Instance_Bike', 'Maintenance', 'News', 'Payment', 'Picture', 'Price', 'Rental', 'Repair', 'Reservation', 'Review', 'Statistics', 'User'
 ]
